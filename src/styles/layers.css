@@ -118,6 +118,60 @@
   mask-image: linear-gradient(to bottom, black 62%, transparent 100%);
 }
 
+/* --- LAYER 02, ADVISORY ----------------------------------------------
+
+   A single stacked column, deliberately not two.
+
+   taste 4.7 SPLIT-HEADER BAN: a big headline on the left with a small
+   explainer on the right is banned as a default; stack vertically
+   instead. taste 4.7 Section-Layout-Repetition: a layout family may
+   appear at most once per page, and layer 01 already spends the split
+   composition on text beside portrait.
+
+   No metric column. DESIGN.md, craft-floor and taste 4.4 all refuse the
+   big-number-small-label template. The two verifiable figures are set
+   as a plain line instead, grouped by space rather than boxed.       */
+
+.l2-head { max-width: 30ch; text-wrap: balance; }
+
+/* One rule above the whole group, never one per item.
+   taste 4.9: a hairline under every row is the worst default. */
+.sectors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-5);
+  margin: var(--s-6) 0 0;
+  padding-top: var(--s-3);
+  border-top: 1px solid var(--rule);
+  list-style: none;
+  font-size: var(--t-small);
+  color: var(--ink-secondary);
+}
+
+.figures { margin: var(--s-6) 0 0; display: grid; gap: var(--s-3); }
+
+/* A fixed first column, not a right-aligned minimum width. Right
+   alignment pushed the single-digit figure inward and left both numbers
+   hanging off a different edge from every other element in the section. */
+.figure {
+  display: grid;
+  grid-template-columns: 3ch minmax(0, 1fr);
+  gap: var(--s-3);
+  align-items: baseline;
+}
+.figure dt {
+  font-size: var(--t-h2);
+  font-weight: 300;
+  letter-spacing: var(--tracking-h);
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+}
+.figure dd {
+  margin: 0;
+  font-size: var(--t-small);
+  color: var(--ink-secondary);
+}
+
 @media (max-width: 860px) {
   .l1-top {
     grid-template-columns: 1fr;

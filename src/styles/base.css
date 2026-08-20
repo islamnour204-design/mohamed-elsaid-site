@@ -92,6 +92,10 @@ a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: .22em
 }
 .layer .meta b { font-weight: 600; color: var(--ink-secondary); }
 
+/* The layer bar's own padding already provides the space above a
+   heading. Without this the two stack and the gap doubles. */
+.layer .meta + h2 { margin-top: 0; }
+
 .L1 { background: var(--ground-1); }
 .L2 { background: var(--ground-2); }
 .L3 { background: var(--ground-3); }

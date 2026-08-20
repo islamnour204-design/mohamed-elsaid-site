@@ -8,6 +8,28 @@ Read at the start of every session. These are not suggestions.
 2. `tokens.css` — the only source of colour, type, spacing, motion values
 3. `BUILD-BRIEF.md` — what to build, in what order, and the gates
 
+## When a skill and this project's files disagree
+
+Read the Precedence section at the top of `DESIGN.md`. Short version:
+
+facts and client instructions first, then the skill, then this project's
+aesthetic preferences — and those only where a reason is stated that the
+skill could not have known.
+
+**An override without a stated reason is a preference. Follow the skill.**
+
+This applies **inside an approved plan**, to questions of pure craft — how
+to set a headline, how to space a row, which of two valid treatments to
+use. On those, follow the skill and report what you did rather than
+stopping to ask.
+
+It does **not** mean you may start work without an approved plan. Plan
+approval is always required. See the section below.
+
+Facts are different. Never override an accessibility measurement, anything
+about what can truthfully be said about Mohamed, or a direct instruction
+from Islam or the client.
+
 ## Load these skills before the work they govern
 
 Do not work from memory or general judgement where a skill exists. Open the
@@ -32,17 +54,42 @@ why. Silence is not an acceptable answer to "did you use it."
 
 Do not use `threejs` on this site.
 
-## Plan before you build, every time
+## Plan mode, every section, without exception
 
-Before starting any new section, layer, page or phase, write the plan and
-wait for Islam to approve it. Do not begin work on the strength of a
-previous approval.
+**Use plan mode.** Before starting any section, layer, page or phase, write
+the plan and wait for Islam to approve it. Do not begin on the strength of
+a previous approval. Finishing layer 01 does not authorise layer 02.
 
-A plan is: what you will build, what it will look like, which decisions
-you are making, and what you are unsure about. Short. Not a document.
+This is not a formality. Islam cannot read the code, so the plan is the
+only point at which he can steer before work exists. Skipping it removes
+him from his own project.
 
-This applies within a phase as well as between phases. Finishing layer 01
-does not authorise layer 02.
+The plan must be built **from the skills**, not from your own taste, and
+must say:
+
+1. **What is being built** — content, in what order
+2. **The design direction** — layout, hierarchy, spacing, how it differs
+   from the section above it, and **which skill rule drove each choice**
+3. **Motion intent** — what will eventually be animated here, what will
+   not, and why. Write this even though Phase 1 builds nothing animated.
+   Islam wants to approve the motion plan early and see it built later.
+4. **What you are unsure about** — with options and a recommendation
+
+Short. Prose and a sketch, not a document.
+
+## On design and style, your preference does not count
+
+When choosing how something looks, you follow `impeccable`, `taste` and
+`ui-ux-pro-max`. Not your own judgement, not what seems reasonable, not a
+pattern you have seen elsewhere.
+
+State which rule you applied. If the skills are silent on a question, say
+so, then decide and name it as your decision so Islam knows it was
+unguided.
+
+The exceptions are the facts in the Precedence section above: accessibility
+measurements, what can truthfully be said about Mohamed, and direct
+instructions from Islam or the client.
 
 ## Check your work against the banned list before showing it
 

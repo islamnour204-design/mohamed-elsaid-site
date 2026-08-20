@@ -57,7 +57,7 @@ for (const [url, label] of targets) {
     };
 
     const headings = [...document.querySelectorAll('h1, h2, h3, .claim, .claim-lede, .name')];
-    const texts = [...document.querySelectorAll('p, li, span, b, em, i, a, div')]
+    const texts = [...document.querySelectorAll('p, li, span, b, em, i, a, div, dt, dd')]
       .filter(el => [...el.childNodes].some(n => n.nodeType === 3 && n.textContent.trim()));
 
     const seen = new Set();
@@ -108,23 +108,31 @@ for (const [url, label] of targets) {
       };
     });
 
-    const h1 = document.querySelector('h1');
+    /* Only the first section has to fit one viewport. Measuring the whole
+     * document against 900px reports a failure for every page longer than
+     * one screen, which is every page. */
+    /* Selector order matters: querySelector with a comma list returns the
+     * first match in DOCUMENT order, not the first selector that hits, so
+     * "main > section, main" would return main every time. */
+    const first = ['main > section', 'main', 'body']
+      .map(s => document.querySelector(s)).find(Boolean);
     return {
+      firstSection: Math.round(first.getBoundingClientRect().height),
       pageHeight: document.documentElement.scrollHeight,
       headingLines: headings.filter(h => h.textContent.trim()).map(h => ({
         what: h.className ? '.' + h.className.split(' ')[0] : h.tagName.toLowerCase(),
         size: getComputedStyle(h).fontSize,
         lines: lines(h)
       })),
-      h1Text: h1 ? h1.textContent.trim().slice(0, 60) : null,
       contrast, taps, imgs
     };
   });
 
   console.log(`\n=== ${label} ===`);
-  const fits = data.pageHeight <= 900;
+  const fits = data.firstSection <= 900;
   if (!fits) failures++;
-  console.log(`page height ${data.pageHeight}px against a 900px viewport  ${fits ? 'FITS' : 'OVERFLOWS by ' + (data.pageHeight - 900) + 'px'}`);
+  console.log(`first section ${data.firstSection}px against a 900px viewport  ${fits ? 'FITS' : 'OVERFLOWS by ' + (data.firstSection - 900) + 'px'}`);
+  console.log(`whole page ${data.pageHeight}px`);
 
   console.log('headings:');
   data.headingLines.forEach(h => console.log(`  ${h.what.padEnd(14)} ${h.size.padStart(6)}  ${h.lines} line${h.lines === 1 ? '' : 's'}`));

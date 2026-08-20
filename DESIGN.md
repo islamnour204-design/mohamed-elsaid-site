@@ -1,7 +1,33 @@
 # Design decisions — Mohamed Elsaid
 
-Decision record. If something here conflicts with an older document, this
-wins. Machine values live in `tokens.css`; this file explains why.
+Decision record. Machine values live in `tokens.css`; this file explains why.
+
+## Precedence — read this before using anything below
+
+When this file and an installed skill disagree, resolve it in this order:
+
+1. **Facts and hard constraints win, always.** Accessibility measurements,
+   what can truthfully be said about Mohamed, and instructions given
+   directly by Islam or the client. These are not style opinions and are
+   not negotiable.
+2. **Then the skill.** `impeccable`, `taste` and `ui-ux-pro-max` encode
+   craft tested across thousands of pages. Where they have a view, that
+   is the default.
+3. **Then this file's aesthetic preferences** — and only where a reason
+   is stated that the skill could not have known.
+
+**An override without a stated reason is not an override. It is a
+preference, and the skill wins.**
+
+The test to apply: *does this brief know something the skill cannot?*
+A skill has never met Mohamed, does not know he was defrauded by a fake
+recruiter, does not know Islam's own brand is orange, and did not hear the
+client ask for visible sections. Those are brief territory. How to set a
+headline is not.
+
+If a rule here blocks something a skill wants to do and no reason is
+given, follow the skill and tell Islam which rule you overrode and why.
+Do not stall waiting for permission on a matter of craft.
 
 Last changed: 18 August 2026.
 
@@ -161,9 +187,17 @@ setTimeout(revealAll, 6000);
 - Decorative geometry: floating triangles, confetti, half-circles. This is
   what marks the reference template Mohamed sent as a bought theme.
 
-Section numbers (01/02/03) **are** allowed here. `impeccable` permits them
-where the sequence carries information the reader needs. In The Stack it
-does — the numbers are the concept.
+**Section numbers — under review, skill currently wins.** An earlier
+version of this file permitted `LAYER 01 OUTCOME` on the grounds that the
+numbers are the concept. That was a preference with no reason attached, and
+`taste` bans the pattern in three separate places, including its pre-flight
+checklist. Under the precedence rule at the top of this file, the skill
+wins.
+
+Left in place for now only so it can be judged against the alternative:
+at the Phase 2 gate, with the fixed navigation present, show Islam the page
+with the layer bars and without them. The navigation may make them
+redundant, which would settle it.
 
 ---
 
@@ -173,9 +207,23 @@ Everything on the site must be verifiable from his CV.
 
 **Do not claim:** "technology executive", "nearly two decades",
 board-readiness, or any board seat. His actual role is a senior individual
-contributor. Documents in this folder produced by the fraudulent recruiter
-say otherwise and are unreliable. A recruiter checking LinkedIn would
-catch the mismatch in seconds.
+contributor.
+
+**Correction, 18 August 2026.** An earlier version of this file described
+the recruiter who produced the CV, bio and dossier in this folder as
+fraudulent. That was wrong. His identity has since been confirmed by Islam
+and Mohamed: he is a genuine and well-regarded executive search
+professional, and this site will be reviewed by him.
+
+What does not change is the standard. Those documents position Mohamed
+aspirationally, which is ordinary practice for a search dossier shown to a
+handful of hiring committees. A public website is a different instrument:
+anyone can read it and check it against LinkedIn in ten seconds. Positioning
+that is defensible in a private dossier reads as overclaiming in public.
+
+So the rule stands, on its own merits rather than on any suspicion of the
+source: **everything on the site must be verifiable from his CV.** The site
+may *feel* senior. It must not *claim* seniority he cannot evidence.
 
 The site may *feel* senior. It must not *claim* seniority he cannot evidence.
 

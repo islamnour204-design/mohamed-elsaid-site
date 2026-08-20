@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Palette directions — Elsaid</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-font-smoothing:antialiased}
+body{font-family:Geist,system-ui,sans-serif;background:#000}
+
+.tag{position:sticky;top:0;z-index:50;background:#000;color:#fff;padding:14px 40px;
+     font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;
+     display:flex;justify-content:space-between;align-items:center}
+.tag em{font-style:normal;opacity:.5;letter-spacing:.06em;text-transform:none;font-size:12px}
+
+.layer{padding:88px 40px}
+.wrap{max-width:1160px;margin:0 auto}
+.rule{height:1px;width:100%;margin:0}
+
+/* ---- shared type scale ---- */
+.name{font-size:clamp(38px,5vw,64px);font-weight:800;letter-spacing:-.04em;line-height:.98}
+.lede{font-size:clamp(30px,4.2vw,54px);font-weight:700;letter-spacing:-.035em;line-height:1.06;max-width:17ch;margin-top:34px}
+.body{font-size:17px;line-height:1.65;max-width:60ch;margin-top:28px}
+.h2{font-size:clamp(24px,2.6vw,34px);font-weight:700;letter-spacing:-.03em}
+.meta{font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:600}
+.row{display:grid;grid-template-columns:64px 1fr 1.15fr;gap:28px;align-items:start;padding:26px 0}
+.row .n{font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1}
+.row .t{font-size:21px;font-weight:600;letter-spacing:-.02em}
+.row .d{font-size:15.5px;line-height:1.6}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;margin-top:40px}
+.cols .yr{font-size:13px;font-weight:700;letter-spacing:.1em;margin-bottom:10px}
+.cols .dg{font-size:18px;font-weight:600;letter-spacing:-.02em;line-height:1.25}
+.cols .ds{font-size:14.5px;line-height:1.6;margin-top:10px}
+.cols .bar{height:2px;width:100%;margin-bottom:16px}
+.btn{display:inline-block;padding:15px 26px;font-size:14.5px;font-weight:600;margin-top:36px}
+.portrait{width:100%;aspect-ratio:4/5;object-fit:cover;object-position:50% 22%}
+.hero{display:grid;grid-template-columns:1.35fr .65fr;gap:64px;align-items:center}
+@media(max-width:860px){.hero{grid-template-columns:1fr;gap:36px}.cols{grid-template-columns:1fr}.row{grid-template-columns:44px 1fr;gap:16px}.row .d{grid-column:1/-1}}
+
+/* =========================================================
+   A — PAPER TO SILICON
+   ========================================================= */
+.A1{background:#FBFAF8}.A2{background:#F1EEE7}.A3{background:#E2DDD2}
+.A4{background:#2B2F37}.A5{background:#0C0E12}
+.A1,.A2,.A3{color:#16181D}
+.A4,.A5{color:#EDEAE4}
+.A1 .body,.A2 .body,.A3 .body,.A1 .d,.A2 .d,.A3 .d,.A1 .ds,.A2 .ds,.A3 .ds{color:#4A4E57}
+.A4 .body,.A5 .body,.A4 .d,.A5 .d,.A4 .ds,.A5 .ds{color:#B4B7BE}
+.A1 .meta,.A2 .meta,.A3 .meta{color:#C2360A}
+.A4 .meta,.A5 .meta{color:#FF5C33}
+.A1 .n,.A2 .n,.A3 .n{color:#B9B3A6}
+.A4 .n,.A5 .n{color:#575C66}
+.A1 .rule,.A2 .rule,.A3 .rule{background:rgba(22,24,29,.16)}
+.A4 .rule,.A5 .rule{background:rgba(237,234,228,.16)}
+.A1 .bar,.A2 .bar,.A3 .bar{background:#C2360A}
+.A4 .bar,.A5 .bar{background:#FF5C33}
+.A1 .btn{background:#16181D;color:#FBFAF8}
+.A5 .btn{background:#FF5C33;color:#0C0E12}
+
+/* =========================================================
+   B — INSTITUTION
+   ========================================================= */
+.B1,.B3{background:#FFFFFF}.B2,.B4{background:#F6F4F0}.B5{background:#16181D}
+.B1,.B2,.B3,.B4{color:#101216}
+.B5{color:#F2F0EC}
+.B1 .body,.B2 .body,.B3 .body,.B4 .body,.B1 .d,.B2 .d,.B3 .d,.B4 .d,.B2 .ds,.B4 .ds,.B1 .ds,.B3 .ds{color:#494D55}
+.B5 .body,.B5 .d,.B5 .ds{color:#AEB2B9}
+.B1 .meta,.B2 .meta,.B3 .meta,.B4 .meta{color:#C2360A}
+.B5 .meta{color:#FF7A56}
+.B1 .n,.B2 .n,.B3 .n,.B4 .n{color:#BFC2C7}
+.B5 .n{color:#5A5F68}
+.B1 .rule,.B2 .rule,.B3 .rule,.B4 .rule{background:rgba(16,18,22,.14)}
+.B5 .rule{background:rgba(242,240,236,.18)}
+.B1 .bar,.B2 .bar,.B3 .bar,.B4 .bar{background:#C2360A}
+.B5 .bar{background:#FF7A56}
+.B1 .btn{background:#C2360A;color:#fff}
+.B5 .btn{background:#F2F0EC;color:#16181D}
+
+/* =========================================================
+   C — WARM STONE
+   ========================================================= */
+.C1{background:#F4F1E9}.C2{background:#EDE8DD}.C3{background:#E4DED0}
+.C4{background:#DAD3C2}.C5{background:#1A1C21}
+.C1,.C2,.C3,.C4{color:#1F2026}
+.C5{color:#F0EDE6}
+.C1 .body,.C2 .body,.C3 .body,.C4 .body,.C1 .d,.C2 .d,.C3 .d,.C4 .d,.C1 .ds,.C2 .ds,.C3 .ds,.C4 .ds{color:#54544F}
+.C5 .body,.C5 .d,.C5 .ds{color:#B0ADA6}
+.C1 .meta,.C2 .meta,.C3 .meta,.C4 .meta{color:#A8410E}
+.C5 .meta{color:#E8703F}
+.C1 .n,.C2 .n,.C3 .n,.C4 .n{color:#B6AE9C}
+.C5 .n{color:#57565B}
+.C1 .rule,.C2 .rule,.C3 .rule,.C4 .rule{background:rgba(31,32,38,.18)}
+.C5 .rule{background:rgba(240,237,230,.18)}
+.C1 .bar,.C2 .bar,.C3 .bar,.C4 .bar{background:#A8410E}
+.C5 .bar{background:#E8703F}
+.C1 .btn{background:#1F2026;color:#F4F1E9}
+.C5 .btn{background:#E8703F;color:#1A1C21}
+</style>
+</head>
+<body>
+
+<!-- ============ A ============ -->
+<div class="tag">DIRECTION A — Paper to Silicon <em>light at the top, darkening as you descend</em></div>
+
+<section class="layer A1"><div class="wrap"><div class="hero">
+  <div>
+    <div class="name">Mohamed Elsaid</div>
+    <div class="lede">The question is not whether to adopt AI. It is what the infrastructure underneath it costs.</div>
+    <p class="body">I answer that question for enterprise and public sector organisations across Europe and the Middle East. Doctorate from the Hasso&#8209;Plattner Institute, four United States patents, thirteen peer reviewed papers.</p>
+    <a class="btn">See the research</a>
+  </div>
+  <div><img class="portrait" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'><rect width='400' height='500' fill='%23D7D2C8'/><text x='200' y='250' font-family='sans-serif' font-size='15' fill='%237A756B' text-anchor='middle'>PORTRAIT</text></svg>" alt=""></div>
+</div></div></section>
+
+<section class="layer A2"><div class="wrap">
+  <div class="meta">Layer 02 — Advisory</div>
+  <h2 class="h2" style="margin-top:20px">Sixteen years turning infrastructure decisions into commercial ones</h2>
+  <p class="body">Before Intel, six years at Dell EMC, first as a level two support engineer on enterprise storage, then as a solutions architect. That period taught me how infrastructure fails in production, which is a different education from how it behaves on a slide.</p>
+</div></section>
+
+<section class="layer A3"><div class="wrap">
+  <div class="meta">Layer 03 — Platform</div>
+  <h2 class="h2" style="margin-top:20px;margin-bottom:14px">Where the work concentrates</h2>
+  <div class="rule"></div>
+  <div class="row"><div class="n">01</div><div class="t">AI infrastructure</div><div class="d">Accelerator selection, capacity sizing, and what it actually costs to run inference at scale.</div></div>
+  <div class="rule"></div>
+  <div class="row"><div class="n">02</div><div class="t">Cloud and datacenter architecture</div><div class="d">Hybrid and multi-cloud design, migration planning, and total cost of ownership.</div></div>
+</div></section>
+
+<section class="layer A4"><div class="wrap">
+  <div class="meta">Layer 04 — Research</div>
+  <h2 class="h2" style="margin-top:20px">Thirteen peer reviewed papers</h2>
+  <p class="body">Machine learning applied to virtual machine live migration cost prediction, under Professor Christoph Meinel.</p>
+</div></section>
+
+<section class="layer A5"><div class="wrap">
+  <div class="meta">Layer 05 — Silicon</div>
+  <h2 class="h2" style="margin-top:20px">Foundations</h2>
+  <div class="cols">
+    <div><div class="bar"></div><div class="yr">2022</div><div class="dg">Doctorate, IT Systems Engineering</div><div class="ds">Hasso-Plattner Institute, Potsdam.</div></div>
+    <div><div class="bar"></div><div class="yr">2010</div><div class="dg">M.Sc. Network Engineering</div><div class="ds">German University in Cairo.</div></div>
+    <div><div class="bar"></div><div class="yr">2006</div><div class="dg">B.Sc. Electronics and Communications</div><div class="ds">Ain Shams University, Cairo.</div></div>
+  </div>
+  <a class="btn">Get in touch</a>
+</div></section>
+
+<!-- ============ B ============ -->
+<div class="tag">DIRECTION B — Institution <em>white and off-white, one dark anchor at the base</em></div>
+
+<section class="layer B1"><div class="wrap"><div class="hero">
+  <div>
+    <div class="name">Mohamed Elsaid</div>
+    <div class="lede">The question is not whether to adopt AI. It is what the infrastructure underneath it costs.</div>
+    <p class="body">I answer that question for enterprise and public sector organisations across Europe and the Middle East. Doctorate from the Hasso&#8209;Plattner Institute, four United States patents, thirteen peer reviewed papers.</p>
+    <a class="btn">See the research</a>
+  </div>
+  <div><img class="portrait" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'><rect width='400' height='500' fill='%23E4E1DC'/><text x='200' y='250' font-family='sans-serif' font-size='15' fill='%238A867F' text-anchor='middle'>PORTRAIT</text></svg>" alt=""></div>
+</div></div></section>
+
+<section class="layer B2"><div class="wrap">
+  <div class="meta">Layer 02 — Advisory</div>
+  <h2 class="h2" style="margin-top:20px">Sixteen years turning infrastructure decisions into commercial ones</h2>
+  <p class="body">Before Intel, six years at Dell EMC, first as a level two support engineer on enterprise storage, then as a solutions architect. That period taught me how infrastructure fails in production, which is a different education from how it behaves on a slide.</p>
+</div></section>
+
+<section class="layer B3"><div class="wrap">
+  <div class="meta">Layer 03 — Platform</div>
+  <h2 class="h2" style="margin-top:20px;margin-bottom:14px">Where the work concentrates</h2>
+  <div class="rule"></div>
+  <div class="row"><div class="n">01</div><div class="t">AI infrastructure</div><div class="d">Accelerator selection, capacity sizing, and what it actually costs to run inference at scale.</div></div>
+  <div class="rule"></div>
+  <div class="row"><div class="n">02</div><div class="t">Cloud and datacenter architecture</div><div class="d">Hybrid and multi-cloud design, migration planning, and total cost of ownership.</div></div>
+</div></section>
+
+<section class="layer B4"><div class="wrap">
+  <div class="meta">Layer 04 — Research</div>
+  <h2 class="h2" style="margin-top:20px">Thirteen peer reviewed papers</h2>
+  <p class="body">Machine learning applied to virtual machine live migration cost prediction, under Professor Christoph Meinel.</p>
+</div></section>
+
+<section class="layer B5"><div class="wrap">
+  <div class="meta">Layer 05 — Silicon</div>
+  <h2 class="h2" style="margin-top:20px">Foundations</h2>
+  <div class="cols">
+    <div><div class="bar"></div><div class="yr">2022</div><div class="dg">Doctorate, IT Systems Engineering</div><div class="ds">Hasso-Plattner Institute, Potsdam.</div></div>
+    <div><div class="bar"></div><div class="yr">2010</div><div class="dg">M.Sc. Network Engineering</div><div class="ds">German University in Cairo.</div></div>
+    <div><div class="bar"></div><div class="yr">2006</div><div class="dg">B.Sc. Electronics and Communications</div><div class="ds">Ain Shams University, Cairo.</div></div>
+  </div>
+  <a class="btn">Get in touch</a>
+</div></section>
+
+<!-- ============ C ============ -->
+<div class="tag">DIRECTION C — Warm Stone <em>paper and sand throughout, one dark close</em></div>
+
+<section class="layer C1"><div class="wrap"><div class="hero">
+  <div>
+    <div class="name">Mohamed Elsaid</div>
+    <div class="lede">The question is not whether to adopt AI. It is what the infrastructure underneath it costs.</div>
+    <p class="body">I answer that question for enterprise and public sector organisations across Europe and the Middle East. Doctorate from the Hasso&#8209;Plattner Institute, four United States patents, thirteen peer reviewed papers.</p>
+    <a class="btn">See the research</a>
+  </div>
+  <div><img class="portrait" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'><rect width='400' height='500' fill='%23DCD4C3'/><text x='200' y='250' font-family='sans-serif' font-size='15' fill='%23837B6B' text-anchor='middle'>PORTRAIT</text></svg>" alt=""></div>
+</div></div></section>
+
+<section class="layer C2"><div class="wrap">
+  <div class="meta">Layer 02 — Advisory</div>
+  <h2 class="h2" style="margin-top:20px">Sixteen years turning infrastructure decisions into commercial ones</h2>
+  <p class="body">Before Intel, six years at Dell EMC, first as a level two support engineer on enterprise storage, then as a solutions architect. That period taught me how infrastructure fails in production, which is a different education from how it behaves on a slide.</p>
+</div></section>
+
+<section class="layer C3"><div class="wrap">
+  <div class="meta">Layer 03 — Platform</div>
+  <h2 class="h2" style="margin-top:20px;margin-bottom:14px">Where the work concentrates</h2>
+  <div class="rule"></div>
+  <div class="row"><div class="n">01</div><div class="t">AI infrastructure</div><div class="d">Accelerator selection, capacity sizing, and what it actually costs to run inference at scale.</div></div>
+  <div class="rule"></div>
+  <div class="row"><div class="n">02</div><div class="t">Cloud and datacenter architecture</div><div class="d">Hybrid and multi-cloud design, migration planning, and total cost of ownership.</div></div>
+</div></section>
+
+<section class="layer C4"><div class="wrap">
+  <div class="meta">Layer 04 — Research</div>
+  <h2 class="h2" style="margin-top:20px">Thirteen peer reviewed papers</h2>
+  <p class="body">Machine learning applied to virtual machine live migration cost prediction, under Professor Christoph Meinel.</p>
+</div></section>
+
+<section class="layer C5"><div class="wrap">
+  <div class="meta">Layer 05 — Silicon</div>
+  <h2 class="h2" style="margin-top:20px">Foundations</h2>
+  <div class="cols">
+    <div><div class="bar"></div><div class="yr">2022</div><div class="dg">Doctorate, IT Systems Engineering</div><div class="ds">Hasso-Plattner Institute, Potsdam.</div></div>
+    <div><div class="bar"></div><div class="yr">2010</div><div class="dg">M.Sc. Network Engineering</div><div class="ds">German University in Cairo.</div></div>
+    <div><div class="bar"></div><div class="yr">2006</div><div class="dg">B.Sc. Electronics and Communications</div><div class="ds">Ain Shams University, Cairo.</div></div>
+  </div>
+  <a class="btn">Get in touch</a>
+</div></section>
+
+</body>
+</html>

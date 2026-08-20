@@ -1,0 +1,8 @@
+node_modules/
+dist/
+shots/
+
+# Mohamed's personal documents. These contain his CV, a statement of
+# purpose, and the two documents produced by the fraudulent recruiter.
+# If this repository is ever pushed to GitHub they must not travel with it.
+*.pdf

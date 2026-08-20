@@ -86,11 +86,17 @@
   --tap-min: 44px;
 
   /* --- PORTRAIT --------------------------------------------------------
-     The source photograph is 680x564. Displayed much wider than this it
-     exceeds its own resolution and softens on a high density screen.
-     These values move once the high resolution original arrives.     */
+     The source photograph is 680x564, so 340px is the widest it can be
+     drawn before a 2x screen asks for pixels it does not have.
 
-  --portrait-w:   460px;   /* desktop */
+     300px is set deliberately below that ceiling. Measured across the
+     range, it is the widest portrait that still lets the layer 01
+     headline break across two lines instead of three, and at 300px the
+     image needs 0.88x its own pixels, so it stays sharp.
+
+     Both numbers move once the high resolution original arrives.    */
+
+  --portrait-w:   300px;   /* desktop */
   --portrait-w-s: 280px;   /* narrow screens */
 
   /* --- BREAKPOINT ------------------------------------------------------

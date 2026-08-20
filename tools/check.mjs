@@ -50,7 +50,15 @@ const RULES = [
   },
   { name: 'banned typeface', test: /Fraunces|Instrument Serif/gi },
   { name: 'gradient background wash', test: /background(-image)?\s*:[^;]*gradient/gi },
-  { name: 'non-zero border radius', test: /border-radius\s*:\s*(?!0)(?!var\(--radius\))[^;]+/gi },
+  {
+    /* --radius is 0 everywhere without exception. Capture the value and
+     * test it, rather than trying to exclude it with a lookahead: \s*
+     * backtracks to zero width and the lookahead then never sees the
+     * value it was meant to permit. */
+    name: 'non-zero border radius',
+    test: /border-radius\s*:\s*([^;}]+)/gi,
+    allow: /^(0|0px|var\(--radius\))$/i
+  },
   { name: 'banned claim', test: /technology executive|nearly two decades|board.ready/gi }
 ];
 
@@ -66,6 +74,7 @@ for (const file of files) {
     if (rule.only && !rule.only.includes(extname(file))) continue;
     const text = rule.stripComments ? stripped : raw;
     for (const m of text.matchAll(rule.test)) {
+      if (rule.allow && m[1] && rule.allow.test(m[1].trim())) continue;
       const line = text.slice(0, m.index).split('\n').length;
       failures.push(`${file}:${line}  ${rule.name}  ->  ${m[0].trim().slice(0, 60)}`);
     }

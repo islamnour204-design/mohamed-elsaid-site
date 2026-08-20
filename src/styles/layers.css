@@ -1,3 +1,84 @@
 /* =====================================================================
-   Layer layouts. Populated in tasks 5 to 8.
+   Layer layouts.
    ===================================================================== */
+
+/* --- LAYER 01, OUTCOME ---------------------------------------------- */
+
+.l1-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: var(--s-6);
+  align-items: end;
+}
+
+.who {
+  font-size: var(--t-meta);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-meta);
+  color: var(--accent);
+}
+
+.name {
+  margin-top: var(--s-1);
+  font-size: var(--t-h3);
+  font-weight: 500;
+  letter-spacing: var(--tracking-h);
+}
+
+/* The claim is 17 words. At --t-display it ran to five lines and pushed
+   the hero past the viewport, which taste core.md 4.7 calls a font-scale
+   error rather than a copy-length one. The copy is approved and
+   verifiable, so the scale gives: --t-lede is the token documented for
+   "opening statement", which is what this sentence is. --t-display
+   stays with the name it is documented for. */
+.claim {
+  margin-top: var(--s-5);
+  font-size: var(--t-lede);
+  max-width: 24ch;
+}
+.claim u {
+  text-decoration-color: var(--accent);
+  text-underline-offset: .1em;
+}
+
+.sub { margin-top: var(--s-4); font-size: var(--t-small); }
+
+.act {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin-top: var(--s-5);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;          /* tap target floor */
+  padding: 0 var(--s-3);
+  border-radius: var(--radius);
+  font-size: var(--t-small);
+  font-weight: 500;
+  text-decoration: none;
+}
+.btn-p { background: var(--accent); color: var(--on-accent); }
+.btn-s { border: 1px solid var(--rule-strong); color: var(--ink); }
+
+/* Portrait. DESIGN.md, Portrait treatment: cut out, no frame, no
+   border, no rectangle, no circle, sitting directly on the ground and
+   fading into it at the lower edge. The source webp already carries a
+   clean alpha channel, so this is implementation 1, the cut-out, not
+   the masked-fade fallback. The gradient below is a mask, not a
+   background wash. */
+.portrait { margin: 0; align-self: end; }
+.portrait img {
+  display: block;
+  width: 100%;
+  height: auto;
+  mask-image: linear-gradient(to bottom, black 68%, transparent 100%);
+}
+
+@media (max-width: 860px) {
+  .l1-top { grid-template-columns: 1fr; gap: var(--s-4); }
+  .portrait { max-width: 280px; }
+  .claim { max-width: none; }
+}

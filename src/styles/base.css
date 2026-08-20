@@ -61,6 +61,9 @@ a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: .22em
   left: var(--gutter);
   top: var(--s-2);
   z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap-min);
   background: var(--accent);
   color: var(--on-accent);
   padding: var(--s-1) var(--s-2);
@@ -80,7 +83,11 @@ a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: .22em
   font-size: var(--t-meta);
   text-transform: uppercase;
   letter-spacing: var(--tracking-meta);
-  color: var(--ink-muted);
+  /* --ink-muted measures 4.39:1 on ground-1, under the 4.5:1 floor, and
+     this text is 11px. tokens.css marks that token "captions,
+     non-essential only"; a layer identifier is not that. --ink-secondary
+     is the same family at 6.70:1. */
+  color: var(--ink-secondary);
   padding-bottom: var(--s-6);
 }
 .layer .meta b { font-weight: 600; color: var(--ink-secondary); }

@@ -32,6 +32,24 @@ why. Silence is not an acceptable answer to "did you use it."
 
 Do not use `threejs` on this site.
 
+## Plan before you build, every time
+
+Before starting any new section, layer, page or phase, write the plan and
+wait for Islam to approve it. Do not begin work on the strength of a
+previous approval.
+
+A plan is: what you will build, what it will look like, which decisions
+you are making, and what you are unsure about. Short. Not a document.
+
+This applies within a phase as well as between phases. Finishing layer 01
+does not authorise layer 02.
+
+## Check your work against the banned list before showing it
+
+`DESIGN.md` has a banned list. Read it and check the rendered page against
+it before every delivery, item by item. An eyebrow label reached a
+screenshot once already because this check was skipped.
+
 ## Never invent a value
 
 Every colour, size, space and duration comes from `tokens.css`. If you need

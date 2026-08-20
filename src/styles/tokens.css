@@ -79,6 +79,30 @@
   /* --- SHAPE --- */
   --radius: 0;   /* everywhere, without exception */
 
+  /* --- TAP TARGETS -----------------------------------------------------
+     Minimum size for anything a finger has to hit. 44px is the
+     accessibility floor, not a taste decision.                        */
+
+  --tap-min: 44px;
+
+  /* --- PORTRAIT --------------------------------------------------------
+     The source photograph is 680x564. Displayed much wider than this it
+     exceeds its own resolution and softens on a high density screen.
+     These values move once the high resolution original arrives.     */
+
+  --portrait-w:   460px;   /* desktop */
+  --portrait-w-s: 280px;   /* narrow screens */
+
+  /* --- BREAKPOINT ------------------------------------------------------
+     One breakpoint for the whole site: 860px.
+
+     It is written here for the record but it cannot be used as a token.
+     A media query is evaluated before custom properties are resolved, so
+     @media (max-width: var(--bp)) does not work in any browser. The
+     literal 860px in the stylesheets is that limitation, not a value
+     invented on the spot. If it changes, it changes here first and then
+     in every media query.                                             */
+
   /* --- MOTION ---------------------------------------------------------
      One easing curve. Three durations. Nothing else.                */
 

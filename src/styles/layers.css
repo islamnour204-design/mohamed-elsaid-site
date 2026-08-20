@@ -2,43 +2,65 @@
    Layer layouts.
    ===================================================================== */
 
-/* --- LAYER 01, OUTCOME ---------------------------------------------- */
+/* --- LAYER 01, OUTCOME ----------------------------------------------
+
+   Three children in one grid, so their order can change between
+   desktop and mobile without duplicating the markup:
+
+     desktop            mobile
+     name    portrait   name
+     body    portrait   portrait
+                        body
+
+   No eyebrow above the heading. The affiliation lives in the layer
+   bar. craft-floor.md: "A kicker or eyebrow above a heading. This one
+   is a ban, not a default: no brief earns it back."               */
 
 .l1-top {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 340px;
-  gap: var(--s-6);
-  align-items: end;
+  grid-template-columns: minmax(0, 1fr) var(--portrait-w);
+  grid-template-areas:
+    "name portrait"
+    "body portrait";
+  grid-template-rows: auto 1fr;
+  column-gap: var(--s-6);
+  align-items: start;
 }
 
-.who {
-  font-size: var(--t-meta);
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-meta);
-  color: var(--accent);
-}
+.name    { grid-area: name; }
+.portrait { grid-area: portrait; }
+.l1-body { grid-area: body; }
 
 .name {
-  margin-top: var(--s-1);
   font-size: var(--t-h3);
   font-weight: 500;
   letter-spacing: var(--tracking-h);
 }
 
-/* The claim is 17 words. At --t-display it ran to five lines and pushed
-   the hero past the viewport, which taste core.md 4.7 calls a font-scale
-   error rather than a copy-length one. The copy is approved and
-   verifiable, so the scale gives: --t-lede is the token documented for
-   "opening statement", which is what this sentence is. --t-display
-   stays with the name it is documented for. */
-.claim {
-  margin-top: var(--s-5);
-  font-size: var(--t-lede);
-  max-width: 24ch;
+.claim { margin-top: var(--s-5); max-width: 24ch; }
+
+/* Variant A: the whole statement as one heading at lede scale.
+   Variant B: first sentence at display scale, second demoted. */
+.claim   { font-size: var(--t-lede); }
+.claim-b { font-size: var(--t-display); letter-spacing: var(--tracking-display); max-width: 16ch; }
+
+.claim-lede {
+  margin-top: var(--s-3);
+  font-size: var(--t-h2);
+  font-weight: 400;
+  letter-spacing: var(--tracking-h);
+  line-height: 1.2;
+  max-width: 30ch;
+  color: var(--ink-secondary);
 }
-.claim u {
-  text-decoration-color: var(--accent);
-  text-underline-offset: .1em;
+
+/* Emphasis by weight, not by underline. An underline inside a heading
+   reads as a link. craft-floor.md: "Emphasis comes from weight or
+   size." Geist is a variable face, so 800 costs no extra download. */
+.claim strong,
+.claim-lede strong {
+  font-weight: 800;
+  color: var(--ink);
 }
 
 .sub { margin-top: var(--s-4); font-size: var(--t-small); }
@@ -53,7 +75,7 @@
 .btn {
   display: inline-flex;
   align-items: center;
-  min-height: 44px;          /* tap target floor */
+  min-height: var(--tap-min);
   padding: 0 var(--s-3);
   border-radius: var(--radius);
   font-size: var(--t-small);
@@ -67,18 +89,40 @@
    border, no rectangle, no circle, sitting directly on the ground and
    fading into it at the lower edge. The source webp already carries a
    clean alpha channel, so this is implementation 1, the cut-out, not
-   the masked-fade fallback. The gradient below is a mask, not a
-   background wash. */
-.portrait { margin: 0; align-self: end; }
+   the masked-fade fallback.
+
+   The fade is css-inspiration techniques/background/bg-mask-image.md:
+   a linear-gradient used as a mask, where the transparent end of the
+   gradient lets the ground show through. It is a mask, not a
+   background wash, so the gradient ban does not apply.
+
+   object-position is top, never centre: cropping is anchored to the
+   head so it can never be cut off, per BUILD-BRIEF section 5.      */
+.portrait {
+  margin: 0;
+  align-self: stretch;
+  min-height: 0;
+}
 .portrait img {
   display: block;
   width: 100%;
-  height: auto;
-  mask-image: linear-gradient(to bottom, black 68%, transparent 100%);
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  mask-image: linear-gradient(to bottom, black 62%, transparent 100%);
 }
 
 @media (max-width: 860px) {
-  .l1-top { grid-template-columns: 1fr; gap: var(--s-4); }
-  .portrait { max-width: 280px; }
-  .claim { max-width: none; }
+  .l1-top {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "name"
+      "portrait"
+      "body";
+    grid-template-rows: auto auto auto;
+    row-gap: var(--s-3);
+  }
+  .portrait { max-width: var(--portrait-w-s); align-self: start; }
+  .portrait img { height: auto; }
+  .claim, .claim-b { max-width: none; }
 }

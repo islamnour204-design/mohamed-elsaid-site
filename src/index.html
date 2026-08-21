@@ -9,6 +9,14 @@
   <link rel="stylesheet" href="/styles/tokens.css">
   <link rel="stylesheet" href="/styles/base.css">
   <link rel="stylesheet" href="/styles/layers.css">
+  <link rel="stylesheet" href="/styles/motion.css">
+  <!-- Marks that scripting is alive, before first paint, so the entrance
+       can start from a hidden state without a flash. If this never runs,
+       CSS leaves every element visible and the page is simply static.
+       impeccable animate.md: "Keep content visible in the default state
+       so failed scripts do not hide the page." -->
+  <script>document.documentElement.classList.add('js-motion');</script>
+  <script type="module" src="/scripts/motion.js"></script>
 </head>
 <body>
 
@@ -19,10 +27,10 @@
   <!-- ========== LAYER 01, OUTCOME ========== -->
   <section class="layer L1" id="L1">
     <div class="shell">
-      <div class="meta"><span>Layer <b>01</b> Outcome</span><span>Intel, Munich</span></div>
+      <div class="meta anim"><span>Layer <b>01</b> Outcome</span><span>Intel, Munich</span></div>
       <div class="l1-top">
 
-        <p class="name">Mohamed Elsaid</p>
+        <p class="name anim">Mohamed Elsaid</p>
 
         <figure class="portrait">
           <img src="/assets/img/mohamed-elsaid.webp" width="680" height="564"
@@ -31,12 +39,12 @@
 
         <div class="l1-claim">
           <h1 class="claim">The question is not whether to adopt AI.</h1>
-          <p class="claim-lede">It is what the infrastructure underneath it <strong>costs</strong>.</p>
         </div>
 
         <div class="l1-body">
-          <p class="sub prose">I answer that question for enterprise and public sector organisations across Europe and the Middle East. Doctorate from the Hasso-Plattner Institute, four United States patents, thirteen peer reviewed papers.</p>
-          <div class="act">
+          <p class="claim-lede">It is what the infrastructure underneath it <strong>costs</strong>.</p>
+          <p class="sub prose anim">I answer that question for enterprise and public sector organisations across Europe and the Middle East. Doctorate from the Hasso-Plattner Institute, four United States patents, thirteen peer reviewed papers.</p>
+          <div class="act anim">
             <a href="#L4" class="btn btn-p">See the research</a>
             <a href="#contact" class="btn btn-s">Get in touch</a>
           </div>
@@ -51,14 +59,36 @@
     <div class="shell">
       <div class="meta"><span>Layer <b>02</b> Advisory</span><span>Enterprise and public sector</span></div>
 
-      <h2 class="l2-head">Sixteen years turning infrastructure decisions into commercial ones</h2>
+      <h2 class="l2-head anim">Sixteen years turning infrastructure decisions into commercial ones</h2>
 
-      <div class="prose">
+      <div class="l2-grid">
+      <div class="prose anim">
         <p>At Intel I advise enterprise and public sector organisations on AI infrastructure, cloud architecture, and datacenter modernisation. Most of the work is unglamorous: sizing, migration economics, where a workload should actually run, and what happens to the operating bill once the pilot ends.</p>
         <p>Before Intel, six years at Dell EMC, first as a level two support engineer on enterprise storage, then as a solutions architect. That period taught me how infrastructure <em>fails in production</em>, which is a different education from how it behaves on a slide.</p>
       </div>
 
-      <ul class="sectors">
+      <dl class="figures">
+        <div class="figure">
+          <dt><span class="fig-n">16</span></dt>
+          <dd>Years across Dell Technologies and Intel</dd>
+        </div>
+        <div class="figure">
+          <dt><span class="fig-n">3</span></dt>
+          <dd>Languages used in client work: Arabic, German, English</dd>
+        </div>
+        <div class="figure" data-placeholder>
+          <dt><span class="fig-n">000</span></dt>
+          <dd>Enterprise engagements advised <span class="pmark">awaiting real figure</span></dd>
+        </div>
+        <div class="figure" data-placeholder>
+          <dt><span class="fig-n">00%</span></dt>
+          <dd>Efficiency gain, representative programme <span class="pmark">awaiting real figure</span></dd>
+        </div>
+      </dl>
+
+      </div>
+
+      <ul class="sectors anim">
         <li>Manufacturing</li>
         <li>Government</li>
         <li>Telecommunications</li>
@@ -67,24 +97,7 @@
         <li>Public sector</li>
       </ul>
 
-      <dl class="figures">
-        <div class="figure">
-          <dt>16</dt>
-          <dd>Years across Dell Technologies and Intel</dd>
-        </div>
-        <div class="figure">
-          <dt>3</dt>
-          <dd>Languages used in client work: Arabic, German, English</dd>
-        </div>
-        <div class="figure" data-placeholder>
-          <dt>000</dt>
-          <dd>Enterprise engagements advised <span class="pmark">awaiting real figure</span></dd>
-        </div>
-        <div class="figure" data-placeholder>
-          <dt>00%</dt>
-          <dd>Efficiency gain, representative programme <span class="pmark">awaiting real figure</span></dd>
-        </div>
-      </dl>
+      
 
     </div>
   </section>
@@ -94,7 +107,7 @@
     <div class="shell">
       <div class="meta"><span>Layer <b>03</b> Platform</span><span>Eight practice areas</span></div>
 
-      <h2 class="l3-head">Where the work concentrates</h2>
+      <h2 class="l3-head anim">Where the work concentrates</h2>
 
       <div class="focus">
         <div class="frow">
@@ -111,7 +124,7 @@
         </div>
       </div>
 
-      <div class="also">
+      <div class="also anim">
         <span class="also-lb">Also</span>
         <ul>
           <li>Virtualisation</li>

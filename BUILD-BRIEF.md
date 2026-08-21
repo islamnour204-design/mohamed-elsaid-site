@@ -111,6 +111,33 @@ treat motion that draws attention to itself as a failure.
 Each phase ends at a gate. **Do not start the next phase until the gate
 passes and Islam has seen a screenshot.**
 
+## PHASE ORDER CHANGED — 21 August 2026
+
+The original plan below deferred all motion to Phase 3, after every layer,
+the navigation and both extra pages were finished. That was wrong. It was
+written by someone applying "get it right static, then animate", on a
+project whose whole purpose was motion, for a client who cannot judge a
+static page.
+
+**Motion is now the next thing built, not the last.**
+
+New order:
+
+- **NOW** — install GSAP. Build the full motion language on layers 01–03:
+  hero entrance, section-to-section transitions, text reveals, the figures.
+  Islam reviews it live on the dev server and steers it.
+- **Then** — layers 04 and 05, built with the motion language already
+  established, so they arrive animated rather than needing a retrofit.
+- **Then** — navigation, the two pages, images, review, deploy.
+
+`docs/MOTION-INTENT.md` is the approved contract. Build it.
+
+The phase descriptions below still hold for *what* each piece contains.
+Ignore only their ordering, and ignore "no animation in this phase"
+entirely — that instruction is withdrawn.
+
+---
+
 ### Phase 1 — Structure and content, no motion
 
 Port the content from `elsaid-stack.html` (the reference build in this

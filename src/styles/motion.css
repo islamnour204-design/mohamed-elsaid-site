@@ -1,0 +1,55 @@
+/* =====================================================================
+   Motion. Start states and the properties GSAP animates.
+
+   Everything here is inert unless scripting is alive: the .js-motion
+   class is added by an inline script in the head, and motion.js removes
+   it again if anything goes wrong. With no script, no class, and the
+   page renders complete and static.
+
+   impeccable animate.md: "Keep content visible in the default state so
+   failed scripts do not hide the page."
+   ===================================================================== */
+
+/* The portrait's mask stop, registered so it can be animated. Without
+   @property a browser treats a custom property as an unanimatable
+   string and the mask would jump rather than travel. */
+@property --mask-stop {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 62%;
+}
+
+.portrait img {
+  --mask-stop: 62%;
+  mask-image: linear-gradient(to bottom, black var(--mask-stop), transparent 100%);
+}
+
+/* --- START STATES ---------------------------------------------------
+   Opacity only. Nothing here changes layout, so the page never shifts
+   when motion is enabled or disabled, and Cumulative Layout Shift stays
+   at zero. ui-ux-pro-max: "Reserve space to avoid layout jumps."     */
+
+.js-motion .anim { opacity: 0; }
+.js-motion .portrait img { --mask-stop: 0%; }
+
+/* SplitText wraps each line in a span; the mask hides a line until it
+   travels up into place. overflow works on the line wrapper rather than
+   clip-path, which BUILD-BRIEF section 5 records rendering as an empty
+   box in a real browser when its trigger failed to fire. */
+.split-line { overflow: hidden; }
+
+/* Figures rise from behind the rule above them. The rule is the
+   horizon; the number is clipped by it until it arrives. */
+.figures { border-top: 1px solid var(--rule); padding-top: var(--s-4); }
+.figure dt { overflow: hidden; }
+.fig-n { display: inline-block; will-change: transform; }
+.js-motion .fig-n { transform: translateY(100%); }
+
+/* Reduced motion: every start state is cancelled outright, so the page
+   is complete and still. tokens.css already flattens durations; this
+   makes sure nothing is left invisible waiting for a tween. */
+@media (prefers-reduced-motion: reduce) {
+  .js-motion .anim,
+  .js-motion .fig-n { opacity: 1; transform: none; }
+  .js-motion .portrait img { --mask-stop: 62%; }
+}

@@ -90,7 +90,13 @@ a:hover { text-decoration-thickness: 2px; }
    nested colour that differs on a dark ground is restated here rather
    than left to inherit something unreadable.                        */
 
-.layer { padding-block: var(--s-8); }
+/* Vertical rhythm tightened 21 August. At --s-8 top and bottom the page
+   delivered very little per screen: the hero measured 906px for 58
+   words. impeccable layout.md: "Density: does the amount of information
+   per region fit use frequency, decision complexity, and visitor mode?"
+   and "Create rhythm through deliberate contrast between tight and
+   generous intervals" — one repeated large value is not rhythm. */
+.layer { padding-block: var(--s-7); }
 
 .layer .meta {
   display: flex;
@@ -104,7 +110,7 @@ a:hover { text-decoration-thickness: 2px; }
      non-essential only"; a layer identifier is not that. --ink-secondary
      is the same family at 6.70:1. */
   color: var(--ink-secondary);
-  padding-bottom: var(--s-6);
+  padding-bottom: var(--s-5);
 }
 .layer .meta b { font-weight: 600; color: var(--ink-secondary); }
 

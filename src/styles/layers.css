@@ -60,7 +60,7 @@
 }
 
 .claim-lede {
-  margin-top: var(--s-2);
+  margin-top: 0;
   font-size: var(--t-h2);
   font-weight: 400;
   letter-spacing: var(--tracking-h);
@@ -144,19 +144,33 @@
 
 /* --- LAYER 02, ADVISORY ----------------------------------------------
 
-   A single stacked column, deliberately not two.
+   Heading full width, then prose and figures side by side, then the
+   sectors across the whole width.
 
-   taste 4.7 SPLIT-HEADER BAN: a big headline on the left with a small
-   explainer on the right is banned as a default; stack vertically
-   instead. taste 4.7 Section-Layout-Repetition: a layout family may
-   appear at most once per page, and layer 01 already spends the split
-   composition on text beside portrait.
-
-   No metric column. DESIGN.md, craft-floor and taste 4.4 all refuse the
-   big-number-small-label template. The two verifiable figures are set
-   as a plain line instead, grouped by space rather than boxed.       */
+   The figures are a plain aligned list, not a boxed metric block.
+   craft-floor.md and taste 4.4 both refuse the big-number-small-label
+   card template; grouping by alignment and space keeps the facts
+   without the pattern. They exist and animate because DESIGN.md A4 is a
+   direct instruction from Islam, which outranks a skill default.     */
 
 .l2-head { max-width: 30ch; text-wrap: balance; }
+
+/* Prose and figures share a band rather than stacking. Stacked, the
+   prose stopped at its 68ch measure and the right half of the section
+   was empty for its whole height, which A4 calls a gap where content
+   ran out rather than space framing something. Side by side, the
+   figures occupy that half and the section loses roughly 200px.
+
+   This is not the split-header pattern taste 4.7 bans: that is a
+   headline beside a small explainer. The heading here still spans the
+   full width above both columns. */
+.l2-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, var(--portrait-w));
+  gap: var(--s-6);
+  align-items: start;
+}
+.l2-grid .figures { margin-top: 0; }
 
 /* One rule above the whole group, never one per item.
    taste 4.9: a hairline under every row is the worst default. */
@@ -177,7 +191,7 @@
    fixed 3ch first column collided "000" and "00%" into their labels.
    max-content sizes the column to the widest figure present. */
 .figures {
-  margin: var(--s-6) 0 0;
+  margin: 0;
   display: grid;
   grid-template-columns: max-content minmax(0, 1fr);
   column-gap: var(--s-4);
@@ -275,6 +289,7 @@
 }
 
 @media (max-width: 860px) {
+  .l2-grid { grid-template-columns: 1fr; gap: var(--s-5); }
   .frow { grid-template-columns: 1fr; gap: var(--s-2); padding: var(--s-4) 0; }
   .frow h3 { max-width: none; }
   .also { flex-direction: column; gap: var(--s-2); }

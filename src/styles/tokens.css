@@ -86,23 +86,28 @@
   --tap-min: 44px;
 
   /* --- PORTRAIT --------------------------------------------------------
-     Recalculated 20 August against what actually renders. The previous
-     note here claimed 0.88x and "stays sharp". That measured width only
-     and ignored the crop: with object-fit: cover the frame kept just 306
-     of 680 source pixels, an effective 0.51x, and it was soft.
+     Every number here was measured against a render, not chosen.
 
-     There is no crop now. tools/portrait-bbox.mjs measures the subject
-     at 669x559 inside the 680x564 file, so the real ceiling is 669/2 =
-     334px before a 2x screen runs out of pixels.
+     tools/portrait-bbox.mjs reads the subject out of the alpha channel:
+     669x559 inside a 680x564 file, margins of 11px left and 5px top and
+     nothing at right or bottom. The figure fills its own frame, so any
+     crop cuts him, and the frame takes the subject's ratio uncropped.
 
-     300px sits under that ceiling with room to spare, 1.12x, and is the
-     widest portrait that still lets the layer 01 headline break across
-     two lines instead of three. Both constraints are satisfied at the
-     same number.
+     Sharpness ceiling is 669/2 = 334px, past which a 2x screen asks for
+     pixels the file does not have.
+
+     306px, not 334px. At 334 the frame stood 279px tall against a 256px
+     text block beside it, so the picture set the row height and hung
+     23px below its neighbour, which no alignment can correct. At 306 the
+     frame is 256px: exactly the height of the block it sits next to.
+
+     An earlier note here claimed 0.88x and "stays sharp". That measured
+     width alone and ignored the crop then in use, which kept only 306 of
+     680 source pixels, an effective 0.51x. There is no crop now.
 
      Both values move once the high resolution original arrives.     */
 
-  --portrait-w:   334px;   /* desktop, the sharpness ceiling exactly */
+  --portrait-w:   306px;   /* desktop */
   --portrait-w-s: 280px;   /* narrow screens */
 
   /* How far down the figure stays solid before it merges into the
@@ -136,8 +141,8 @@
      as hurried. --d-mid supplies the missing standard tier and --d-reveal
      the dramatic-reveal band (600 to 1200ms).                        */
 
-  --d-mid:    500ms;
-  --d-reveal: 900ms;
+  --d-mid:    700ms;
+  --d-reveal: 1200ms;
 
   /* --- MOTION DISTANCE -------------------------------------------------
      Travel is a motion decision, not a spacing one. Reading it from the

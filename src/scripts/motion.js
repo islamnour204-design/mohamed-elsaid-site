@@ -114,17 +114,17 @@ mm.add('(prefers-reduced-motion: no-preference)', () => {
 
   hero
     .fromTo('.L1 .meta', { opacity: 0, y: T_FINE }, { opacity: 1, y: 0, duration: D_MID }, 0)
-    .fromTo('.name', { opacity: 0, y: T_FINE }, { opacity: 1, y: 0, duration: D_MID }, 0.08)
+    .fromTo('.name', { opacity: 0, y: T_FINE }, { opacity: 1, y: 0, duration: D_MID }, 0.10)
     /* The display line travels its own height, about 84px, which is why
        it reads as movement rather than as a fade. */
-    .to(claimLines, { yPercent: 0, duration: D_REVEAL, stagger: 0.14 }, 0.14)
+    .to(claimLines, { yPercent: 0, duration: D_REVEAL, stagger: 0.18 }, 0.18)
     .fromTo('.portrait img',
       { '--mask-stop': '0%' },
       { '--mask-stop': fade, duration: D_REVEAL },
-      0.2)
-    .to(ledeLines, { yPercent: 0, duration: D_MID, stagger: 0.1 }, 0.62)
-    .fromTo('.sub', { opacity: 0, y: T_BODY }, { opacity: 1, y: 0, duration: D_MID }, 0.82)
-    .fromTo('.act', { opacity: 0, y: T_FINE }, { opacity: 1, y: 0, duration: D_MID }, 0.94);
+      0.26)
+    .to(ledeLines, { yPercent: 0, duration: D_MID, stagger: 0.13 }, 0.80)
+    .fromTo('.sub', { opacity: 0, y: T_BODY }, { opacity: 1, y: 0, duration: D_MID }, 1.05)
+    .fromTo('.act', { opacity: 0, y: T_FINE }, { opacity: 1, y: 0, duration: D_MID }, 1.20);
 
   hero.eventCallback('onComplete', () => {
     splits.forEach(s => s.revert());
@@ -236,7 +236,7 @@ mm.add('(prefers-reduced-motion: no-preference)', () => {
         trigger: '.focus',
         start: 'clamp(top 85%)',
         end: 'clamp(bottom 65%)',
-        scrub: 1
+        scrub: 1.5
       }
     });
     rows.forEach((row, i) => {

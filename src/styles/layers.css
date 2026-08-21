@@ -130,7 +130,10 @@
    aspect-ratio to prevent layout shift. */
 .portrait {
   margin: 0;
-  align-self: end;
+  /* Centred, not bottom-pinned. Where the text block beside it grows
+     taller than the frame, at narrower widths, centring reads as a
+     deliberate position rather than something resting on the floor. */
+  align-self: center;
   aspect-ratio: 669 / 559;
 }
 .portrait img {

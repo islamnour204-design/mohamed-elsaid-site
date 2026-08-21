@@ -46,6 +46,20 @@ a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: .22em
 
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
+/* --- INTERACTIVE STATES ----------------------------------------------
+   craft-floor.md Verify: "States: hover, disabled, loading, error,
+   empty." A hover state is a state, not an animation, so it belongs in
+   Phase 1 even though Phase 1 ships no motion.
+
+   Deliberately instant. No transition property anywhere, because a
+   timed fade would be motion. Phase 3 adds --d-fast to these.
+
+   Nothing here touches padding or margin: BUILD-BRIEF section 5 records
+   that hover effects changing layout properties force the browser to
+   re-lay-out the page on every mouse movement. */
+
+a:hover { text-decoration-thickness: 2px; }
+
 .shell {
   width: 100%;
   max-width: var(--max);
@@ -67,7 +81,9 @@ a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: .22em
   background: var(--accent);
   color: var(--on-accent);
   padding: var(--s-1) var(--s-2);
+  text-decoration: none;
 }
+.skip:focus:hover { background: var(--accent-deep); }
 
 /* --- LAYER SCAFFOLDING ----------------------------------------------
    Five grounds descending. Layers 4 and 5 invert their ink; every

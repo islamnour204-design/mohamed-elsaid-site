@@ -86,15 +86,21 @@
   --tap-min: 44px;
 
   /* --- PORTRAIT --------------------------------------------------------
-     The source photograph is 680x564, so 340px is the widest it can be
-     drawn before a 2x screen asks for pixels it does not have.
+     Recalculated 20 August against what actually renders. The previous
+     note here claimed 0.88x and "stays sharp". That measured width only
+     and ignored the crop: with object-fit: cover the frame kept just 306
+     of 680 source pixels, an effective 0.51x, and it was soft.
 
-     300px is set deliberately below that ceiling. Measured across the
-     range, it is the widest portrait that still lets the layer 01
-     headline break across two lines instead of three, and at 300px the
-     image needs 0.88x its own pixels, so it stays sharp.
+     There is no crop now. tools/portrait-bbox.mjs measures the subject
+     at 669x559 inside the 680x564 file, so the real ceiling is 669/2 =
+     334px before a 2x screen runs out of pixels.
 
-     Both numbers move once the high resolution original arrives.    */
+     300px sits under that ceiling with room to spare, 1.12x, and is the
+     widest portrait that still lets the layer 01 headline break across
+     two lines instead of three. Both constraints are satisfied at the
+     same number.
+
+     Both values move once the high resolution original arrives.     */
 
   --portrait-w:   300px;   /* desktop */
   --portrait-w-s: 280px;   /* narrow screens */

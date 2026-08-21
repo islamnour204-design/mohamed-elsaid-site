@@ -4,32 +4,42 @@
 
 /* --- LAYER 01, OUTCOME ----------------------------------------------
 
-   Three children in one grid, so their order can change between
-   desktop and mobile without duplicating the markup:
+   Four children in one grid, so their order changes between desktop and
+   mobile without duplicating the markup:
 
-     desktop            mobile
-     name    portrait   name
-     body    portrait   portrait
-                        body
+     desktop                 mobile
+     name    name            name
+     claim   claim           portrait
+     body    portrait        claim
+                             body
 
    No eyebrow above the heading. The affiliation lives in the layer
    bar. craft-floor.md: "A kicker or eyebrow above a heading. This one
-   is a ban, not a default: no brief earns it back."               */
+   is a ban, not a default: no brief earns it back."
 
+   The headline spans both columns. Beside a 300px portrait it was
+   boxed into a narrow left column while a void opened above the
+   picture, and the primary element has to be unmistakable on a squint.
+   impeccable layout.md: "Reading order: apply the squint test. With
+   detail blurred, can you still identify the primary element?"
+
+   The portrait now sits beside the lede and buttons, where its own
+   height matches the block next to it and there is no gap left over. */
 .l1-top {
   display: grid;
   grid-template-columns: minmax(0, 1fr) var(--portrait-w);
   grid-template-areas:
-    "name portrait"
-    "body portrait";
-  grid-template-rows: auto 1fr;
+    "name  name"
+    "claim claim"
+    "body  portrait";
   column-gap: var(--s-6);
   align-items: start;
 }
 
-.name    { grid-area: name; }
+.name     { grid-area: name; }
+.l1-claim { grid-area: claim; }
 .portrait { grid-area: portrait; }
-.l1-body { grid-area: body; }
+.l1-body  { grid-area: body; }
 
 .name {
   font-size: var(--t-h3);
@@ -42,7 +52,7 @@
    the hero the "obvious scale and weight steps" craft-floor asks for,
    76px down to 36px down to 15px. */
 .claim {
-  margin-top: var(--s-5);
+  margin-top: var(--s-4);
   font-size: var(--t-display);
   letter-spacing: var(--tracking-display);
   max-width: 22ch;
@@ -50,7 +60,7 @@
 }
 
 .claim-lede {
-  margin-top: var(--s-3);
+  margin-top: var(--s-2);
   font-size: var(--t-h2);
   font-weight: 400;
   letter-spacing: var(--tracking-h);
@@ -69,13 +79,13 @@
   color: var(--ink);
 }
 
-.sub { margin-top: var(--s-4); font-size: var(--t-small); }
+.sub { margin-top: var(--s-3); font-size: var(--t-small); }
 
 .act {
   display: flex;
   flex-wrap: wrap;
   gap: var(--s-2);
-  margin-top: var(--s-5);
+  margin-top: var(--s-4);
 }
 
 .btn {
@@ -91,30 +101,44 @@
 .btn-p { background: var(--accent); color: var(--on-accent); }
 .btn-s { border: 1px solid var(--rule-strong); color: var(--ink); }
 
-/* Portrait. DESIGN.md, Portrait treatment: cut out, no frame, no
-   border, no rectangle, no circle, sitting directly on the ground and
-   fading into it at the lower edge. The source webp already carries a
-   clean alpha channel, so this is implementation 1, the cut-out, not
-   the masked-fade fallback.
+/* Instant state change, no transition. See base.css. */
+.btn-p:hover { background: var(--accent-deep); }
+.btn-s:hover { border-color: var(--ink); }
+.btn:hover { text-decoration: none; }
+
+/* Portrait. DESIGN.md A4, a direct instruction from Islam: cut out,
+   merged into the ground, no frame, no box, no circle. The source webp
+   carries a clean alpha channel, so this is a true cut-out.
 
    The fade is css-inspiration techniques/background/bg-mask-image.md:
-   a linear-gradient used as a mask, where the transparent end of the
-   gradient lets the ground show through. It is a mask, not a
-   background wash, so the gradient ban does not apply.
+   a linear-gradient used as a mask, where the transparent end lets the
+   ground show through. A mask, not a background wash.
 
-   object-position is top, never centre: cropping is anchored to the
-   head so it can never be cut off, per BUILD-BRIEF section 5.      */
+   Frame ratio measured, not chosen. tools/portrait-bbox.mjs reads the
+   subject out of the alpha channel: 669x559 inside a 680x564 file, with
+   margins of 11px left and 5px top and nothing at right or bottom. The
+   figure fills its own frame, so any crop cuts him, and the frame takes
+   the subject's ratio with no cropping at all.
+
+   This replaces align-self: stretch plus height 100% plus object-fit:
+   cover, which forced the photo into whatever height the text column
+   happened to be and kept only 306 of 680 source pixels across the
+   width. That is what removed the shoulders and pinned the head to the
+   top edge.
+
+   ui-ux-pro-max image-dimension: declare width/height or use
+   aspect-ratio to prevent layout shift. */
 .portrait {
   margin: 0;
-  align-self: stretch;
-  min-height: 0;
+  align-self: end;
+  aspect-ratio: 669 / 559;
 }
 .portrait img {
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: top center;
+  object-fit: contain;
+  object-position: bottom center;
   mask-image: linear-gradient(to bottom, black 62%, transparent 100%);
 }
 
@@ -148,17 +172,19 @@
   color: var(--ink-secondary);
 }
 
-.figures { margin: var(--s-6) 0 0; display: grid; gap: var(--s-3); }
-
-/* A fixed first column, not a right-aligned minimum width. Right
-   alignment pushed the single-digit figure inward and left both numbers
-   hanging off a different edge from every other element in the section. */
-.figure {
+/* One grid for all four rows rather than a grid per row, so the label
+   column lines up across every figure whatever the number's width. A
+   fixed 3ch first column collided "000" and "00%" into their labels.
+   max-content sizes the column to the widest figure present. */
+.figures {
+  margin: var(--s-6) 0 0;
   display: grid;
-  grid-template-columns: 3ch minmax(0, 1fr);
-  gap: var(--s-3);
+  grid-template-columns: max-content minmax(0, 1fr);
+  column-gap: var(--s-4);
+  row-gap: var(--s-3);
   align-items: baseline;
 }
+.figure { display: contents; }
 .figure dt {
   font-size: var(--t-h2);
   font-weight: 300;
@@ -172,14 +198,94 @@
   color: var(--ink-secondary);
 }
 
+/* --- LAYER 03, PLATFORM ----------------------------------------------
+
+   Three rows: large title left, one sentence right, a hairline above
+   each and nothing below the last.
+
+   Rows rather than cards. craft-floor.md Refuse: "Same-size cards of
+   icon plus heading plus text as the page structure. Cards are the lazy
+   container." taste 4.4: group with border-t, divide-y or negative
+   space instead.
+
+   Titles at --t-h2 rather than --t-h3. This is where the work
+   concentrates, so this is where the type is most confident: layer 03
+   is the typographic peak of the light half, and the drop into the dark
+   is where the dense evidence lives. impeccable layout.md: "Let
+   hierarchy follow product priority, not framework defaults."
+
+   No 01/02/03 on the rows. craft-floor.md refuses section numbers
+   "unless the sequence itself carries information the reader needs",
+   and these three areas are not ranked.                              */
+
+.l3-head { max-width: 26ch; text-wrap: balance; }
+
+.focus { margin-top: var(--s-6); }
+
+/* Columns even and padding at --s-4, both chosen by measurement rather
+   than feel. At 1.15fr and --s-5 the section measured 81 words per
+   1000px against layer 02's 132, with sentences filling only 78% of
+   their column: space where content ran out rather than space framing
+   something, which A4 rules out. Even columns and tighter rows give 90
+   and 83%. Tighter again crowds a 36px title. */
+.frow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--s-4) var(--s-6);
+  padding: var(--s-4) 0;
+  border-top: 1px solid var(--rule);
+}
+.frow h3 {
+  margin: 0;
+  font-size: var(--t-h2);
+  font-weight: 500;
+  letter-spacing: var(--tracking-h);
+  max-width: 16ch;
+  text-wrap: balance;
+}
+.frow p {
+  margin: 0;
+  max-width: var(--measure);
+  font-size: var(--t-small);
+  color: var(--ink-secondary);
+}
+
+.also {
+  display: flex;
+  gap: var(--s-5);
+  margin-top: var(--s-6);
+  align-items: baseline;
+}
+.also-lb {
+  flex: 0 0 auto;
+  font-size: var(--t-meta);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-meta);
+  color: var(--ink-secondary);
+}
+.also ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--t-small);
+  color: var(--ink-secondary);
+}
+
 @media (max-width: 860px) {
+  .frow { grid-template-columns: 1fr; gap: var(--s-2); padding: var(--s-4) 0; }
+  .frow h3 { max-width: none; }
+  .also { flex-direction: column; gap: var(--s-2); }
+
   .l1-top {
     grid-template-columns: 1fr;
     grid-template-areas:
       "name"
       "portrait"
+      "claim"
       "body";
-    grid-template-rows: auto auto auto;
     row-gap: var(--s-3);
   }
   .portrait { max-width: var(--portrait-w-s); align-self: start; }

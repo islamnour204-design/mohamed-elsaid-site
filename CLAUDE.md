@@ -97,6 +97,21 @@ instructions from Islam or the client.
 it before every delivery, item by item. An eyebrow label reached a
 screenshot once already because this check was skipped.
 
+## Motion distances are NOT spacing tokens
+
+Reading travel distance from `--s-1` and `--s-2` produced 8px and 16px
+moves. At that distance nothing appears to travel — the eye sees only the
+fade, and the result reads as cheap pop-in. Islam rejected it on sight.
+
+Motion distance is a motion decision. Take it from `motion-design` and
+`impeccable/reference/animate.md`, size it to the element, and put the
+values in `tokens.css` as motion tokens. A display headline and a caption
+do not travel the same distance.
+
+Entrances must not all be the same. `craft-floor`: *"one authored moment,
+not scattered effects and not one identical entrance on every section."*
+One fade-and-rise applied to every block is the thing that rule forbids.
+
 ## Never invent a value
 
 Every colour, size, space and duration comes from `tokens.css`. If you need

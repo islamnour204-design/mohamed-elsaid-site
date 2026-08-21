@@ -45,6 +45,22 @@ try {
     }
 
     await page.evaluate(() => document.fonts.ready);
+
+    /* Settle pass. A fullPage screenshot scrolls the page to stitch it,
+     * which fires every scroll-triggered animation mid-capture: the
+     * result showed a half-wiped heading and figures with no numbers.
+     * Walk the page once so every trigger has fired and finished, then
+     * return to the top and let the hero settle before shooting. */
+    const height = await page.evaluate(() => document.documentElement.scrollHeight);
+    for (let y = 0; y < height; y += 400) {
+      await page.evaluate(v => window.scrollTo(0, v), y);
+      await page.waitForTimeout(60);
+    }
+    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+    await page.waitForTimeout(1200);
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.waitForTimeout(1600);
+
     const file = `shots/${label ? label + '-' : ''}${v.name}.png`;
     await page.screenshot({ path: file, fullPage: true });
     const h = await page.evaluate(() => document.documentElement.scrollHeight);

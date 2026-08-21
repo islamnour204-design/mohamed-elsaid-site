@@ -139,7 +139,9 @@
   height: 100%;
   object-fit: contain;
   object-position: bottom center;
-  mask-image: linear-gradient(to bottom, black 62%, transparent 100%);
+  /* The mask itself lives in motion.css, next to the property that
+     animates it, so there is one declaration rather than two that can
+     drift apart. */
 }
 
 /* --- LAYER 02, ADVISORY ----------------------------------------------

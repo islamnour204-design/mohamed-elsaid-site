@@ -86,18 +86,30 @@
   --tap-min: 44px;
 
   /* --- PORTRAIT --------------------------------------------------------
-     The source photograph is 680x564, so 340px is the widest it can be
-     drawn before a 2x screen asks for pixels it does not have.
+     Recalculated 20 August against what actually renders. The previous
+     note here claimed 0.88x and "stays sharp". That measured width only
+     and ignored the crop: with object-fit: cover the frame kept just 306
+     of 680 source pixels, an effective 0.51x, and it was soft.
 
-     300px is set deliberately below that ceiling. Measured across the
-     range, it is the widest portrait that still lets the layer 01
-     headline break across two lines instead of three, and at 300px the
-     image needs 0.88x its own pixels, so it stays sharp.
+     There is no crop now. tools/portrait-bbox.mjs measures the subject
+     at 669x559 inside the 680x564 file, so the real ceiling is 669/2 =
+     334px before a 2x screen runs out of pixels.
 
-     Both numbers move once the high resolution original arrives.    */
+     300px sits under that ceiling with room to spare, 1.12x, and is the
+     widest portrait that still lets the layer 01 headline break across
+     two lines instead of three. Both constraints are satisfied at the
+     same number.
 
-  --portrait-w:   300px;   /* desktop */
+     Both values move once the high resolution original arrives.     */
+
+  --portrait-w:   334px;   /* desktop, the sharpness ceiling exactly */
   --portrait-w-s: 280px;   /* narrow screens */
+
+  /* How far down the figure stays solid before it merges into the
+     ground. At 62% the fade began at the collar, so the visible mass
+     ended about 95px above the box and the figure read as floating.
+     84% keeps a soft base while the mass sits where the box does. */
+  --portrait-fade: 84%;
 
   /* --- BREAKPOINT ------------------------------------------------------
      One breakpoint for the whole site: 860px.
@@ -116,6 +128,32 @@
   --d-fast: 150ms;    /* hover, focus, small state changes */
   --d-base: 340ms;    /* reveals, local movement           */
   --d-slow: 760ms;    /* section-scale movement            */
+
+  /* --- MOTION, added 21 August -----------------------------------------
+     The three durations above map onto motion-design's Premium
+     archetype as Quick 350 / Standard 500 / Slow 800. --d-base is the
+     *quick* tier, and using it for every entrance is why the motion read
+     as hurried. --d-mid supplies the missing standard tier and --d-reveal
+     the dramatic-reveal band (600 to 1200ms).                        */
+
+  --d-mid:    500ms;
+  --d-reveal: 900ms;
+
+  /* --- MOTION DISTANCE -------------------------------------------------
+     Travel is a motion decision, not a spacing one. Reading it from the
+     spacing scale gave 8px and 16px moves, at which nothing appears to
+     travel and the eye sees only the fade.
+
+     Sized per element, from motion-design's Premium entrance table,
+     which puts a direct slide at 15 to 25px. Anything that must visibly
+     *travel* does not slide at all: it uses the Reveal strategy, where
+     the distance is the element's own height. A display line therefore
+     travels about 84px and a caption 20px, because they are different
+     things, not because one number was scaled.                       */
+
+  --m-travel-fine: 20px;   /* meta, captions, buttons */
+  --m-travel-body: 28px;   /* body blocks, list rows  */
+  --m-travel-lead: 44px;   /* lead paragraphs, section-scale blocks */
 }
 
 /* Respect the operating system setting. Non-negotiable. */

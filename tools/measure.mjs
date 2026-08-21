@@ -42,6 +42,18 @@ for (const [url, label] of targets) {
   await page.goto(url, { waitUntil: 'networkidle' });
   await page.evaluate(() => document.fonts.ready);
 
+  /* Settle before measuring. Mid-entrance the hero is legitimately at
+   * zero opacity, and reading contrast then reports a failure for text
+   * that is simply not on screen yet. Walk the page so every scroll
+   * trigger fires, come back to the top, let the entrance finish. */
+  const h = await page.evaluate(() => document.documentElement.scrollHeight);
+  for (let y = 0; y < h; y += 400) {
+    await page.evaluate(v => window.scrollTo(0, v), y);
+    await page.waitForTimeout(60);
+  }
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.waitForTimeout(1800);
+
   const data = await page.evaluate(() => {
     const lines = el => Math.round(el.getBoundingClientRect().height / parseFloat(getComputedStyle(el).lineHeight));
 
@@ -56,6 +68,22 @@ for (const [url, label] of targets) {
       return 'rgb(255, 255, 255)';
     };
 
+    /* Opacity anywhere up the tree dilutes the text toward its ground.
+     * Reading colour alone reported a passing ratio for text sitting at
+     * 0.6 opacity that actually measured 2.49:1. */
+    const alphaOf = el => {
+      let a = 1;
+      for (let n = el; n && n !== document.documentElement; n = n.parentElement) {
+        a *= parseFloat(getComputedStyle(n).opacity);
+      }
+      return a;
+    };
+    const blend = (fg, bg, a) => {
+      const f = fg.match(/\d+/g).slice(0, 3).map(Number);
+      const b = bg.match(/\d+/g).slice(0, 3).map(Number);
+      return `rgb(${f.map((v, i) => Math.round(v * a + b[i] * (1 - a))).join(', ')})`;
+    };
+
     const headings = [...document.querySelectorAll('h1, h2, h3, .claim, .claim-lede, .name')];
     const texts = [...document.querySelectorAll('p, li, span, b, em, i, a, div, dt, dd')]
       .filter(el => [...el.childNodes].some(n => n.nodeType === 3 && n.textContent.trim()));
@@ -68,10 +96,13 @@ for (const [url, label] of targets) {
       const key = `${el.className || el.tagName}|${cs.color}|${groundOf(el)}|${size}`;
       if (seen.has(key)) return null;
       seen.add(key);
+      const ground = groundOf(el);
+      const a = alphaOf(el);
       return {
         what: (el.className && typeof el.className === 'string' ? '.' + el.className.split(' ')[0] : el.tagName.toLowerCase()),
-        color: cs.color,
-        ground: groundOf(el),
+        color: a < 0.999 ? blend(cs.color, ground, a) : cs.color,
+        alpha: a,
+        ground,
         size,
         /* WCAG "large text": 18.66px bold, or 24px at any weight. */
         large: size >= 24 || (size >= 18.66 && weight >= 700)
@@ -160,7 +191,7 @@ for (const [url, label] of targets) {
     const floor = c.large ? CONTRAST_LARGE : CONTRAST_BODY;
     const pass = r >= floor;
     if (!pass) failures++;
-    console.log(`  ${c.what.padEnd(14)} ${r.toFixed(2)}:1 against ${floor}:1 floor  ${pass ? 'pass' : 'FAIL'}${c.large ? '  (large text)' : ''}`);
+    console.log(`  ${c.what.padEnd(14)} ${r.toFixed(2)}:1 against ${floor}:1 floor  ${pass ? 'pass' : 'FAIL'}${c.large ? '  (large text)' : ''}${c.alpha < 0.999 ? `  (at ${c.alpha.toFixed(2)} opacity)` : ''}`);
   });
 
   console.log('tap targets:');

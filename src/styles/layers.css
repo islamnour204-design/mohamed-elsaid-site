@@ -312,3 +312,85 @@
   .portrait img { height: auto; }
   .claim, .claim-b { max-width: none; }
 }
+
+/* --- LAYER 04, RESEARCH ----------------------------------------------
+
+   The evidence layer, and the first dark ground. Base.css already
+   inverts the ink here.
+
+   A two-column record: the fourth layout family on the page. Layer 01
+   spent text-beside-image, 02 the heading over a two-part band, 03 the
+   full-width index row, and taste 4.7 Section-Layout-Repetition allows
+   a family once. Two columns also raise density, which is the standing
+   complaint against layer 03.
+
+   Six papers, not the reference build's seven. taste 4.9 asks for three
+   to five highlights plus a link to the full record; six is one over,
+   deliberately, because the layer bar claims a span of 2011 to 2025 and
+   the set shown has to evidence the span it advertises. Dropping the
+   duplicate 2021 entry keeps both ends of the range.
+
+   Rules above entries, never boxes. craft-floor.md refuses cards as
+   page structure; taste 4.4 says group with border-t or space.      */
+
+.l4-head { max-width: 22ch; text-wrap: balance; }
+.l4-lead { margin-top: var(--s-3); }
+
+.pubs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-4) var(--s-6);
+  margin: var(--s-7) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pub {
+  padding-top: var(--s-3);
+  border-top: 1px solid var(--rule-inv);
+}
+.pub b {
+  display: block;
+  font-size: var(--t-small);
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--ink-inv);
+}
+
+/* Venue and year on one line, year trailing. The year is deliberately
+   not set above the title: that would be a kicker over a heading, which
+   craft-floor.md bans outright and no brief earns back. */
+.pub-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--s-3);
+  margin-top: var(--s-1);
+}
+.pub em {
+  font-style: normal;
+  font-size: var(--t-meta);
+  color: var(--ink-inv-secondary);
+}
+.pub .y {
+  flex: 0 0 auto;
+  font-size: var(--t-meta);
+  letter-spacing: var(--tracking-meta);
+  font-variant-numeric: tabular-nums;
+  color: var(--accent-light);
+}
+
+.more { margin-top: var(--s-6); font-size: var(--t-small); }
+
+/* A standalone call to action, not an inline link inside a sentence, so
+   it carries a real target. ui-ux-pro-max priority 2: minimum 44x44.
+   Measured at 281x19 before this. */
+.more a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap-min);
+}
+
+@media (max-width: 860px) {
+  .pubs { grid-template-columns: 1fr; gap: var(--s-3); margin-top: var(--s-6); }
+}

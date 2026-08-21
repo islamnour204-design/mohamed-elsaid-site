@@ -146,6 +146,36 @@ mm.add('(prefers-reduced-motion: no-preference)', () => {
       scrollTrigger: { trigger: '.l2-head', start: 'top 80%', once: true }
     });
 
+  /* The prose wipes in the same direction as the heading above it, one
+     paragraph at a time. Trigger points are spread deliberately: it was
+     seven blocks all crossing 'top 88%' that made the page read as
+     flashing, so each block type meets the viewport at its own line. */
+  gsap.utils.toArray('.L2 .prose p').forEach((el, i) => {
+    gsap.fromTo(el,
+      { '--wipe': '0%' },
+      {
+        '--wipe': '100%',
+        duration: D_REVEAL,
+        delay: i * 0.18,
+        scrollTrigger: { trigger: el, start: 'top 78%', once: true }
+      });
+  });
+
+  /* The sectors are a list, so they arrive as one. animate.md: "Sibling
+     stagger is appropriate when a list appears as a list. Cap the total
+     delay." Six items at 0.07 is 420ms of stagger.
+
+     One tween with a stagger rather than six tweens with delays, per
+     gsap-performance: "Use stagger instead of many separate tweens." */
+  gsap.fromTo('.sectors li',
+    { '--wipe': '0%' },
+    {
+      '--wipe': '100%',
+      duration: D_MID,
+      stagger: 0.07,
+      scrollTrigger: { trigger: '.sectors', start: 'top 88%', once: true }
+    });
+
   /* The figures count.
 
      This is a direct instruction from Islam, recorded in DESIGN.md A4.
@@ -229,6 +259,27 @@ mm.add('(prefers-reduced-motion: no-preference)', () => {
      DESIGN.md A3 does not bend, so the fade goes and the movement
      carries the ripple on its own. motion-design lists position as the
      primary property for an entrance in any case. */
+  /* The layer 03 heading arrives the way its rules do, by drawing
+     across. Same direction as the rules beneath it, so the section
+     reads as one gesture rather than two ideas. */
+  gsap.fromTo('.l3-head',
+    { '--wipe': '0%' },
+    {
+      '--wipe': '100%',
+      duration: D_REVEAL,
+      scrollTrigger: { trigger: '.l3-head', start: 'top 82%', once: true }
+    });
+
+  /* The Also items follow their label, left to right. */
+  gsap.fromTo('.also li',
+    { opacity: 0, x: -T_FINE },
+    {
+      opacity: 1, x: 0,
+      duration: D_MID,
+      stagger: 0.06,
+      scrollTrigger: { trigger: '.also', start: 'top 90%', once: true }
+    });
+
   const rows = gsap.utils.toArray('.frow');
   if (rows.length) {
     const ripple = gsap.timeline({
@@ -246,6 +297,93 @@ mm.add('(prefers-reduced-motion: no-preference)', () => {
         i * 0.2);
     });
   }
+
+  /* =====================================================================
+     LAYER 04 — the dark ground rises
+
+     taste 4.11 permits a page to change theme exactly once, and only as
+     "one full theme switch with a strong transition". This is that
+     transition: ground-4 travels up over ground-3 as the reader crosses
+     the boundary, scrubbed to scroll, so the dark arrives rather than
+     switching on.
+
+     The range is chosen for contrast, not for feel. Layer 04's ink is
+     light, so any moment where light ink sits on a half-risen ground is
+     unreadable. The rise finishes while only the section's top padding
+     is on screen, well before its first line of text. DESIGN.md A3 does
+     not bend, and a scrub can be stopped anywhere.
+
+     Because it is scrubbed, ScrollTrigger sets progress from the current
+     scroll position on creation: landing deep-linked or refreshing part
+     way down gives a fully dark ground immediately, not a light one. */
+  const l4 = document.querySelector('.L4');
+  if (l4) {
+    gsap.fromTo(l4,
+      { '--veil': '0%' },
+      {
+        '--veil': '-100%',
+        ease: 'none',
+        scrollTrigger: {
+          trigger: l4,
+          start: 'top bottom',
+          end: 'top 55%',
+          scrub: 1.5,
+          /* The descent does not reverse. A scrub follows scroll in both
+             directions, so scrolling back to the top sent the ground
+             light again while the text stayed revealed: measured at
+             1.11:1, light ink on a light ground. Once the ground has
+             arrived it is pinned and the trigger killed.
+
+             It is also right conceptually. You do not un-descend a
+             stack. */
+          onLeave: self => {
+            /* Park it, then stop the trigger doing further work. The
+               class wins over GSAP's inline value, so the revert that
+               kill() performs cannot put the light veil back. */
+            l4.classList.add('ground-arrived');
+            self.kill();
+          }
+        }
+      });
+
+    /* Then the content arrives, in one sequence, gated on the rise
+       being finished. One trigger rather than five, which also keeps
+       the trigger count down: gsap-performance warns against creating
+       many overlapping ScrollTriggers without testing.
+
+       start: 'top 55%' is where the rise completes, measured. Nothing
+       in this section is visible before that point. */
+    const l4in = gsap.timeline({
+      scrollTrigger: { trigger: l4, start: 'top 55%', once: true }
+    });
+
+    l4in
+      .to('.L4 .meta', { opacity: 1, duration: D_MID }, 0)
+      .fromTo('.l4-head', { opacity: 0, y: T_BODY }, { opacity: 1, y: 0, duration: D_REVEAL }, 0.1)
+      .fromTo('.l4-lead', { opacity: 0, y: T_BODY }, { opacity: 1, y: 0, duration: D_REVEAL }, 0.34)
+      /* The record is a list, so it arrives as one. Six entries at 0.08
+         is 480ms of stagger, inside motion-design's budget. One tween
+         with a stagger, not six tweens with delays. */
+      .fromTo('.pub', { opacity: 0, y: T_BODY },
+        { opacity: 1, y: 0, duration: D_MID, stagger: 0.08 }, 0.62)
+      .fromTo('.more', { opacity: 0, y: T_FINE },
+        { opacity: 1, y: 0, duration: D_MID }, 1.1);
+  }
+
+  /* The portrait drifts slower than the text as the hero leaves, a
+     depth cue on the way into layer 02. Modest: animate.md is explicit
+     that a parallax layer is not a thesis on its own, so this supports
+     the descent rather than claiming to be a moment. */
+  gsap.to('.portrait', {
+    y: T_LEAD,
+    ease: 'none',
+    scrollTrigger: {
+      trigger: '#L1',
+      start: 'bottom bottom',
+      end: 'bottom top',
+      scrub: 1.5
+    }
+  });
 
   clearTimeout(failsafe);
 

@@ -36,6 +36,11 @@
   inherits: false;
   initial-value: 1;
 }
+@property --veil {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: -100%;
+}
 
 /* --- LAYER 01: the mask that merges the figure into the ground ------ */
 .portrait img {
@@ -73,6 +78,49 @@
 }
 .js-motion .frow { --rule-draw: 0; }
 
+/* --- LAYER 04: the dark ground rises over the light one -------------
+   The largest contrast step on the page becomes a physical event rather
+   than a switch. The section carries ground-3; a full-bleed panel holds
+   ground-4 and travels up across it.
+
+   transform only, never clip-path. BUILD-BRIEF section 5 records a
+   clip-path reveal rendering as an empty box in a real browser when its
+   trigger failed to fire.
+
+   The section owns the dark ground and a light veil slides up off it,
+   which reveals the dark from the bottom edge upward: the same event as
+   a dark panel rising, but the section's declared background is its
+   real resting colour rather than a transient one.
+
+   That matters beyond tidiness. With the dark supplied by an overlay,
+   every contrast check read layer 04 as light ink on ground-3 and
+   reported 1.11:1, because a pseudo-element painting over a background
+   is invisible to getComputedStyle. The tool was right and the
+   implementation was lying to it.
+
+   With no script the veil is parked off-screen and the ground is simply
+   dark, so the section is correct without JavaScript. */
+.L4 { position: relative; overflow: hidden; background: var(--ground-4); }
+.L4::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--ground-3);
+  transform: translateY(var(--veil));
+  will-change: transform;
+}
+.L4 > .shell { position: relative; z-index: 1; }
+.js-motion .L4 { --veil: 0%; }
+
+/* Once the ground has arrived it stays. GSAP writes --veil as an inline
+   style, and killing the ScrollTrigger reverts the tween to its start
+   value, which put the veil back to 0% and left light ink on a light
+   ground the moment the reader scrolled back up. A class carrying
+   !important is the only thing that outranks the inline value.
+
+   Conceptually right as well: you do not un-descend a stack. */
+.L4.ground-arrived { --veil: -100% !important; }
+
 /* --- HERO START STATES ----------------------------------------------
    Opacity only, so nothing here changes layout and the page does not
    shift when motion is on or off. Cumulative Layout Shift stays at
@@ -84,6 +132,48 @@
    BUILD-BRIEF section 5 records rendering as an empty box in a real
    browser when its trigger failed to fire. */
 .split-line { overflow: hidden; }
+
+/* --- THE NEW PER-BLOCK START STATES ---------------------------------
+   Islam asked for motion on blocks that were deliberately static. Each
+   section keeps one material and its blocks use variations of it, so
+   more moves without the page reading as one flash.
+
+   02 wipes horizontally. 03 draws. 04 rises then settles.           */
+
+/* 02: prose paragraphs and sector items wipe, like the heading */
+.prose p, .sectors li {
+  --wipe: 100%;
+  mask-image: linear-gradient(to right,
+    black var(--wipe), transparent calc(var(--wipe) + 18%));
+}
+.js-motion .L2 .prose p,
+.js-motion .sectors li { --wipe: 0%; }
+
+/* 03: the heading arrives the way its rules do */
+.l3-head {
+  --wipe: 100%;
+  mask-image: linear-gradient(to right,
+    black var(--wipe), transparent calc(var(--wipe) + 14%));
+}
+.js-motion .l3-head { --wipe: 0%; }
+.js-motion .also li { opacity: 0; }
+
+/* 04: every element waits for the ground.
+
+   Layer 04's ink is light. Until ground-4 has finished rising, the
+   section is still showing ground-3, and light ink on a light ground is
+   about 1.1:1. Measured: with the rise ending at "top 55%" the heading
+   was already on screen at viewport y=833 while the rise sat at 49%.
+
+   So none of this text exists until the ground has arrived. The light
+   band scrolls up empty, the dark rises over it, and only then does the
+   content appear. That also makes the rise the whole event rather than
+   something happening behind words. */
+.js-motion .L4 .meta,
+.js-motion .l4-head,
+.js-motion .l4-lead,
+.js-motion .pub,
+.js-motion .more { opacity: 0; }
 
 /* Figures rise from behind the rule above them. That rule is the
    horizon; the number is clipped by it until it arrives. */
@@ -97,9 +187,21 @@
    still. tokens.css already flattens durations; this makes sure nothing
    is left invisible waiting for a tween that will never run.        */
 @media (prefers-reduced-motion: reduce) {
+  .js-motion .L4 { --veil: -100%; }
+  .js-motion .L4 .meta,
+  .js-motion .l4-head,
+  .js-motion .l4-lead,
+  .js-motion .pub,
+  .js-motion .more,
+  .js-motion .prose p,
+  .js-motion .sectors li,
+  .js-motion .also li,
   .js-motion .anim,
   .js-motion .fig-n { opacity: 1; transform: none; }
   .js-motion .portrait img { --mask-stop: var(--portrait-fade); }
-  .js-motion .l2-head { --wipe: 100%; }
+  .js-motion .l2-head,
+  .js-motion .l3-head,
+  .js-motion .prose p,
+  .js-motion .sectors li { --wipe: 100%; }
   .js-motion .frow { --rule-draw: 1; }
 }

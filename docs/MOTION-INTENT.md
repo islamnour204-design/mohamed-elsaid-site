@@ -188,3 +188,75 @@ Already enforced in `tokens.css`.
 because the scroll trigger never fired. Nothing in this document uses
 `clip-path` for a reveal, and every animated element is visible by
 default.
+
+---
+
+# Addendum, 21 August — layer 04, and motion on every block
+
+Islam asked for more animation across the page and chose the strongest
+option: bigger moments **and** motion on blocks that were deliberately
+static. Where this addendum and the sections above disagree, this wins.
+
+**Stated override.** `animate.md` says *"Prefer one rehearsed focal
+sequence to repeated section reveals"* and *"Do not animate a static area
+merely because it exists."* The page no longer follows that. It follows a
+direct instruction from Islam, which DESIGN.md Part A places above a
+skill default. Recorded as an override, not as agreement.
+
+## Layer 04 — the ground arrives
+
+`taste` 4.11 permits a page to change theme once, and only as *"one full
+theme switch with a strong transition."* This is that transition.
+
+The section owns `--ground-4`. A light veil covers it and slides up and
+away, scrubbed to scroll, so the dark is revealed from the bottom edge
+upward. `transform` only, never `clip-path`.
+
+**The veil, not a dark panel.** Built first as a dark panel rising over a
+light section background. That works visually and is wrong structurally:
+the section's declared background was a transient colour, so every
+contrast check read layer 04 as light ink on ground-3 and reported
+1.11:1. A pseudo-element painting over a background is invisible to
+`getComputedStyle`. The tool was right and the implementation was lying
+to it.
+
+**Nothing in layer 04 exists until the ground has arrived.** Measured
+with the rise ending at `top 55%`: the heading was already on screen at
+viewport y=833 while the transition sat at 49% — light ink on a light
+ground, about 1.1:1. So the whole section starts hidden and one timeline,
+gated on the transition finishing, brings in the layer bar, heading,
+lead, the six papers as a staggered list, and the link.
+
+**The descent does not reverse.** A scrub follows scroll both ways, so
+scrolling back up sent the ground light again while the text stayed
+revealed. `onLeave` adds a class carrying `!important`, which is the only
+thing that outranks GSAP's inline value; `kill()` alone reverts the tween
+to its start. Conceptually right too: you do not un-descend a stack.
+
+## Motion on every block, by section family
+
+Each section keeps one material and its blocks use variations of it, and
+trigger points are spread from `top 90%` to `top 72%`. It was seven
+blocks all crossing `top 88%` that made the page read as flashing.
+
+| Layer | Material | Blocks |
+|---|---|---|
+| 01 | vertical mask travel | layer bar, name, headline lines, portrait mask, lede lines, sub, buttons; the portrait then drifts slower than the text as the hero leaves |
+| 02 | horizontal wipe, and counting | heading; each prose paragraph; the sector items as a staggered list; the figures rise and count |
+| 03 | the line draws | the heading wipes as its rules draw; three rules draw; the rows settle on a scrubbed ripple; the Also items follow their label |
+| 04 | the ground arrives | the veil, then one gated sequence for everything in the section |
+
+## Contrast, which constrained several of these
+
+A scrubbed effect can be stopped anywhere, so every frame of one is a
+resting state a reader can sit in. Two effects were changed because of
+this, not because of taste:
+
+- The layer 03 ripple carries **no opacity at all**. Its supporting
+  sentence measures 2.49:1 at 0.6 opacity on ground-3 and 4.01:1 at 0.85.
+  The shallowest passing fade is about 0.92, which is imperceptible.
+- Layer 04's content is gated on the ground rather than fading in
+  alongside it.
+
+`tools/measure.mjs` now folds ancestor opacity into every contrast
+reading, which is how both were caught.

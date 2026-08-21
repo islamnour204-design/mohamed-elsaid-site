@@ -260,3 +260,30 @@ this, not because of taste:
 
 `tools/measure.mjs` now folds ancestor opacity into every contrast
 reading, which is how both were caught.
+
+## Layer 05 — the ground deepens, and the base emerges
+
+`--ground-4` fades off `--ground-5`, scrubbed, so the base darkens rather
+than arriving. It completes the descent with a different device from
+layer 04's veil.
+
+**This transition is safe under live text and layer 04's was not.**
+`--ink-inv` measures 11.9:1 on ground-4 and higher on ground-5, so every
+intermediate value sits between the two. Traced across the whole
+transition: 11.88 → 12.93 → 14.01 → 15.14 → 15.41:1. Contrast only
+improves as it deepens, so layer 05's content needs none of the gating
+layer 04's required. A measurement, not a preference.
+
+Built the way layer 04 ended up: the section owns `--ground-5`, its true
+resting colour, and the overlay is the transient one. Does not reverse.
+
+**The content emerges by scale**, the fifth material on the page and the
+only place anything scales. `motion-design` Emergent Entrance, Premium
+row: 95–98% start, 0% overshoot.
+
+| Element | Treatment | Duration |
+|---|---|---|
+| granted patent line | scale 0.97 to 1 with opacity | `--d-reveal` |
+| the three columns | scale 0.97 to 1, staggered 0.12 | `--d-mid` |
+| certification chips | opacity, staggered 0.05 | `--d-mid` |
+| service rows | opacity, staggered 0.08 | `--d-mid` |

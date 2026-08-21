@@ -370,6 +370,66 @@ mm.add('(prefers-reduced-motion: no-preference)', () => {
         { opacity: 1, y: 0, duration: D_MID }, 1.1);
   }
 
+  /* =====================================================================
+     LAYER 05 — the ground deepens, and the base emerges
+     ===================================================================== */
+  const l5 = document.querySelector('.L5');
+  if (l5) {
+    /* ground-4 fades off ground-5. Unlike layer 04 this can run under
+       live text: --ink-inv is 11.9:1 on ground-4 and higher on ground-5,
+       so every intermediate sits between the two and contrast only
+       improves. Measured, not assumed. */
+    gsap.fromTo(l5,
+      { '--deepen': 1 },
+      {
+        '--deepen': 0,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: l5,
+          start: 'top bottom',
+          end: 'top 45%',
+          scrub: 1.5,
+          onLeave: () => l5.classList.add('ground-arrived')
+        }
+      });
+
+    /* The base emerges by scale, the fifth material on the page.
+       motion-design Emergent Entrance, Premium: 95-98% start, no
+       overshoot. */
+    gsap.fromTo('.granted',
+      { opacity: 0, scale: 0.97 },
+      {
+        opacity: 1, scale: 1, duration: D_REVEAL,
+        scrollTrigger: { trigger: '.granted', start: 'top 88%', once: true }
+      });
+
+    gsap.fromTo('.base-col',
+      { opacity: 0, scale: 0.97 },
+      {
+        opacity: 1, scale: 1,
+        duration: D_MID,
+        stagger: 0.12,
+        scrollTrigger: { trigger: '.base', start: 'top 82%', once: true }
+      });
+
+    /* Chips and service rows are lists, so they arrive as lists.
+       animate.md: "Sibling stagger is appropriate when a list appears as
+       a list. Cap the total delay." */
+    gsap.fromTo('.chips li',
+      { opacity: 0 },
+      {
+        opacity: 1, duration: D_MID, stagger: 0.05,
+        scrollTrigger: { trigger: '.certs', start: 'top 90%', once: true }
+      });
+
+    gsap.fromTo('.service li',
+      { opacity: 0 },
+      {
+        opacity: 1, duration: D_MID, stagger: 0.08,
+        scrollTrigger: { trigger: '.service', start: 'top 92%', once: true }
+      });
+  }
+
   /* The portrait drifts slower than the text as the hero leaves, a
      depth cue on the way into layer 02. Modest: animate.md is explicit
      that a parallax layer is not a thesis on its own, so this supports

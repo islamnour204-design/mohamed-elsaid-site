@@ -36,6 +36,11 @@
   inherits: false;
   initial-value: 1;
 }
+@property --deepen {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0;
+}
 @property --veil {
   syntax: "<percentage>";
   inherits: false;
@@ -121,6 +126,46 @@
    Conceptually right as well: you do not un-descend a stack. */
 .L4.ground-arrived { --veil: -100% !important; }
 
+/* --- LAYER 05: the ground deepens -----------------------------------
+   Layer 04's transition was a physical reveal. Layer 05 completes the
+   descent differently: ground-4 fades off ground-5, so the base darkens
+   rather than arriving.
+
+   This one is safe to run underneath live text and layer 04's was not.
+   --ink-inv measures 11.9:1 on ground-4 and higher on ground-5, so every
+   intermediate value sits between the two and contrast only improves as
+   it deepens. Layer 05's content therefore needs no gating. That is a
+   measurement, not a preference.
+
+   Built the way layer 04 ended up rather than the way it started: the
+   section owns ground-5, its true resting colour, and the overlay is the
+   transient one. Declaring the transient colour as the background is
+   what made every contrast check misread layer 04 as 1.11:1, because a
+   pseudo-element painting over a background is invisible to
+   getComputedStyle. */
+.L5 { position: relative; overflow: hidden; background: var(--ground-5); }
+.L5::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--ground-4);
+  opacity: var(--deepen);
+  will-change: opacity;
+}
+.L5 > .shell { position: relative; z-index: 1; }
+.js-motion .L5 { --deepen: 1; }
+
+/* Like layer 04, the descent does not reverse. */
+.L5.ground-arrived { --deepen: 0 !important; }
+
+/* Layer 05 content emerges by scale, the fifth material on the page.
+   motion-design Emergent Entrance, Premium row: start 95 to 98 per cent,
+   0 per cent overshoot. Nothing else here scales. */
+.js-motion .granted,
+.js-motion .base-col,
+.js-motion .chips li,
+.js-motion .service li { opacity: 0; }
+
 /* --- HERO START STATES ----------------------------------------------
    Opacity only, so nothing here changes layout and the page does not
    shift when motion is on or off. Cumulative Layout Shift stays at
@@ -188,6 +233,11 @@
    is left invisible waiting for a tween that will never run.        */
 @media (prefers-reduced-motion: reduce) {
   .js-motion .L4 { --veil: -100%; }
+  .js-motion .L5 { --deepen: 0; }
+  .js-motion .granted,
+  .js-motion .base-col,
+  .js-motion .chips li,
+  .js-motion .service li { opacity: 1; transform: none; }
   .js-motion .L4 .meta,
   .js-motion .l4-head,
   .js-motion .l4-lead,

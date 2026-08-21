@@ -127,6 +127,11 @@ a:hover { text-decoration-thickness: 2px; }
 .L4, .L5 { color: var(--ink-inv); }
 .L4 .prose, .L5 .prose { color: var(--ink-inv-secondary); }
 .L4 .meta, .L5 .meta { color: var(--ink-inv-secondary); }
+/* Labels shared with the light layers have to invert too. .also-lb was
+   written for layer 03 and reused on ground-5, where its light-ground
+   ink measured 2.51:1. Any class that travels between grounds needs a
+   line here. */
+.L4 .also-lb, .L5 .also-lb { color: var(--ink-inv-secondary); }
 .L4 .meta b, .L5 .meta b { color: var(--ink-inv); }
 .L4 a, .L5 a { color: var(--accent-light); }
 .L4 :focus-visible, .L5 :focus-visible { outline-color: var(--accent-light); }

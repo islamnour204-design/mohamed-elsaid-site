@@ -394,3 +394,138 @@
 @media (max-width: 860px) {
   .pubs { grid-template-columns: 1fr; gap: var(--s-3); margin-top: var(--s-6); }
 }
+
+/* --- LAYER 05, SILICON -----------------------------------------------
+
+   The base of the stack and the densest section: one feature line over
+   three parallel columns, then certification and service beneath.
+
+   The fifth layout family. 01 spent the asymmetric split, 02 the heading
+   over a two-part band, 03 the full-width index row, 04 the two-column
+   record, and taste 4.7 Section-Layout-Repetition allows a family once.
+   Three columns is also the most literal reading of a base plate.
+
+   The granted patent gets its own full-width line because it is the
+   single strongest verifiable credential on the site. impeccable
+   layout.md: "Let hierarchy follow product priority, not framework
+   defaults."
+
+   A line, not a panel, and no badge box. craft-floor.md refuses cards
+   and boxes as page structure, and BUILD-BRIEF section 5 records this
+   exact patent panel rendering as an empty box in a real browser when a
+   clip-path reveal failed to fire.
+
+   No 02/03/04 on the filed patents: craft-floor refuses section numbers
+   unless the sequence carries information, and these are not ranked.  */
+
+.granted {
+  padding: var(--s-4) 0;
+  border-top: 1px solid var(--rule-inv-strong);
+  border-bottom: 1px solid var(--rule-inv-strong);
+}
+.granted-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--s-3);
+}
+.granted b {
+  display: block;
+  margin-top: var(--s-2);
+  max-width: 34ch;
+  font-size: var(--t-h3);
+  font-weight: 500;
+  letter-spacing: var(--tracking-h);
+  line-height: 1.25;
+  color: var(--ink-inv);
+}
+.pat-id {
+  font-size: var(--t-meta);
+  letter-spacing: var(--tracking-meta);
+  color: var(--ink-inv-secondary);
+}
+.pat-state {
+  font-size: var(--t-meta);
+  letter-spacing: var(--tracking-meta);
+  text-transform: uppercase;
+  color: var(--accent-light);
+}
+
+.base {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-6);
+  margin-top: var(--s-7);
+}
+
+/* Small-caps labels above lists, not above headings, so they are not
+   the kicker craft-floor bans. */
+.col-lb {
+  margin: 0 0 var(--s-3);
+  padding-bottom: var(--s-2);
+  border-bottom: 1px solid var(--rule-inv);
+  font-size: var(--t-meta);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-meta);
+  color: var(--ink-inv-secondary);
+}
+
+.base ul { margin: 0; padding: 0; list-style: none; }
+.base li + li { margin-top: var(--s-4); }
+.base b {
+  display: block;
+  font-size: var(--t-small);
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--ink-inv);
+}
+.base .where,
+.base .role,
+.base .yr,
+.base .pat-state {
+  display: block;
+  font-size: var(--t-meta);
+  color: var(--ink-inv-secondary);
+}
+.base .yr { color: var(--accent-light); letter-spacing: var(--tracking-meta); }
+.base .where { margin-top: 2px; }
+.base .role { margin-top: var(--s-2); color: var(--ink-inv); font-size: var(--t-small); }
+.base .role i { display: block; font-style: normal; font-size: var(--t-meta); color: var(--ink-inv-secondary); }
+.filed .pat-id { display: block; }
+.filed b { margin-top: 2px; }
+.filed .pat-state { margin-top: var(--s-1); }
+.edu .yr { margin-bottom: 2px; }
+
+.certs { display: flex; gap: var(--s-5); margin-top: var(--s-7); align-items: baseline; }
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--t-meta);
+  color: var(--ink-inv-secondary);
+}
+.chips i { font-style: normal; color: var(--accent-light); }
+
+.service { margin: var(--s-6) 0 0; padding: 0; list-style: none; }
+.service li {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1.4fr) auto;
+  gap: var(--s-3);
+  align-items: baseline;
+  padding: var(--s-3) 0;
+  border-top: 1px solid var(--rule-inv);
+  font-size: var(--t-small);
+}
+.service b { font-weight: 400; color: var(--ink-inv); }
+.service em { font-style: normal; font-size: var(--t-meta); color: var(--ink-inv-secondary); }
+.service .yr { font-size: var(--t-meta); letter-spacing: var(--tracking-meta); color: var(--accent-light); }
+
+@media (max-width: 860px) {
+  .base { grid-template-columns: 1fr; gap: var(--s-6); margin-top: var(--s-6); }
+  .certs { flex-direction: column; gap: var(--s-2); margin-top: var(--s-6); }
+  .service li { grid-template-columns: 1fr; gap: var(--s-1); }
+}

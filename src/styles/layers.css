@@ -132,6 +132,8 @@
   margin: 0;
   align-self: center;
   aspect-ratio: 4 / 5;
+  /* Centres the man, not the frame. See --portrait-optical. */
+  transform: translateY(var(--portrait-optical));
 }
 .portrait img {
   display: block;
@@ -439,13 +441,18 @@
 }
 
 /* Small-caps labels above lists, not above headings, so they are not
-   the kicker craft-floor bans. */
+   the kicker craft-floor bans.
+
+   Weight 400 against the group labels' 500. They share a size, and they
+   sit one rank below: a column label lives inside the Foundations
+   group. Weight keeps the containment legible without introducing a
+   fourth size into a section that already has too many. */
 .col-lb {
   margin: 0 0 var(--s-3);
   padding-bottom: var(--s-2);
   border-bottom: 1px solid var(--rule-inv);
   font-size: var(--t-meta);
-  font-weight: 500;
+  font-weight: 400;
   text-transform: uppercase;
   letter-spacing: var(--tracking-meta);
   color: var(--ink-inv-secondary);
@@ -585,60 +592,73 @@
   .job { grid-template-columns: var(--logo-col) minmax(0, 1fr); gap: var(--s-6); }
 }
 
-/* --- SECTION 05, THREE MOVEMENTS -------------------------------------
+/* --- SECTION 05, THREE GROUPS ----------------------------------------
 
-   Research, Patents, Foundations. The section holds three distinct kinds
-   of thing and the reader has to be told when one ends and the next
-   begins, without the section being split.
+   Publications, United States patents, Foundations. One section, three
+   groups, and the reader has to know they are siblings rather than three
+   new sections.
 
-   The device is air and a rule, not a container. craft-floor.md refuses
-   cards and boxes as page structure; taste 4.4 says group with border-t,
-   divide-y or negative space instead. craft-floor Spacing: "tight
-   groups, generous separation, more space above a heading than below
-   it" — so --s-9 above each movement against --s-3 inside them.
+   SECTION RANK IS USED ONCE. --t-h2 belongs to the "05 Evidence" lockup
+   and to nothing else in here. On this page large type at the top of a
+   block reads as "a new section has begun", so an earlier version that
+   set the granted patent at display size made the reader count seven
+   sections instead of five. Scale is not available as an emphasis tool
+   inside a section.
 
-   The three openings are deliberately unequal in rank:
+   THREE IDENTICAL SUB-RANK LABELS. Same size, same colour, same rule
+   above, same space before. Identical treatment is the thing that says
+   sibling. craft-floor.md, Spacing: "tight groups, generous separation."
 
-     I   a statement at --t-h2, the research argument
-     II  the granted patent at --t-lede, the largest thing in the
-         section, because it is the strongest verifiable credential on
-         the site
-     III a single word at --t-h2
+   The groups differ by LAYOUT FAMILY and rhythm instead of by heading
+   size: a two-column record, a lead entry over a quiet row of three,
+   and three columns.                                                 */
 
-   impeccable layout.md: "Let hierarchy follow product priority, not
-   framework defaults." The middle movement outranks its neighbours on
-   purpose.                                                           */
-
-.movement {
-  margin-top: var(--s-9);
-  padding-top: var(--s-6);
-  border-top: 1px solid var(--rule-inv);
-}
-
-.mv-head {
-  margin: 0 0 var(--s-6);
-  font-size: var(--t-h2);
+.ev-intro { margin-bottom: var(--s-8); }
+.ev-stmt {
+  margin: 0 0 var(--s-3);
+  max-width: 26ch;
+  font-size: var(--t-h3);
   font-weight: 600;
   letter-spacing: var(--tracking-h);
+  text-wrap: balance;
 }
 
-/* The granted patent. Scale and air do the separating. */
+.group {
+  margin-top: var(--s-8);
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--rule-inv);
+}
+.group-lb {
+  margin: 0 0 var(--s-5);
+  font-size: var(--t-meta);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-meta);
+  color: var(--ink-inv-secondary);
+}
+
+/* The granted patent leads its group and carries the accent marker.
+   No display size: position and the marker do the work. */
+.granted-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--s-5);
+  padding-bottom: var(--s-4);
+  border-bottom: 1px solid var(--rule-inv);
+}
 .granted-title {
   display: block;
-  max-width: 22ch;
-  font-size: var(--t-lede);
+  max-width: 46ch;
+  font-size: var(--t-h3);
   font-weight: 500;
   letter-spacing: var(--tracking-h);
-  line-height: 1.1;
-  text-wrap: balance;
+  line-height: 1.3;
   color: var(--ink-inv);
 }
-.granted-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--s-2) var(--s-4);
-  margin-top: var(--s-4);
-}
+.granted-main .pat-id { display: block; margin-top: var(--s-1); }
+.pat-granted { flex: 0 0 auto; }
+
 .pat-id {
   font-size: var(--t-meta);
   letter-spacing: var(--tracking-meta);
@@ -651,21 +671,13 @@
   color: var(--accent-light);
 }
 
-/* The filed applications stay quiet: small, listed, and set well below
-   the granted one so the gap itself says which matters. */
-.filed-wrap {
-  display: grid;
-  grid-template-columns: 8rem minmax(0, 1fr);
-  gap: var(--s-5);
-  margin-top: var(--s-8);
-  padding-top: var(--s-4);
-  border-top: 1px solid var(--rule-inv);
-}
+/* The filed applications: quieter, and a different rhythm from the row
+   above them. */
 .filed {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--s-5);
-  margin: 0;
+  margin: var(--s-5) 0 0;
   padding: 0;
   list-style: none;
 }
@@ -680,13 +692,18 @@
 }
 .filed .pat-state { display: block; margin-top: var(--s-1); }
 
+/* The three foundation columns start level. The service list carried a
+   rule and padding on its first item that the other two did not, so its
+   content began about 25px lower and the columns did not align. */
+.base .service li:first-child { padding-top: 0; border-top: 0; }
+
 @media (max-width: 860px) {
-  .movement { margin-top: var(--s-7); }
-  .filed-wrap { grid-template-columns: 1fr; gap: var(--s-3); margin-top: var(--s-6); }
+  .group { margin-top: var(--s-7); }
+  .granted-row { flex-direction: column; gap: var(--s-2); }
   .filed { grid-template-columns: 1fr; gap: var(--s-4); }
 }
 
-/* --- CONTACT ---/* --- CONTACT ---------------------------------------------------------
+/* --- CONTACT ---/* --- CONTACT ---/* --- CONTACT ---------------------------------------------------------
    A real closing section with a heading, not a bare list of links.   */
 
 .contact-grid {

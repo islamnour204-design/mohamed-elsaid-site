@@ -255,12 +255,13 @@
      III Foundations the columns emerge by scale                      */
 
 /* I. the research statement wipes, in reading order */
-.l4-head {
+.ev-stmt, #publications .group-lb {
   --wipe: 100%;
   mask-image: linear-gradient(to right,
     black var(--wipe), transparent calc(var(--wipe) + 12%));
 }
-.js-motion .l4-head { --wipe: 0%; }
+.js-motion .ev-stmt,
+.js-motion #publications .group-lb { --wipe: 0%; }
 
 /* II. the granted patent is split into lines and travels up, the same
    material the hero headline uses, because it is this section's
@@ -269,7 +270,8 @@
 .js-motion .filed li { opacity: 0; }
 
 /* III. foundations emerges by scale, with its heading */
-.js-motion .mv-head { opacity: 0; }
+.js-motion #patents .group-lb,
+.js-motion #foundations .group-lb { opacity: 0; }
 
 /* 04: every element waits for the ground.
 
@@ -282,7 +284,7 @@
    band scrolls up empty, the dark rises over it, and only then does the
    content appear. That also makes the rise the whole event rather than
    something happening behind words. */
-.js-motion .l4-lead,
+.js-motion .ev-intro .prose,
 .js-motion .pub,
 .js-motion .more { opacity: 0; }
 /* .l4-head is not in that list: it is hidden by its own wipe. It used to
@@ -305,14 +307,15 @@
   .js-motion .L5 { --veil: -100%; }
   .js-motion .L6 { --deepen: 0; }
   .js-motion .granted-title,
+  .js-motion .granted-row,
   .js-motion .filed li,
-  .js-motion .mv-head,
+  .js-motion .group-lb,
+  .js-motion .ev-intro .prose,
   .js-motion .base-col,
   .js-motion .chips li,
   .js-motion .service li { opacity: 1; transform: none; }
   .js-motion .L5 .meta,
   .js-motion .l4-head,
-  .js-motion .l4-lead,
   .js-motion .pub,
   .js-motion .more,
   .js-motion .prose p,
@@ -328,7 +331,8 @@
   .js-motion .logo,
   .js-motion .l2-head,
   .js-motion .l3-head,
-  .js-motion .l4-head,
+  .js-motion .ev-stmt,
+  .js-motion #publications .group-lb,
   .js-motion .prose p,
   .js-motion .sectors li { --wipe: 100%; }
   .js-motion .frow { --rule-draw: 1; }

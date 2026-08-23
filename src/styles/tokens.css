@@ -123,7 +123,19 @@
      tall and a 4:5 frame of that height is 457px wide. Sharpness ceiling
      is 928/2 = 464px, so 456 is sharp with a little to spare.        */
 
-  --portrait-w:   456px;   /* desktop */
+  --portrait-w:   380px;   /* desktop */
+
+  /* Optical centring. The subject sits 195px below the top of the frame
+     and touches the bottom, so its own centre is at
+     (195 + 957/2) / 1152 = 58.46% of the frame height, not 50%.
+     Centring the frame therefore leaves the man sitting low, which is a
+     smaller version of the fault this rework exists to fix.
+
+     Lifting the frame by the difference, 8.46% of its own height, puts
+     the subject's centre on the text block's centre. A percentage
+     translate is relative to the element's own height, so this stays
+     correct at any --portrait-w without recalculation. */
+  --portrait-optical: -8.46%;
   --portrait-w-s: 280px;   /* narrow screens */
 
   /* How far down the figure stays solid before it merges into the

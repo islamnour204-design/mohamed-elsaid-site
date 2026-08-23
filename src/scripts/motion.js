@@ -397,8 +397,10 @@ mm.add('(prefers-reduced-motion: no-preference)', () => {
       .fromTo('.L5 .sect-name',
         { '--wipe': '0%' }, { '--wipe': '100%', duration: D_REVEAL }, 0.09)
       /* Movement I arrives by a horizontal wipe, in reading order. */
-      .fromTo('.l4-head', { '--wipe': '0%' }, { '--wipe': '100%', duration: D_REVEAL }, 0.1)
-      .fromTo('.l4-lead', { opacity: 0, y: T_BODY }, { opacity: 1, y: 0, duration: D_REVEAL }, 0.34)
+      /* Group I arrives by a horizontal wipe, in reading order. */
+      .fromTo(['.ev-stmt', '#publications .group-lb'],
+        { '--wipe': '0%' }, { '--wipe': '100%', duration: D_REVEAL, stagger: 0.12 }, 0.1)
+      .fromTo('.ev-intro .prose', { opacity: 0, y: T_BODY }, { opacity: 1, y: 0, duration: D_REVEAL }, 0.34)
       /* The record is a list, so it arrives as one. Six entries at 0.08
          is 480ms of stagger, inside motion-design's budget. One tween
          with a stagger, not six tweens with delays. */
@@ -423,16 +425,17 @@ mm.add('(prefers-reduced-motion: no-preference)', () => {
     gsap.set('.granted-title', { opacity: 1 });
 
     const tl = gsap.timeline({
-      scrollTrigger: { trigger: '.granted', start: 'top 78%', once: true }
+      scrollTrigger: { trigger: '.granted-row', start: 'top 82%', once: true }
     });
-    tl.to(gLines, { yPercent: 0, duration: D_REVEAL, stagger: 0.16 }, 0)
-      .fromTo('.granted-meta', { opacity: 0 }, { opacity: 1, duration: D_MID }, 0.5);
+    tl.fromTo('#patents .group-lb', { opacity: 0 }, { opacity: 1, duration: D_MID }, 0)
+      .to(gLines, { yPercent: 0, duration: D_REVEAL, stagger: 0.14 }, 0.12)
+      .fromTo('.pat-granted', { opacity: 0 }, { opacity: 1, duration: D_MID }, 0.55);
 
     gsap.fromTo('.filed li',
       { opacity: 0 },
       {
         opacity: 1, duration: D_MID, stagger: 0.1,
-        scrollTrigger: { trigger: '.filed-wrap', start: 'top 86%', once: true }
+        scrollTrigger: { trigger: '.filed', start: 'top 86%', once: true }
       });
   }
 
@@ -449,7 +452,7 @@ mm.add('(prefers-reduced-motion: no-preference)', () => {
     const tl = gsap.timeline({
       scrollTrigger: { trigger: foundations, start: 'top 82%', once: true }
     });
-    tl.fromTo('.mv-head', { opacity: 0, scale: 0.97 }, { opacity: 1, scale: 1, duration: D_REVEAL }, 0)
+    tl.fromTo('#foundations .group-lb', { opacity: 0, scale: 0.97 }, { opacity: 1, scale: 1, duration: D_REVEAL }, 0)
       .fromTo('.base-col', { opacity: 0, scale: 0.97 },
         { opacity: 1, scale: 1, duration: D_MID, stagger: 0.12 }, 0.2);
 

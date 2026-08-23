@@ -61,8 +61,18 @@ try {
     await page.evaluate(() => window.scrollTo(0, 0));
     await page.waitForTimeout(1600);
 
+    /* Chrome cannot composite a texture past roughly 16384px, and a
+     * fullPage capture beyond it silently repeats bands of the page
+     * rather than failing. At 390px this page is over 10000px tall,
+     * which at 2x is 20000 and produced a screenshot showing the hero
+     * twice. Drop to 1x when the capture would cross the limit. */
+    const pageH = await page.evaluate(() => document.documentElement.scrollHeight);
+    const LIMIT = 16384;
+    const oversize = pageH * 2 > LIMIT;
+    if (oversize) console.log(`  (${v.name}: page ${pageH}px, capturing at 1x to stay under the ${LIMIT}px texture limit)`);
+
     const file = `shots/${label ? label + '-' : ''}${v.name}.png`;
-    await page.screenshot({ path: file, fullPage: true });
+    await page.screenshot({ path: file, fullPage: true, scale: oversize ? 'css' : 'device' });
     const h = await page.evaluate(() => document.documentElement.scrollHeight);
     console.log(`${file}  ${v.width}x${v.height}  page height ${h}px  title "${title}"`);
     await page.close();

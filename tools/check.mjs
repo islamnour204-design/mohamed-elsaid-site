@@ -40,6 +40,18 @@ const RULES = [
     skip: p => basename(p) === 'tokens.css'
   },
   { name: 'invented email address', test: /mohamed@elsaid\.de/g },
+  /* The hero portrait is an AI-generated stand-in until Mohamed sends a
+     real photograph. Blocked at release exactly like 000 and the
+     invented address: visible in development, impossible to publish. */
+  {
+    name: 'AI placeholder asset in a release build',
+    test: /PLACEHOLDER/g,
+    releaseOnly: true,
+    /* Comments stripped, or this rule blocks the build forever: the note
+       in tokens.css explaining the placeholder would itself trip it long
+       after the real photograph has replaced the asset. */
+    stripComments: true
+  },
   {
     /* Visible copy only. tokens.css uses em-dashes in its comments and
      * is not ours to edit; a comment is not something a reader reads. */
@@ -72,6 +84,7 @@ for (const file of files) {
   for (const rule of RULES) {
     if (rule.skip?.(file)) continue;
     if (rule.only && !rule.only.includes(extname(file))) continue;
+    if (rule.releaseOnly && !release) continue;
     const text = rule.stripComments ? stripped : raw;
     for (const m of text.matchAll(rule.test)) {
       if (rule.allow && m[1] && rule.allow.test(m[1].trim())) continue;

@@ -98,28 +98,26 @@
   --tap-min: 44px;
 
   /* --- PORTRAIT --------------------------------------------------------
-     Every number here was measured against a render, not chosen.
+     The hero is locked to a 4:5 frame so no future photograph needs a CSS
+     change. Every value here was measured against a render.
 
-     tools/portrait-bbox.mjs reads the subject out of the alpha channel:
-     669x559 inside a 680x564 file, margins of 11px left and 5px top and
-     nothing at right or bottom. The figure fills its own frame, so any
-     crop cuts him, and the frame takes the subject's ratio uncropped.
+     Current file is an AI-generated stand-in, 928x1152, subject filling
+     the frame edge to edge. It is blocked from any release build by the
+     PLACEHOLDER rule in tools/check.mjs, exactly like 000 and the
+     invented address.
 
-     Sharpness ceiling is 669/2 = 334px, past which a 2x screen asks for
-     pixels the file does not have.
+     456px, because that is what makes the picture a column rather than
+     an object. The text beside it measures 571px tall, and a 4:5 frame of
+     that height is 571 x 0.8 = 457px wide. At 456 the two columns match
+     within a pixel, which is the whole point of the rework: the portrait
+     stands against the full height of the text, not against the bottom
+     half of it.
 
-     306px, not 334px. At 334 the frame stood 279px tall against a 256px
-     text block beside it, so the picture set the row height and hung
-     23px below its neighbour, which no alignment can correct. At 306 the
-     frame is 256px: exactly the height of the block it sits next to.
+     Sharpness ceiling is 928/2 = 464px. 456 needs 912 device pixels and
+     the file has 928, so it is sharp with a little to spare. Anything
+     past 464 softens and would need a larger file.                  */
 
-     An earlier note here claimed 0.88x and "stays sharp". That measured
-     width alone and ignored the crop then in use, which kept only 306 of
-     680 source pixels, an effective 0.51x. There is no crop now.
-
-     Both values move once the high resolution original arrives.     */
-
-  --portrait-w:   306px;   /* desktop */
+  --portrait-w:   456px;   /* desktop */
   --portrait-w-s: 280px;   /* narrow screens */
 
   /* How far down the figure stays solid before it merges into the

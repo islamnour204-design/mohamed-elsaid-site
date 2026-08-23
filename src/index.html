@@ -10,9 +10,9 @@
   <link rel="stylesheet" href="/styles/base.css">
   <link rel="stylesheet" href="/styles/layers.css">
   <link rel="stylesheet" href="/styles/motion.css">
-  <!-- Marks that scripting is alive, before first paint, so the entrance
-       can start from a hidden state without a flash. If this never runs,
-       CSS leaves every element visible and the page is simply static.
+  <!-- Marks that scripting is alive, before first paint, so entrances can
+       start from a hidden state without a flash. If this never runs, CSS
+       leaves every element visible and the page is simply static.
        impeccable animate.md: "Keep content visible in the default state
        so failed scripts do not hide the page." -->
   <script>document.documentElement.classList.add('js-motion');</script>
@@ -20,14 +20,20 @@
 </head>
 <body>
 
-<a class="skip" href="#L1">Skip to content</a>
+<a class="skip" href="#argument">Skip to content</a>
 
 <main>
 
-  <!-- ========== LAYER 01, OUTCOME ========== -->
-  <section class="layer L1" id="L1">
+  <!-- ========== 01 ARGUMENT ========== -->
+  <section class="layer L1" id="argument">
     <div class="shell">
-      <div class="meta anim"><span>Layer <b>01</b> Outcome</span><span>Intel, Munich</span></div>
+
+      <header class="sect-head">
+        <span class="sect-n">01</span>
+        <h2 class="sect-name">Argument</h2>
+        <span class="sect-desc">Intel, Munich</span>
+      </header>
+
       <div class="l1-top">
 
         <p class="name anim">Mohamed Elsaid</p>
@@ -38,14 +44,14 @@
         </figure>
 
         <div class="l1-claim">
-          <h1 class="claim">The question is not whether to adopt AI.</h1>
+          <h3 class="claim">The question is not whether to adopt AI.</h3>
         </div>
 
         <div class="l1-body">
           <p class="claim-lede">It is what the infrastructure underneath it <strong>costs</strong>.</p>
           <p class="sub prose anim">I answer that question for enterprise and public sector organisations across Europe and the Middle East. Doctorate from the Hasso-Plattner Institute, four United States patents, thirteen peer reviewed papers.</p>
           <div class="act anim">
-            <a href="#L4" class="btn btn-p">See the research</a>
+            <a href="#evidence" class="btn btn-p">See the research</a>
             <a href="#contact" class="btn btn-s">Get in touch</a>
           </div>
         </div>
@@ -54,38 +60,42 @@
     </div>
   </section>
 
-  <!-- ========== LAYER 02, ADVISORY ========== -->
-  <section class="layer L2" id="L2">
+  <!-- ========== 02 PRACTICE ========== -->
+  <section class="layer L2" id="practice">
     <div class="shell">
-      <div class="meta"><span>Layer <b>02</b> Advisory</span><span>Enterprise and public sector</span></div>
 
-      <h2 class="l2-head">Sixteen years turning infrastructure decisions into commercial ones</h2>
+      <header class="sect-head">
+        <span class="sect-n">02</span>
+        <h2 class="sect-name">Practice</h2>
+        <span class="sect-desc">Enterprise and public sector</span>
+      </header>
+
+      <h3 class="l2-head">Sixteen years turning infrastructure decisions into commercial ones</h3>
 
       <div class="l2-grid">
-      <div class="prose">
-        <p>At Intel I advise enterprise and public sector organisations on AI infrastructure, cloud architecture, and datacenter modernisation. Most of the work is unglamorous: sizing, migration economics, where a workload should actually run, and what happens to the operating bill once the pilot ends.</p>
-        <p>Before Intel, six years at Dell EMC, first as a level two support engineer on enterprise storage, then as a solutions architect. That period taught me how infrastructure <em>fails in production</em>, which is a different education from how it behaves on a slide.</p>
-      </div>
+        <div class="prose">
+          <p>At Intel I advise enterprise and public sector organisations on AI infrastructure, cloud architecture, and datacenter modernisation. Most of the work is unglamorous: sizing, migration economics, where a workload should actually run, and what happens to the operating bill once the pilot ends.</p>
+          <p>Before Intel, six years at Dell EMC, first as a level two support engineer on enterprise storage, then as a solutions architect. That period taught me how infrastructure <em>fails in production</em>, which is a different education from how it behaves on a slide.</p>
+        </div>
 
-      <dl class="figures">
-        <div class="figure">
-          <dt><span class="fig-n">16</span></dt>
-          <dd>Years across Dell Technologies and Intel</dd>
-        </div>
-        <div class="figure">
-          <dt><span class="fig-n">3</span></dt>
-          <dd>Languages used in client work: Arabic, German, English</dd>
-        </div>
-        <div class="figure" data-placeholder>
-          <dt><span class="fig-n">000</span></dt>
-          <dd>Enterprise engagements advised <span class="pmark">awaiting real figure</span></dd>
-        </div>
-        <div class="figure" data-placeholder>
-          <dt><span class="fig-n">00%</span></dt>
-          <dd>Efficiency gain, representative programme <span class="pmark">awaiting real figure</span></dd>
-        </div>
-      </dl>
-
+        <dl class="figures">
+          <div class="figure">
+            <dt><span class="fig-n">16</span></dt>
+            <dd>Years across Dell Technologies and Intel</dd>
+          </div>
+          <div class="figure">
+            <dt><span class="fig-n">3</span></dt>
+            <dd>Languages used in client work: Arabic, German, English</dd>
+          </div>
+          <div class="figure" data-placeholder>
+            <dt><span class="fig-n">000</span></dt>
+            <dd>Enterprise engagements advised <span class="pmark">awaiting real figure</span></dd>
+          </div>
+          <div class="figure" data-placeholder>
+            <dt><span class="fig-n">00%</span></dt>
+            <dd>Efficiency gain, representative programme <span class="pmark">awaiting real figure</span></dd>
+          </div>
+        </dl>
       </div>
 
       <ul class="sectors">
@@ -97,29 +107,32 @@
         <li>Public sector</li>
       </ul>
 
-      
-
     </div>
   </section>
 
-  <!-- ========== LAYER 03, PLATFORM ========== -->
-  <section class="layer L3" id="L3">
+  <!-- ========== 03 FOCUS ========== -->
+  <section class="layer L3" id="focus">
     <div class="shell">
-      <div class="meta"><span>Layer <b>03</b> Platform</span><span>Eight practice areas</span></div>
 
-      <h2 class="l3-head">Where the work concentrates</h2>
+      <header class="sect-head">
+        <span class="sect-n">03</span>
+        <h2 class="sect-name">Focus</h2>
+        <span class="sect-desc">Eight practice areas</span>
+      </header>
+
+      <h3 class="l3-head">Where the work concentrates</h3>
 
       <div class="focus">
         <div class="frow">
-          <h3>AI infrastructure</h3>
+          <h4>AI infrastructure</h4>
           <p>Accelerator selection, capacity sizing, and what it actually costs to run inference at scale. The question most enterprises answer too late.</p>
         </div>
         <div class="frow">
-          <h3>Cloud and datacenter architecture</h3>
+          <h4>Cloud and datacenter architecture</h4>
           <p>Hybrid and multi-cloud design, migration planning, and total cost of ownership across performance, compliance, and budget.</p>
         </div>
         <div class="frow">
-          <h3>Executive advisory</h3>
+          <h4>Executive advisory</h4>
           <p>Translating infrastructure choices into commercial consequences for the people signing off on them.</p>
         </div>
       </div>
@@ -138,12 +151,106 @@
     </div>
   </section>
 
-  <!-- ========== LAYER 04, RESEARCH ========== -->
-  <section class="layer L4" id="L4">
+  <!-- ========== 04 CAREER ==========
+       Copy is verbatim from content/career.md, Mohamed's own wording.
+       Not rewritten, not tightened. Grouped by employer, so the mark
+       appears once per employer rather than once per position. -->
+  <section class="layer L4" id="career">
     <div class="shell">
-      <div class="meta"><span>Layer <b>04</b> Research</span><span>Thirteen papers, 2011 to 2025</span></div>
 
-      <h2 class="l4-head">A decade modelling what migration actually costs</h2>
+      <header class="sect-head">
+        <span class="sect-n">04</span>
+        <h2 class="sect-name">Career</h2>
+        <span class="sect-desc">Four positions, three employers</span>
+      </header>
+
+      <div class="jobs">
+
+        <article class="job">
+          <figure class="job-mark">
+            <img class="logo logo-intel" src="/assets/img/logos/intel.png"
+                 width="1008" height="393" alt="Intel" decoding="async">
+          </figure>
+          <div class="job-roles">
+            <div class="role">
+              <div class="role-top">
+                <h3>Senior Cloud &amp; AI Infrastructure Solutions Specialist</h3>
+                <span class="role-when">04/2022 to Current</span>
+              </div>
+              <div class="prose">
+                <p>Spearheaded datacenter transformation and private/hybrid cloud architecture initiatives for tens of Intel Enterprise and Government potential customers across EMEA including automotive, industrial, financial, telco and public sector accounts. Driving tailored selection of Intel CPU SKUs, AI accelerators, workload accelerators, and storage backends to maximize performance and ROI.</p>
+              </div>
+            </div>
+            <div class="role">
+              <div class="role-top">
+                <h3>Cloud Technical Solutions Specialist</h3>
+                <span class="role-when">01/2017 to 03/2022</span>
+              </div>
+              <p class="role-where">Munich, Germany</p>
+              <div class="prose">
+                <p>Advised enterprise and public-sector organizations on cloud, AI, and infrastructure modernization strategies, helping align technology investments with long-term business objectives.</p>
+                <p>Partnered with senior executives and key stakeholders to shape scalable digital transformation initiatives, strengthening operational resilience and innovation capabilities.</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="job">
+          <figure class="job-mark">
+            <img class="logo logo-dell" src="/assets/img/logos/dell-emc.png"
+                 width="533" height="96" alt="Dell EMC" decoding="async">
+          </figure>
+          <div class="job-roles">
+            <div class="role">
+              <div class="role-top">
+                <h3>Solutions Architect</h3>
+                <span class="role-when">11/2012 to 12/2016</span>
+              </div>
+              <p class="role-where">Cairo, Egypt</p>
+              <div class="prose">
+                <p>Designed and implemented enterprise high-end and intermediate tiers storage and server solutions tailored to customer datacenter modernization and scalability requirements. Supported global technology partnerships through integration of Dell-EMC storage systems in hybrid cloud and AI infrastructure environments.</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="job">
+          <figure class="job-mark">
+            <img class="logo logo-guc" src="/assets/img/logos/guc.png"
+                 width="1573" height="720" alt="German University in Cairo" decoding="async">
+          </figure>
+          <div class="job-roles">
+            <div class="role">
+              <div class="role-top">
+                <h3>Teaching and Research Assistant</h3>
+                <span class="role-when">09/2006 to 06/2010</span>
+              </div>
+              <p class="role-where">Cairo, Egypt</p>
+              <div class="prose">
+                <p>Supported the delivery of undergraduate and postgraduate courses, fostering an engaging learning environment and strengthening student academic performance.</p>
+                <p>Contributed to research initiatives through literature reviews, data analysis, and technical investigations, supporting the advancement of high-quality academic publications.</p>
+                <p>Collaborated with faculty members on curriculum development and research projects, helping bridge academic theory with practical application.</p>
+                <p>Provided mentorship and academic guidance to students, promoting critical thinking, research excellence, and successful project outcomes.</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 05 EVIDENCE ========== -->
+  <section class="layer L5" id="evidence">
+    <div class="shell">
+
+      <header class="sect-head">
+        <span class="sect-n">05</span>
+        <h2 class="sect-name">Evidence</h2>
+        <span class="sect-desc">Publications, patents, education</span>
+      </header>
+
+      <h3 class="l4-head">A decade modelling what migration actually costs</h3>
 
       <p class="l4-lead prose">Doctorate at the Hasso-Plattner Institute under Professor Christoph Meinel, applying machine learning to predicting the cost of virtual machine live migration. It began as an academic question about overhead. It turned out to describe the exact capacity problem enterprises now hit moving AI workloads into production.</p>
 
@@ -176,26 +283,23 @@
 
       <p class="more"><a href="/publications.html">View the full record, thirteen publications</a></p>
 
-    </div>
-  </section>
+      <!-- The patents sit on their own surface so they cannot melt into
+           the rest of this section. A fill, not a box: tokens.css
+           documents --accent-deep as "fills, large blocks, never for
+           text", which is exactly this. No clip-path anywhere near it. -->
+      <div class="patents">
+        <div class="patents-in">
+          <h3 class="pat-head">United States patents</h3>
+          <span class="pat-count">One granted, three filed</span>
 
-  <!-- ========== LAYER 05, SILICON ========== -->
-  <section class="layer L5" id="L5">
-    <div class="shell">
-      <div class="meta"><span>Layer <b>05</b> Silicon</span><span>Patents and foundations</span></div>
+          <div class="granted">
+            <div class="granted-top">
+              <span class="pat-id">US 10,356,005 B1</span>
+              <span class="pat-state">Granted 2019</span>
+            </div>
+            <b>Network load balance aware live migration for virtual machines in cloud computing</b>
+          </div>
 
-      <div class="granted">
-        <div class="granted-top">
-          <span class="pat-id">US 10,356,005 B1</span>
-          <span class="pat-state">Granted 2019</span>
-        </div>
-        <b>Network load balance aware live migration for virtual machines in cloud computing</b>
-      </div>
-
-      <div class="base">
-
-        <div class="base-col">
-          <h3 class="col-lb">Also filed</h3>
           <ul class="filed">
             <li>
               <span class="pat-id">US 15/222,499</span>
@@ -214,30 +318,9 @@
             </li>
           </ul>
         </div>
+      </div>
 
-        <div class="base-col">
-          <h3 class="col-lb">Career</h3>
-          <ul class="career">
-            <li>
-              <b>Intel</b>
-              <span class="where">Munich, 2017 to present</span>
-              <span class="role">Senior Cloud and AI Infrastructure Solutions Specialist <i>2022 to present</i></span>
-              <span class="role">Cloud Technical Solutions Specialist <i>2017 to 2022</i></span>
-            </li>
-            <li>
-              <b>Dell EMC</b>
-              <span class="where">Cairo, 2010 to 2016</span>
-              <span class="role">Solutions Architect <i>2012 to 2016</i></span>
-              <span class="role">Technical Support Engineer II <i>2010 to 2012</i></span>
-            </li>
-            <li>
-              <b>German University in Cairo</b>
-              <span class="where">Cairo, 2006 to 2010</span>
-              <span class="role">Teaching and Research Assistant <i>2006 to 2010</i></span>
-            </li>
-          </ul>
-        </div>
-
+      <div class="base">
         <div class="base-col">
           <h3 class="col-lb">Education</h3>
           <ul class="edu">
@@ -259,24 +342,68 @@
           </ul>
         </div>
 
+        <div class="base-col">
+          <h3 class="col-lb">Certification</h3>
+          <ul class="chips">
+            <li>VMware Cloud Foundation Architect <i>2026</i></li>
+            <li>Principles of AI, Intel <i>2024</i></li>
+            <li>Data Center Virtualization, VMware <i>2022</i></li>
+            <li>Azure Fundamentals, Microsoft <i>2020</i></li>
+            <li>Information Storage Management, Dell EMC</li>
+          </ul>
+        </div>
+
+        <div class="base-col">
+          <h3 class="col-lb">Service</h3>
+          <ul class="service">
+            <li><b>Conference paper reviewer</b><em>IEEE Computer Society</em><span class="yr">2022 to 2024</span></li>
+            <li><b>Certification examination reviewer</b><em>Storage Networking Industry Association</em><span class="yr">2021 to 2023</span></li>
+            <li><b>IEEE 802.11s Mesh Wireless LAN Channel Assignment and Power Management</b><em>Textbook, ISBN 978-3846502280</em><span class="yr">2011</span></li>
+          </ul>
+        </div>
       </div>
 
-      <div class="certs">
-        <span class="also-lb">Certification</span>
-        <ul class="chips">
-          <li>VMware Cloud Foundation Architect <i>2026</i></li>
-          <li>Principles of AI, Intel <i>2024</i></li>
-          <li>Data Center Virtualization, VMware <i>2022</i></li>
-          <li>Azure Fundamentals, Microsoft <i>2020</i></li>
-          <li>Information Storage Management, Dell EMC</li>
+    </div>
+  </section>
+
+  <!-- ========== CONTACT ========== -->
+  <section class="layer L6" id="contact">
+    <div class="shell">
+
+      <header class="sect-head">
+        <span class="sect-n">06</span>
+        <h2 class="sect-name">Contact</h2>
+        <span class="sect-desc">Munich, Germany</span>
+      </header>
+
+      <div class="contact-grid">
+        <div>
+          <h3 class="contact-head">For research collaboration, speaking, and advisory work.</h3>
+          <p class="prose">Permanent resident of Germany, based in Munich, working in English, German, and Arabic.</p>
+        </div>
+
+        <ul class="links">
+          <li>
+            <a href="https://www.linkedin.com/in/mohamed-esam-elsaid-ph-d-86454a5" rel="me">
+              <svg class="icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M216,24H40A16,16,0,0,0,24,40V216a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V40A16,16,0,0,0,216,24Zm0,192H40V40H216V216ZM96,112v64a8,8,0,0,1-16,0V112a8,8,0,0,1,16,0Zm88,28v36a8,8,0,0,1-16,0V140a20,20,0,0,0-40,0v36a8,8,0,0,1-16,0V112a8,8,0,0,1,15.79-1.78A36,36,0,0,1,184,140ZM100,84A12,12,0,1,1,88,72,12,12,0,0,1,100,84Z"/></svg>
+              <span class="link-k">LinkedIn</span>
+              <span class="link-v">mohamed-esam-elsaid</span>
+            </a>
+          </li>
+          <li data-placeholder>
+            <span class="link-dead">
+              <svg class="icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M224,48H32a8,8,0,0,0-8,8V192a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A8,8,0,0,0,224,48ZM203.43,64,128,133.15,52.57,64ZM216,192H40V74.19l82.59,75.71a8,8,0,0,0,10.82,0L216,74.19V192Z"/></svg>
+              <span class="link-k">Email</span>
+              <span class="link-v pmark">awaiting confirmed address</span>
+            </span>
+          </li>
         </ul>
       </div>
 
-      <ul class="service">
-        <li><b>Conference paper reviewer</b><em>IEEE Computer Society</em><span class="yr">2022 to 2024</span></li>
-        <li><b>Certification examination reviewer</b><em>Storage Networking Industry Association</em><span class="yr">2021 to 2023</span></li>
-        <li><b>IEEE 802.11s Mesh Wireless LAN Channel Assignment and Power Management</b><em>Textbook, ISBN 978-3846502280</em><span class="yr">2011</span></li>
-      </ul>
+      <div class="foot">
+        <span>&copy; 2026 Mohamed Esameldin Elsaid</span>
+        <span>Munich, Germany</span>
+      </div>
 
     </div>
   </section>

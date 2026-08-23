@@ -10,16 +10,28 @@
 :root {
 
   /* --- GROUNDS -------------------------------------------------------
-     Five layers, descending. Light at the top, dark at the base.
-     The step from ground-3 to ground-4 is 10.7:1 — the strongest
-     boundary on the page, and the moment the reader is meant to feel
-     they have crossed from business into engineering.              */
+     Six surfaces, descending. Four light, then one theme switch into the
+     dark, then the darkest for contact.
 
-  --ground-1: #F7F7F5;   /* 01 Outcome   */
-  --ground-2: #EDEFEC;   /* 02 Advisory  */
-  --ground-3: #DDE3E0;   /* 03 Platform  */
-  --ground-4: #14312F;   /* 04 Research  */
-  --ground-5: #08191A;   /* 05 Silicon   */
+     Restructured 23 August. Career moved up to become section 04, and
+     the employer logos are only legible on a light ground: on dark,
+     Intel's wordmark nearly vanishes, Dell EMC carries white JPEG
+     fringing and GUC's black text and Arabic disappear. See
+     src/assets/img/logos/_ground-test.png.
+
+     So a fourth light step was added and the two dark tokens renumbered
+     to keep the ramp reading 1 to 6 in order. Every hex Islam chose is
+     unchanged; --ground-4 is the only new value.
+
+     The step from ground-4 to ground-5 is the strongest boundary on the
+     page and the one moment the theme switches.                     */
+
+  --ground-1: #F7F7F5;   /* 01 Argument */
+  --ground-2: #EDEFEC;   /* 02 Practice */
+  --ground-3: #DDE3E0;   /* 03 Focus    */
+  --ground-4: #CFD8D5;   /* 04 Career, added for the logos */
+  --ground-5: #14312F;   /* 05 Evidence, was --ground-4    */
+  --ground-6: #08191A;   /* contact,    was --ground-5     */
 
   /* --- INK ON LIGHT GROUNDS (layers 1–3) --- */
   --ink:           #101614;   /* 17.1:1 on ground-1 */
@@ -27,8 +39,8 @@
   --ink-muted:     #6B7673;   /* captions, non-essential only */
 
   /* --- INK ON DARK GROUNDS (layers 4–5) --- */
-  --ink-inv:           #EAEEEC;   /* 11.9:1 on ground-4 */
-  --ink-inv-secondary: #9FAFAC;   /*  6.1:1 on ground-4 */
+  --ink-inv:           #EAEEEC;   /* 11.9:1 on ground-5 */
+  --ink-inv-secondary: #9FAFAC;   /*  6.1:1 on ground-5 */
 
   /* --- ACCENT ---------------------------------------------------------
      Petrol. Two values because one cannot serve both ends of the ramp.
@@ -36,7 +48,7 @@
      ground or accent-dark on a light one.                           */
 
   --accent:       #0E5A5E;   /* on light grounds — 7.4:1 on ground-1 */
-  --accent-light: #5FC7C2;   /* on dark grounds  — 6.9:1 on ground-4 */
+  --accent-light: #5FC7C2;   /* on dark grounds  — 6.9:1 on ground-5 */
   --accent-deep:  #07302F;   /* fills, large blocks, never for text  */
 
   /* Buttons: cream on petrol is 6.8:1 and passes.
@@ -115,6 +127,28 @@
      ended about 95px above the box and the figure read as floating.
      84% keeps a soft base while the mass sits where the box does. */
   --portrait-fade: 84%;
+
+  /* --- EMPLOYER MARKS --------------------------------------------------
+     Sized by optical weight, not by pixel width. The three marks have
+     very different proportions: Dell EMC 5.55:1, Intel 2.56:1, GUC
+     2.18:1. Dell EMC's letterforms fill its box, Intel's sit inside
+     padding, and GUC's mark is a fraction of its own height, so a common
+     height would make them wildly unequal and each gets its own width.
+
+     GUC is the largest because it has the most inside it. Even so, its
+     English subtitle and Arabic line read as texture rather than words
+     at this size; the swoosh and "GUC" carry the identification. Islam
+     was told, and chose not to crop the Arabic off.                  */
+
+  --logo-intel: 92px;
+  --logo-dell:  128px;
+  --logo-guc:   150px;
+  --logo-col:   172px;   /* the column all three sit in */
+
+  /* --- ICONS -----------------------------------------------------------
+     Phosphor regular, one family and one weight.                     */
+
+  --icon: 20px;
 
   /* --- BREAKPOINT ------------------------------------------------------
      One breakpoint for the whole site: 860px.

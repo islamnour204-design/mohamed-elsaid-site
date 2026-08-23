@@ -105,17 +105,17 @@
 
    With no script the veil is parked off-screen and the ground is simply
    dark, so the section is correct without JavaScript. */
-.L4 { position: relative; overflow: hidden; background: var(--ground-4); }
-.L4::before {
+.L5 { position: relative; overflow: hidden; background: var(--ground-5); }
+.L5::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: var(--ground-3);
+  background: var(--ground-4);
   transform: translateY(var(--veil));
   will-change: transform;
 }
-.L4 > .shell { position: relative; z-index: 1; }
-.js-motion .L4 { --veil: 0%; }
+.L5 > .shell { position: relative; z-index: 1; }
+.js-motion .L5 { --veil: 0%; }
 
 /* Once the ground has arrived it stays. GSAP writes --veil as an inline
    style, and killing the ScrollTrigger reverts the tween to its start
@@ -124,7 +124,7 @@
    !important is the only thing that outranks the inline value.
 
    Conceptually right as well: you do not un-descend a stack. */
-.L4.ground-arrived { --veil: -100% !important; }
+.L5.ground-arrived { --veil: -100% !important; }
 
 /* --- LAYER 05: the ground deepens -----------------------------------
    Layer 04's transition was a physical reveal. Layer 05 completes the
@@ -143,20 +143,20 @@
    what made every contrast check misread layer 04 as 1.11:1, because a
    pseudo-element painting over a background is invisible to
    getComputedStyle. */
-.L5 { position: relative; overflow: hidden; background: var(--ground-5); }
-.L5::before {
+.L6 { position: relative; overflow: hidden; background: var(--ground-6); }
+.L6::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: var(--ground-4);
+  background: var(--ground-5);
   opacity: var(--deepen);
   will-change: opacity;
 }
-.L5 > .shell { position: relative; z-index: 1; }
-.js-motion .L5 { --deepen: 1; }
+.L6 > .shell { position: relative; z-index: 1; }
+.js-motion .L6 { --deepen: 1; }
 
 /* Like layer 04, the descent does not reverse. */
-.L5.ground-arrived { --deepen: 0 !important; }
+.L6.ground-arrived { --deepen: 0 !important; }
 
 /* Layer 05 content emerges by scale, the fifth material on the page.
    motion-design Emergent Entrance, Premium row: start 95 to 98 per cent,
@@ -165,6 +165,43 @@
 .js-motion .base-col,
 .js-motion .chips li,
 .js-motion .service li { opacity: 0; }
+
+/* --- THE SECTION NAME ------------------------------------------------
+   The main separating device, so it gets a considered arrival on every
+   surface. One consistent treatment across all six, because it is the
+   same recurring element and consistency is what makes it read as a
+   system. This is not the "identical entrance on every section"
+   craft-floor refuses; that rule is about section content.
+
+   motion-design Assembled Entrance: parts arrive from different
+   positions, staggered 50 to 100ms, total 300 to 600ms.
+
+   The number rises rather than travelling behind a mask. At 11px a mask
+   is indistinguishable from a fade, so it would be complexity with
+   nothing to show for it. Noted as a deviation from the plan. */
+.sect-name {
+  --wipe: 100%;
+  mask-image: linear-gradient(to right,
+    black var(--wipe), transparent calc(var(--wipe) + 12%));
+}
+.js-motion .sect-name { --wipe: 0%; }
+.js-motion .sect-n,
+.js-motion .sect-desc { opacity: 0; }
+
+/* --- THE EMPLOYER MARKS ----------------------------------------------
+   Revealed by a mask travelling across them, the same material language
+   as the portrait rising out of its ground.
+
+   No soft edge on the mark itself: a logo with a feathered edge reads as
+   broken rather than as merged. The merging is that there is no
+   container at all. */
+.logo {
+  --wipe: 100%;
+  mask-image: linear-gradient(to right,
+    black var(--wipe), transparent calc(var(--wipe) + 15%));
+}
+.js-motion .logo { --wipe: 0%; }
+.js-motion .role { opacity: 0; }
 
 /* --- HERO START STATES ----------------------------------------------
    Opacity only, so nothing here changes layout and the page does not
@@ -214,7 +251,7 @@
    band scrolls up empty, the dark rises over it, and only then does the
    content appear. That also makes the rise the whole event rather than
    something happening behind words. */
-.js-motion .L4 .meta,
+.js-motion .L5 .meta,
 .js-motion .l4-head,
 .js-motion .l4-lead,
 .js-motion .pub,
@@ -232,13 +269,13 @@
    still. tokens.css already flattens durations; this makes sure nothing
    is left invisible waiting for a tween that will never run.        */
 @media (prefers-reduced-motion: reduce) {
-  .js-motion .L4 { --veil: -100%; }
-  .js-motion .L5 { --deepen: 0; }
+  .js-motion .L5 { --veil: -100%; }
+  .js-motion .L6 { --deepen: 0; }
   .js-motion .granted,
   .js-motion .base-col,
   .js-motion .chips li,
   .js-motion .service li { opacity: 1; transform: none; }
-  .js-motion .L4 .meta,
+  .js-motion .L5 .meta,
   .js-motion .l4-head,
   .js-motion .l4-lead,
   .js-motion .pub,
@@ -249,6 +286,11 @@
   .js-motion .anim,
   .js-motion .fig-n { opacity: 1; transform: none; }
   .js-motion .portrait img { --mask-stop: var(--portrait-fade); }
+  .js-motion .sect-n,
+  .js-motion .sect-desc,
+  .js-motion .role { opacity: 1; }
+  .js-motion .sect-name,
+  .js-motion .logo,
   .js-motion .l2-head,
   .js-motion .l3-head,
   .js-motion .prose p,

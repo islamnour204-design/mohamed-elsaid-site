@@ -113,7 +113,6 @@ mm.add('(prefers-reduced-motion: no-preference)', () => {
   const fade = css.getPropertyValue('--portrait-fade').trim() || '84%';
 
   hero
-    .fromTo('.L1 .meta', { opacity: 0, y: T_FINE }, { opacity: 1, y: 0, duration: D_MID }, 0)
     .fromTo('.name', { opacity: 0, y: T_FINE }, { opacity: 1, y: 0, duration: D_MID }, 0.10)
     /* The display line travels its own height, about 84px, which is why
        it reads as movement rather than as a fade. */
@@ -130,6 +129,38 @@ mm.add('(prefers-reduced-motion: no-preference)', () => {
     splits.forEach(s => s.revert());
     gsap.set(['.claim', '.claim-lede'], { opacity: 1 });
     ScrollTrigger.refresh();
+  });
+
+  /* =====================================================================
+     THE SECTION NAMES — the separating device
+     One assembled arrival, on every surface except 05, whose name is
+     gated on the ground switch further down.
+     ===================================================================== */
+  gsap.utils.toArray('.sect-head').forEach(head => {
+    if (head.closest('.L5')) return;
+    const tl = gsap.timeline({
+      scrollTrigger: { trigger: head, start: 'top 92%', once: true }
+    });
+    tl.fromTo(head.querySelector('.sect-n'),
+        { opacity: 0, y: T_FINE }, { opacity: 1, y: 0, duration: D_MID }, 0)
+      .fromTo(head.querySelector('.sect-name'),
+        { '--wipe': '0%' }, { '--wipe': '100%', duration: D_REVEAL }, 0.09)
+      .fromTo(head.querySelector('.sect-desc'),
+        { opacity: 0 }, { opacity: 1, duration: D_MID }, 0.18);
+  });
+
+  /* =====================================================================
+     04 CAREER — the marks are revealed, the roles arrive
+     ===================================================================== */
+  gsap.utils.toArray('.job').forEach(job => {
+    const tl = gsap.timeline({
+      scrollTrigger: { trigger: job, start: 'top 80%', once: true }
+    });
+    tl.fromTo(job.querySelector('.logo'),
+        { '--wipe': '0%' }, { '--wipe': '100%', duration: D_REVEAL }, 0)
+      .fromTo(job.querySelectorAll('.role'),
+        { opacity: 0, y: T_BODY },
+        { opacity: 1, y: 0, duration: D_MID, stagger: 0.14 }, 0.2);
   });
 
   /* =====================================================================
@@ -316,7 +347,7 @@ mm.add('(prefers-reduced-motion: no-preference)', () => {
      Because it is scrubbed, ScrollTrigger sets progress from the current
      scroll position on creation: landing deep-linked or refreshing part
      way down gives a fully dark ground immediately, not a light one. */
-  const l4 = document.querySelector('.L4');
+  const l4 = document.querySelector('.L5');
   if (l4) {
     gsap.fromTo(l4,
       { '--veil': '0%' },
@@ -358,7 +389,13 @@ mm.add('(prefers-reduced-motion: no-preference)', () => {
     });
 
     l4in
-      .to('.L4 .meta', { opacity: 1, duration: D_MID }, 0)
+      /* Section 05's own name is gated here rather than with the other
+         five: until the veil clears, the ground beneath it is light and
+         its ink is not. */
+      .fromTo(['.L5 .sect-n', '.L5 .sect-desc'],
+        { opacity: 0 }, { opacity: 1, duration: D_MID, stagger: 0.18 }, 0)
+      .fromTo('.L5 .sect-name',
+        { '--wipe': '0%' }, { '--wipe': '100%', duration: D_REVEAL }, 0.09)
       .fromTo('.l4-head', { opacity: 0, y: T_BODY }, { opacity: 1, y: 0, duration: D_REVEAL }, 0.1)
       .fromTo('.l4-lead', { opacity: 0, y: T_BODY }, { opacity: 1, y: 0, duration: D_REVEAL }, 0.34)
       /* The record is a list, so it arrives as one. Six entries at 0.08
@@ -373,7 +410,7 @@ mm.add('(prefers-reduced-motion: no-preference)', () => {
   /* =====================================================================
      LAYER 05 — the ground deepens, and the base emerges
      ===================================================================== */
-  const l5 = document.querySelector('.L5');
+  const l5 = document.querySelector('.L6');
   if (l5) {
     /* ground-4 fades off ground-5. Unlike layer 04 this can run under
        live text: --ink-inv is 11.9:1 on ground-4 and higher on ground-5,

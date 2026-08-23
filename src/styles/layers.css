@@ -529,3 +529,219 @@
   .certs { flex-direction: column; gap: var(--s-2); margin-top: var(--s-6); }
   .service li { grid-template-columns: 1fr; gap: var(--s-1); }
 }
+
+/* --- 04 CAREER -------------------------------------------------------
+
+   The most important section on the page for the reader it is aimed at,
+   and given the weight: the largest role titles outside the hero, the
+   most generous spacing, and the only section carrying brand marks.
+
+   Full-width stacked entries rather than a two-column split. Section 03
+   already spends the title-left/text-right family, and stacking gives
+   Mohamed's own descriptions room at --measure.
+
+   Copy is verbatim from content/career.md and is not edited here.   */
+
+.jobs { display: grid; gap: var(--s-8); }
+
+.job {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s-5);
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--rule-strong);
+}
+
+/* Logos sit directly on the ground. No box, no border, no container,
+   the same treatment the portrait gets: DESIGN.md A4, a direct
+   instruction from Islam. */
+.job-mark { margin: 0; }
+.logo { display: block; height: auto; }
+
+/* Sized by optical weight, not by pixel width. The three marks have very
+   different proportions — Dell EMC 5.55:1, Intel 2.56:1, GUC 2.18:1 — so
+   a common height would make them wildly unequal. Dell EMC's letterforms
+   fill its box, Intel's sit inside padding, and GUC's mark is a fraction
+   of its own height, so each gets its own width. */
+.logo-intel { width: var(--logo-intel); }
+.logo-dell  { width: var(--logo-dell); }
+.logo-guc   { width: var(--logo-guc); }
+
+.job-roles { display: grid; gap: var(--s-6); }
+
+.role-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--s-4);
+}
+.role-top h3 {
+  margin: 0;
+  max-width: 26ch;
+  font-size: var(--t-h3);
+  font-weight: 500;
+  letter-spacing: var(--tracking-h);
+  line-height: 1.2;
+}
+.role-when {
+  flex: 0 0 auto;
+  font-size: var(--t-meta);
+  letter-spacing: var(--tracking-meta);
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+}
+.role-where {
+  margin-top: var(--s-1);
+  font-size: var(--t-meta);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-meta);
+  color: var(--ink-secondary);
+}
+.role .prose { margin-top: var(--s-3); font-size: var(--t-small); }
+
+@media (min-width: 861px) {
+  /* Mark in its own column once there is room, so the roles keep a
+     single reading edge down the section. */
+  .job { grid-template-columns: var(--logo-col) minmax(0, 1fr); gap: var(--s-6); }
+}
+
+/* --- PATENTS, ON THEIR OWN SURFACE -----------------------------------
+
+   Section 05 holds publications, patents and education, and the patents
+   have to read as clearly separate rather than melting into the rest.
+
+   The device is a change of material, not an outline: the block sits on
+   an --accent-deep fill. tokens.css documents that token as "fills,
+   large blocks, never for text", which is precisely this use. No border,
+   no card, and nothing for craft-floor's refusal of boxes to catch.
+
+   No clip-path anywhere near it. BUILD-BRIEF section 5 records this
+   exact patent panel rendering as an empty box in a real browser when a
+   clip-path reveal failed to fire.                                   */
+
+.patents {
+  margin-top: var(--s-8);
+  background: var(--accent-deep);
+}
+.patents-in { padding: var(--s-6) var(--s-5); }
+.pat-head {
+  margin: 0;
+  font-size: var(--t-h3);
+  font-weight: 500;
+  letter-spacing: var(--tracking-h);
+  color: var(--ink-inv);
+}
+.pat-count {
+  display: block;
+  margin-top: var(--s-1);
+  font-size: var(--t-meta);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-meta);
+  color: var(--ink-inv-secondary);
+}
+.patents .granted {
+  margin-top: var(--s-5);
+  padding: var(--s-4) 0;
+  border-top: 1px solid var(--rule-inv-strong);
+  border-bottom: 1px solid var(--rule-inv-strong);
+}
+.patents .filed {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-5);
+  margin: var(--s-4) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.patents .filed li { margin: 0; }
+
+/* --- CONTACT ---------------------------------------------------------
+   A real closing section with a heading, not a bare list of links.   */
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: var(--s-7);
+  align-items: start;
+}
+.contact-head {
+  margin: 0 0 var(--s-3);
+  max-width: 20ch;
+  font-size: var(--t-h2);
+  font-weight: 500;
+  letter-spacing: var(--tracking-h);
+  line-height: 1.15;
+}
+
+.links { margin: 0; padding: 0; list-style: none; }
+.links li + li { margin-top: var(--s-2); }
+.links a,
+.link-dead {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--s-3);
+  min-height: var(--tap-min);
+  padding: var(--s-2) 0;
+  border-top: 1px solid var(--rule-inv);
+  text-decoration: none;
+}
+.links li:last-child a,
+.links li:last-child .link-dead { border-bottom: 1px solid var(--rule-inv); }
+
+/* Drawn icons from a real set, one family and one weight: Phosphor
+   regular. craft-floor bans unicode glyphs and emoji standing in for an
+   icon system. */
+.icon { width: var(--icon); height: var(--icon); flex: 0 0 auto; }
+
+.link-k {
+  font-size: var(--t-meta);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-meta);
+  color: var(--ink-inv-secondary);
+}
+.link-v { font-size: var(--t-small); color: var(--ink-inv); }
+.link-dead { color: var(--ink-inv-secondary); }
+.link-dead .link-v { color: var(--ink-inv-secondary); }
+
+.foot {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--s-3);
+  margin-top: var(--s-8);
+  padding-top: var(--s-3);
+  border-top: 1px solid var(--rule-inv);
+  font-size: var(--t-meta);
+  color: var(--ink-inv-secondary);
+}
+
+@media (max-width: 860px) {
+  .jobs { gap: var(--s-7); }
+  .patents .filed { grid-template-columns: 1fr; gap: var(--s-4); }
+  .patents-in { padding: var(--s-5) var(--s-4); }
+  .contact-grid { grid-template-columns: 1fr; gap: var(--s-5); }
+  .foot { flex-direction: column; gap: var(--s-1); }
+  .role-top { flex-direction: column; gap: var(--s-1); }
+}
+
+/* --- FIXES AFTER LOOKING AT THE RENDER --------------------------------
+
+   The service list was built for the full width of the old section 05.
+   It now sits in a third of that, where a three-column row wraps the
+   textbook title to six lines. Inside a column it stacks. */
+.base .service li {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2px;
+  padding: var(--s-3) 0;
+}
+.base .service b { font-size: var(--t-small); line-height: 1.35; }
+
+/* The section rule and the first entry's rule were sitting one above the
+   other with an empty band between them, which read as a blank row. The
+   section head already does the separating. */
+.job:first-child { border-top: 0; padding-top: 0; }
+.jobs { margin-top: calc(var(--s-7) * -1 + var(--s-5)); }
+
+/* .chips is a flex list with its own gap, so the generic column rule
+   .base li + li was adding a second gap on top of it. */
+.base .chips li + li { margin-top: 0; }

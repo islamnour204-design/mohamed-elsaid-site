@@ -98,40 +98,70 @@ a:hover { text-decoration-thickness: 2px; }
    generous intervals" — one repeated large value is not rhythm. */
 .layer { padding-block: var(--s-7); }
 
-.layer .meta {
-  display: flex;
-  justify-content: space-between;
+/* --- THE SECTION NAME ------------------------------------------------
+   The main device separating one section from the next, so it is a real
+   typographic element rather than the 11px bar it replaced. Number,
+   name, descriptor, over a strong rule.
+
+   The name is the section's h2. The statement inside each section is an
+   h3, because "Career" names the section and "Sixteen years turning
+   infrastructure decisions into commercial ones" is a statement within
+   it. Visual size and heading level are allowed to disagree.        */
+
+.sect-head {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: baseline;
   gap: var(--s-3);
+  padding-bottom: var(--s-3);
+  margin-bottom: var(--s-7);
+  border-bottom: 1px solid var(--rule-strong);
+}
+
+.sect-n {
+  font-size: var(--t-meta);
+  letter-spacing: var(--tracking-meta);
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+}
+
+.sect-name {
+  margin: 0;
+  font-size: var(--t-h2);
+  font-weight: 500;
+  letter-spacing: var(--tracking-h);
+  line-height: 1;
+}
+
+.sect-desc {
+  text-align: right;
   font-size: var(--t-meta);
   text-transform: uppercase;
   letter-spacing: var(--tracking-meta);
-  /* --ink-muted measures 4.39:1 on ground-1, under the 4.5:1 floor, and
-     this text is 11px. tokens.css marks that token "captions,
-     non-essential only"; a layer identifier is not that. --ink-secondary
-     is the same family at 6.70:1. */
   color: var(--ink-secondary);
-  padding-bottom: var(--s-5);
 }
-.layer .meta b { font-weight: 600; color: var(--ink-secondary); }
 
-/* The layer bar's own padding already provides the space above a
-   heading. Without this the two stack and the gap doubles. */
-.layer .meta + h2 { margin-top: 0; }
+/* Section statements. They were h2 before the section name took that
+   level; the visual scale is unchanged. */
+.l2-head, .l3-head, .l4-head { font-size: var(--t-h2); font-weight: 600; }
+.frow h4 { margin: 0; font-weight: 500; letter-spacing: var(--tracking-h); }
 
 .L1 { background: var(--ground-1); }
 .L2 { background: var(--ground-2); }
 .L3 { background: var(--ground-3); }
 .L4 { background: var(--ground-4); }
 .L5 { background: var(--ground-5); }
+.L6 { background: var(--ground-6); }
 
-.L4, .L5 { color: var(--ink-inv); }
-.L4 .prose, .L5 .prose { color: var(--ink-inv-secondary); }
-.L4 .meta, .L5 .meta { color: var(--ink-inv-secondary); }
+.L5, .L6 { color: var(--ink-inv); }
+.L5 .prose, .L6 .prose { color: var(--ink-inv-secondary); }
 /* Labels shared with the light layers have to invert too. .also-lb was
    written for layer 03 and reused on ground-5, where its light-ground
    ink measured 2.51:1. Any class that travels between grounds needs a
    line here. */
-.L4 .also-lb, .L5 .also-lb { color: var(--ink-inv-secondary); }
-.L4 .meta b, .L5 .meta b { color: var(--ink-inv); }
-.L4 a, .L5 a { color: var(--accent-light); }
-.L4 :focus-visible, .L5 :focus-visible { outline-color: var(--accent-light); }
+.L5 .also-lb, .L6 .also-lb { color: var(--ink-inv-secondary); }
+.L5 .sect-desc, .L6 .sect-desc { color: var(--ink-inv-secondary); }
+.L5 .sect-n, .L6 .sect-n { color: var(--accent-light); }
+.L5 .sect-head, .L6 .sect-head { border-bottom-color: var(--rule-inv-strong); }
+.L5 a, .L6 a { color: var(--accent-light); }
+.L5 :focus-visible, .L6 :focus-visible { outline-color: var(--accent-light); }

@@ -101,21 +101,27 @@
      The hero is locked to a 4:5 frame so no future photograph needs a CSS
      change. Every value here was measured against a render.
 
-     Current file is an AI-generated stand-in, 928x1152, subject filling
-     the frame edge to edge. It is blocked from any release build by the
-     PLACEHOLDER rule in tools/check.mjs, exactly like 000 and the
-     invented address.
+     Current file is an AI stand-in, 928x1152, and is blocked from any
+     release build by the PLACEHOLDER rule in tools/check.mjs, exactly
+     like 000 and the invented address.
 
-     456px, because that is what makes the picture a column rather than
-     an object. The text beside it measures 571px tall, and a 4:5 frame of
-     that height is 571 x 0.8 = 457px wide. At 456 the two columns match
-     within a pixel, which is the whole point of the rework: the portrait
-     stands against the full height of the text, not against the bottom
-     half of it.
+     Measured 23 August after the matte was redone, tools/portrait-bbox:
+       matte      opaque 45.2%, partial 0.6%, clear 54.2%
+       subject    853 x 957 at (75, 195)
+       margins    75 left, 0 right, 195 top, 0 bottom
+       shoulders  begin at y=825
 
-     Sharpness ceiling is 928/2 = 464px. 456 needs 912 device pixels and
-     the file has 928, so it is sharp with a little to spare. Anything
-     past 464 softens and would need a larger file.                  */
+     Partial alpha fell from 38.2% to 0.6%, which is the halo gone: the
+     previous file carried a warm grey cloud at 27 to 57 per cent opacity
+     around the head and read as a smudge on a light ground.
+
+     Note the 195px of empty frame above the subject against none below.
+     The figure therefore sits about 8 per cent lower than the frame's
+     own centre, so centring the frame is not quite centring the man.
+
+     456px matches the text column beside it: that text measures 571px
+     tall and a 4:5 frame of that height is 457px wide. Sharpness ceiling
+     is 928/2 = 464px, so 456 is sharp with a little to spare.        */
 
   --portrait-w:   456px;   /* desktop */
   --portrait-w-s: 280px;   /* narrow screens */

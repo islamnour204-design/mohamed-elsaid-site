@@ -283,23 +283,28 @@
 
       <p class="more"><a href="/publications.html">View the full record, thirteen publications</a></p>
 
-      <!-- The patents sit on their own surface so they cannot melt into
-           the rest of this section. A fill, not a box: tokens.css
-           documents --accent-deep as "fills, large blocks, never for
-           text", which is exactly this. No clip-path anywhere near it. -->
-      <div class="patents">
-        <div class="patents-in">
-          <h3 class="pat-head">United States patents</h3>
-          <span class="pat-count">One granted, three filed</span>
+      <!-- MOVEMENT II — the patents.
 
-          <div class="granted">
-            <div class="granted-top">
-              <span class="pat-id">US 10,356,005 B1</span>
-              <span class="pat-state">Granted 2019</span>
-            </div>
-            <b>Network load balance aware live migration for virtual machines in cloud computing</b>
-          </div>
+           No box. craft-floor.md refuses cards and boxes as page
+           structure, and a container says "separate" without saying
+           "important". The granted patent separates itself by weight:
+           it is the single strongest verifiable credential on the site,
+           so it is the largest thing in this section, the way the hero
+           treats its headline. impeccable layout.md: "Let hierarchy
+           follow product priority, not framework defaults."
 
+           The filed applications stay quiet beneath it. -->
+      <div class="movement" id="patents">
+        <div class="granted">
+          <b class="granted-title">Network load balance aware live migration for virtual machines in cloud computing</b>
+          <p class="granted-meta">
+            <span class="pat-id">US 10,356,005 B1</span>
+            <span class="pat-state">Granted 2019</span>
+          </p>
+        </div>
+
+        <div class="filed-wrap">
+          <span class="also-lb">Also filed</span>
           <ul class="filed">
             <li>
               <span class="pat-id">US 15/222,499</span>
@@ -319,6 +324,12 @@
           </ul>
         </div>
       </div>
+
+      <!-- MOVEMENT III — foundations. A named opening, so the reader is
+           told a different kind of thing has begun rather than having to
+           infer it from three small column labels. -->
+      <div class="movement" id="foundations">
+        <h3 class="mv-head">Foundations</h3>
 
       <div class="base">
         <div class="base-col">
@@ -361,6 +372,7 @@
             <li><b>IEEE 802.11s Mesh Wireless LAN Channel Assignment and Power Management</b><em>Textbook, ISBN 978-3846502280</em><span class="yr">2011</span></li>
           </ul>
         </div>
+      </div>
       </div>
 
     </div>

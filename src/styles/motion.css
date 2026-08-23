@@ -158,10 +158,15 @@
 /* Like layer 04, the descent does not reverse. */
 .L6.ground-arrived { --deepen: 0 !important; }
 
-/* Layer 05 content emerges by scale, the fifth material on the page.
-   motion-design Emergent Entrance, Premium row: start 95 to 98 per cent,
-   0 per cent overshoot. Nothing else here scales. */
-.js-motion .granted,
+/* Foundations emerges by scale. motion-design Emergent Entrance,
+   Premium row: 95 to 98 per cent start, no overshoot.
+
+   .granted is deliberately NOT here. It used to be, from the boxed
+   version of the patents block, and when the animation moved onto
+   .granted-title instead the wrapper was left hidden with nothing to
+   reveal it. The block disappeared entirely. measure.mjs caught it by
+   multiplying ancestor opacity; a check of the element's own opacity
+   said 1.00 and was useless. */
 .js-motion .base-col,
 .js-motion .chips li,
 .js-motion .service li { opacity: 0; }
@@ -240,6 +245,32 @@
 .js-motion .l3-head { --wipe: 0%; }
 .js-motion .also li { opacity: 0; }
 
+/* --- SECTION 05: THREE MOVEMENTS, THREE MATERIALS -------------------
+   The static page already reads as three movements; the motion only has
+   to confirm what is there on the first scroll. Each movement arrives by
+   a different material so none of them borrows another's gesture.
+
+     I   Research    a horizontal wipe, then the record staggers
+     II  Patents     the granted title travels up behind line masks
+     III Foundations the columns emerge by scale                      */
+
+/* I. the research statement wipes, in reading order */
+.l4-head {
+  --wipe: 100%;
+  mask-image: linear-gradient(to right,
+    black var(--wipe), transparent calc(var(--wipe) + 12%));
+}
+.js-motion .l4-head { --wipe: 0%; }
+
+/* II. the granted patent is split into lines and travels up, the same
+   material the hero headline uses, because it is this section's
+   equivalent moment. */
+.js-motion .granted-title { opacity: 0; }
+.js-motion .filed li { opacity: 0; }
+
+/* III. foundations emerges by scale, with its heading */
+.js-motion .mv-head { opacity: 0; }
+
 /* 04: every element waits for the ground.
 
    Layer 04's ink is light. Until ground-4 has finished rising, the
@@ -251,11 +282,13 @@
    band scrolls up empty, the dark rises over it, and only then does the
    content appear. That also makes the rise the whole event rather than
    something happening behind words. */
-.js-motion .L5 .meta,
-.js-motion .l4-head,
 .js-motion .l4-lead,
 .js-motion .pub,
 .js-motion .more { opacity: 0; }
+/* .l4-head is not in that list: it is hidden by its own wipe. It used to
+   be hidden by opacity as well, and when the tween changed from a fade
+   to a wipe there was nothing left to bring the opacity back, so the
+   research statement never appeared. */
 
 /* Figures rise from behind the rule above them. That rule is the
    horizon; the number is clipped by it until it arrives. */
@@ -271,7 +304,9 @@
 @media (prefers-reduced-motion: reduce) {
   .js-motion .L5 { --veil: -100%; }
   .js-motion .L6 { --deepen: 0; }
-  .js-motion .granted,
+  .js-motion .granted-title,
+  .js-motion .filed li,
+  .js-motion .mv-head,
   .js-motion .base-col,
   .js-motion .chips li,
   .js-motion .service li { opacity: 1; transform: none; }
@@ -293,6 +328,7 @@
   .js-motion .logo,
   .js-motion .l2-head,
   .js-motion .l3-head,
+  .js-motion .l4-head,
   .js-motion .prose p,
   .js-motion .sectors li { --wipe: 100%; }
   .js-motion .frow { --rule-draw: 1; }

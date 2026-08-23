@@ -10,7 +10,7 @@
  */
 import { chromium } from 'playwright-core';
 
-const URL = 'http://localhost:5180/assets/img/mohamed-elsaid.webp';
+const URL = 'http://localhost:5180' + (process.argv[2] || '/assets/img/mohamed-PLACEHOLDER-ai.png');
 const ALPHA_FLOOR = 24;   // out of 255, ignores anti-aliased fringe
 
 const browser = await chromium.launch({ channel: 'chrome' });
@@ -53,7 +53,19 @@ const box = await page.evaluate(async ({ url, floor }) => {
   const widest = Math.max(...rowWidth);
   const shoulderY = rowWidth.findIndex(w => w > widest * 0.9);
 
+  let full = 0, partial = 0, clear = 0;
+  for (let i = 3; i < data.length; i += 4) {
+    const a = data[i];
+    if (a > 250) full++; else if (a > 8) partial++; else clear++;
+  }
+  const px = c.width * c.height;
+
   return {
+    matte: {
+      opaque: (100 * full / px).toFixed(1) + '%',
+      partial: (100 * partial / px).toFixed(1) + '%',
+      transparent: (100 * clear / px).toFixed(1) + '%'
+    },
     source: { w: c.width, h: c.height },
     subject: { minX, minY, maxX, maxY, w: maxX - minX + 1, h: maxY - minY + 1 },
     coveragePct: +(100 * opaque / (c.width * c.height)).toFixed(1),
@@ -64,6 +76,7 @@ const box = await page.evaluate(async ({ url, floor }) => {
 
 const s = box.subject;
 console.log('source            ', `${box.source.w}x${box.source.h}`);
+console.log('matte             ', `opaque ${box.matte.opaque}, partial ${box.matte.partial}, clear ${box.matte.transparent}`);
 console.log('subject bounding  ', `${s.w}x${s.h} at (${s.minX}, ${s.minY})`);
 console.log('subject ratio     ', (s.w / s.h).toFixed(3), `(w/h)`);
 console.log('transparent margin', JSON.stringify(box.transparentMargins));

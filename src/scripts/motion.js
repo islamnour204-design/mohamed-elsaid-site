@@ -396,7 +396,8 @@ mm.add('(prefers-reduced-motion: no-preference)', () => {
         { opacity: 0 }, { opacity: 1, duration: D_MID, stagger: 0.18 }, 0)
       .fromTo('.L5 .sect-name',
         { '--wipe': '0%' }, { '--wipe': '100%', duration: D_REVEAL }, 0.09)
-      .fromTo('.l4-head', { opacity: 0, y: T_BODY }, { opacity: 1, y: 0, duration: D_REVEAL }, 0.1)
+      /* Movement I arrives by a horizontal wipe, in reading order. */
+      .fromTo('.l4-head', { '--wipe': '0%' }, { '--wipe': '100%', duration: D_REVEAL }, 0.1)
       .fromTo('.l4-lead', { opacity: 0, y: T_BODY }, { opacity: 1, y: 0, duration: D_REVEAL }, 0.34)
       /* The record is a list, so it arrives as one. Six entries at 0.08
          is 480ms of stagger, inside motion-design's budget. One tween
@@ -408,63 +409,57 @@ mm.add('(prefers-reduced-motion: no-preference)', () => {
   }
 
   /* =====================================================================
-     LAYER 05 — the ground deepens, and the base emerges
+     SECTION 05, MOVEMENT II — the granted patent
+
+     Split into lines and travelling up behind masks: the same material
+     the hero headline uses, because within this section it is the
+     equivalent moment. The filed applications fade in quietly well
+     after it, so the motion says what the type already says.
      ===================================================================== */
-  const l5 = document.querySelector('.L6');
-  if (l5) {
-    /* ground-4 fades off ground-5. Unlike layer 04 this can run under
-       live text: --ink-inv is 11.9:1 on ground-4 and higher on ground-5,
-       so every intermediate sits between the two and contrast only
-       improves. Measured, not assumed. */
-    gsap.fromTo(l5,
-      { '--deepen': 1 },
-      {
-        '--deepen': 0,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: l5,
-          start: 'top bottom',
-          end: 'top 45%',
-          scrub: 1.5,
-          onLeave: () => l5.classList.add('ground-arrived')
-        }
-      });
+  const grantedTitle = document.querySelector('.granted-title');
+  if (grantedTitle) {
+    const gLines = splitLines('.granted-title');
+    gsap.set(gLines, { yPercent: 110 });
+    gsap.set('.granted-title', { opacity: 1 });
 
-    /* The base emerges by scale, the fifth material on the page.
-       motion-design Emergent Entrance, Premium: 95-98% start, no
-       overshoot. */
-    gsap.fromTo('.granted',
-      { opacity: 0, scale: 0.97 },
-      {
-        opacity: 1, scale: 1, duration: D_REVEAL,
-        scrollTrigger: { trigger: '.granted', start: 'top 88%', once: true }
-      });
+    const tl = gsap.timeline({
+      scrollTrigger: { trigger: '.granted', start: 'top 78%', once: true }
+    });
+    tl.to(gLines, { yPercent: 0, duration: D_REVEAL, stagger: 0.16 }, 0)
+      .fromTo('.granted-meta', { opacity: 0 }, { opacity: 1, duration: D_MID }, 0.5);
 
-    gsap.fromTo('.base-col',
-      { opacity: 0, scale: 0.97 },
-      {
-        opacity: 1, scale: 1,
-        duration: D_MID,
-        stagger: 0.12,
-        scrollTrigger: { trigger: '.base', start: 'top 82%', once: true }
-      });
-
-    /* Chips and service rows are lists, so they arrive as lists.
-       animate.md: "Sibling stagger is appropriate when a list appears as
-       a list. Cap the total delay." */
-    gsap.fromTo('.chips li',
+    gsap.fromTo('.filed li',
       { opacity: 0 },
       {
-        opacity: 1, duration: D_MID, stagger: 0.05,
-        scrollTrigger: { trigger: '.certs', start: 'top 90%', once: true }
+        opacity: 1, duration: D_MID, stagger: 0.1,
+        scrollTrigger: { trigger: '.filed-wrap', start: 'top 86%', once: true }
       });
+  }
 
-    gsap.fromTo('.service li',
-      { opacity: 0 },
-      {
-        opacity: 1, duration: D_MID, stagger: 0.08,
-        scrollTrigger: { trigger: '.service', start: 'top 92%', once: true }
-      });
+  /* =====================================================================
+     SECTION 05, MOVEMENT III — foundations
+
+     Emerges by scale, motion-design's Emergent Entrance at the Premium
+     row: 95 to 98 per cent start, no overshoot. Nothing else in this
+     section scales, so the third movement announces itself by a gesture
+     neither of the other two uses.
+     ===================================================================== */
+  const foundations = document.querySelector('#foundations');
+  if (foundations) {
+    const tl = gsap.timeline({
+      scrollTrigger: { trigger: foundations, start: 'top 82%', once: true }
+    });
+    tl.fromTo('.mv-head', { opacity: 0, scale: 0.97 }, { opacity: 1, scale: 1, duration: D_REVEAL }, 0)
+      .fromTo('.base-col', { opacity: 0, scale: 0.97 },
+        { opacity: 1, scale: 1, duration: D_MID, stagger: 0.12 }, 0.2);
+
+    gsap.fromTo('.chips li', { opacity: 0 },
+      { opacity: 1, duration: D_MID, stagger: 0.05,
+        scrollTrigger: { trigger: '.chips', start: 'top 90%', once: true } });
+
+    gsap.fromTo('.service li', { opacity: 0 },
+      { opacity: 1, duration: D_MID, stagger: 0.08,
+        scrollTrigger: { trigger: '.service', start: 'top 90%', once: true } });
   }
 
   /* The portrait drifts slower than the text as the hero leaves, a

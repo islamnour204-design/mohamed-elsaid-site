@@ -415,27 +415,10 @@
    No 02/03/04 on the filed patents: craft-floor refuses section numbers
    unless the sequence carries information, and these are not ranked.  */
 
-.granted {
-  padding: var(--s-4) 0;
-  border-top: 1px solid var(--rule-inv-strong);
-  border-bottom: 1px solid var(--rule-inv-strong);
-}
-.granted-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: var(--s-3);
-}
-.granted b {
-  display: block;
-  margin-top: var(--s-2);
-  max-width: 34ch;
-  font-size: var(--t-h3);
-  font-weight: 500;
-  letter-spacing: var(--tracking-h);
-  line-height: 1.25;
-  color: var(--ink-inv);
-}
+/* The .granted rules that used to live here were from the boxed version
+   of this block: a bordered panel with the title at --t-h3. They are
+   gone. The granted patent is now set by .granted-title further down,
+   where scale and air do the separating instead of a border. */
 .pat-id {
   font-size: var(--t-meta);
   letter-spacing: var(--tracking-meta);
@@ -602,57 +585,108 @@
   .job { grid-template-columns: var(--logo-col) minmax(0, 1fr); gap: var(--s-6); }
 }
 
-/* --- PATENTS, ON THEIR OWN SURFACE -----------------------------------
+/* --- SECTION 05, THREE MOVEMENTS -------------------------------------
 
-   Section 05 holds publications, patents and education, and the patents
-   have to read as clearly separate rather than melting into the rest.
+   Research, Patents, Foundations. The section holds three distinct kinds
+   of thing and the reader has to be told when one ends and the next
+   begins, without the section being split.
 
-   The device is a change of material, not an outline: the block sits on
-   an --accent-deep fill. tokens.css documents that token as "fills,
-   large blocks, never for text", which is precisely this use. No border,
-   no card, and nothing for craft-floor's refusal of boxes to catch.
+   The device is air and a rule, not a container. craft-floor.md refuses
+   cards and boxes as page structure; taste 4.4 says group with border-t,
+   divide-y or negative space instead. craft-floor Spacing: "tight
+   groups, generous separation, more space above a heading than below
+   it" — so --s-9 above each movement against --s-3 inside them.
 
-   No clip-path anywhere near it. BUILD-BRIEF section 5 records this
-   exact patent panel rendering as an empty box in a real browser when a
-   clip-path reveal failed to fire.                                   */
+   The three openings are deliberately unequal in rank:
 
-.patents {
-  margin-top: var(--s-8);
-  background: var(--accent-deep);
+     I   a statement at --t-h2, the research argument
+     II  the granted patent at --t-lede, the largest thing in the
+         section, because it is the strongest verifiable credential on
+         the site
+     III a single word at --t-h2
+
+   impeccable layout.md: "Let hierarchy follow product priority, not
+   framework defaults." The middle movement outranks its neighbours on
+   purpose.                                                           */
+
+.movement {
+  margin-top: var(--s-9);
+  padding-top: var(--s-6);
+  border-top: 1px solid var(--rule-inv);
 }
-.patents-in { padding: var(--s-6) var(--s-5); }
-.pat-head {
-  margin: 0;
-  font-size: var(--t-h3);
+
+.mv-head {
+  margin: 0 0 var(--s-6);
+  font-size: var(--t-h2);
+  font-weight: 600;
+  letter-spacing: var(--tracking-h);
+}
+
+/* The granted patent. Scale and air do the separating. */
+.granted-title {
+  display: block;
+  max-width: 22ch;
+  font-size: var(--t-lede);
   font-weight: 500;
   letter-spacing: var(--tracking-h);
+  line-height: 1.1;
+  text-wrap: balance;
   color: var(--ink-inv);
 }
-.pat-count {
-  display: block;
-  margin-top: var(--s-1);
+.granted-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-4);
+  margin-top: var(--s-4);
+}
+.pat-id {
   font-size: var(--t-meta);
-  text-transform: uppercase;
   letter-spacing: var(--tracking-meta);
   color: var(--ink-inv-secondary);
 }
-.patents .granted {
-  margin-top: var(--s-5);
-  padding: var(--s-4) 0;
-  border-top: 1px solid var(--rule-inv-strong);
-  border-bottom: 1px solid var(--rule-inv-strong);
+.pat-state {
+  font-size: var(--t-meta);
+  letter-spacing: var(--tracking-meta);
+  text-transform: uppercase;
+  color: var(--accent-light);
 }
-.patents .filed {
+
+/* The filed applications stay quiet: small, listed, and set well below
+   the granted one so the gap itself says which matters. */
+.filed-wrap {
+  display: grid;
+  grid-template-columns: 8rem minmax(0, 1fr);
+  gap: var(--s-5);
+  margin-top: var(--s-8);
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--rule-inv);
+}
+.filed {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--s-5);
-  margin: var(--s-4) 0 0;
+  margin: 0;
   padding: 0;
   list-style: none;
 }
-.patents .filed li { margin: 0; }
+.filed .pat-id { display: block; }
+.filed b {
+  display: block;
+  margin-top: 2px;
+  font-size: var(--t-small);
+  font-weight: 400;
+  line-height: 1.35;
+  color: var(--ink-inv);
+}
+.filed .pat-state { display: block; margin-top: var(--s-1); }
 
-/* --- CONTACT ---------------------------------------------------------
+@media (max-width: 860px) {
+  .movement { margin-top: var(--s-7); }
+  .filed-wrap { grid-template-columns: 1fr; gap: var(--s-3); margin-top: var(--s-6); }
+  .filed { grid-template-columns: 1fr; gap: var(--s-4); }
+}
+
+/* --- CONTACT ---/* --- CONTACT ---------------------------------------------------------
    A real closing section with a heading, not a bare list of links.   */
 
 .contact-grid {

@@ -73,7 +73,9 @@ toggle.addEventListener('click', () => {
   const open = nav.classList.toggle('is-open');
   toggle.setAttribute('aria-expanded', String(open));
 });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && nav.classList.contains('is-open')) { closeMenu(); toggle.focus(); }
+});
 
 /* In-page links go through Lenis so the jump is smooth and lands below
    the fixed navigation. */
@@ -83,11 +85,15 @@ $$('a[href^="#"]').forEach(a => {
     const target = id === '#top' ? document.body : $(id);
     if (!target) return;
     closeMenu();
-    if (lenis) {
-      e.preventDefault();
-      lenis.scrollTo(target, { offset: id === '#top' ? 0 : -NAV_H });
-      history.replaceState(null, '', id);
-    }
+    e.preventDefault();
+    if (lenis) lenis.scrollTo(target, { offset: id === '#top' ? 0 : -NAV_H });
+    else target.scrollIntoView();
+    history.replaceState(null, '', id);
+    /* Keyboard focus moves with the jump, so the next Tab continues from
+       the section, not from the link that was pressed (Sol 6.1 review). */
+    const focusEl = id === '#top' ? $('.hero') : target;
+    if (!focusEl.hasAttribute('tabindex')) focusEl.setAttribute('tabindex', '-1');
+    focusEl.focus({ preventScroll: true });
   });
 });
 
@@ -270,8 +276,7 @@ function motion() {
      letters overlapping so it resolves as one phrase rather than a
      typewriter. Role, claim and buttons are readable from the first
      frame (Sol 6.1, round 2: supporting information stays readable).
-     Then a band of light crosses the name, once, and again every few
-     seconds while the hero is on screen. */
+     Then one band of light crosses the name, once (DIRECTION.md). */
   const nameEl = $('.hero-name-text');
   /* Words first, so the name only ever wraps between words. */
   const split = SplitText.create(nameEl, { type: 'words,chars', mask: 'chars' });
@@ -283,19 +288,11 @@ function motion() {
     .from(split.chars, { yPercent: 110, duration: D_REVEAL, stagger: 0.035 }, 0.15)
     .from('.hero-portrait', { y: T_LEAD, opacity: 0, duration: D_REVEAL }, 0.35);
 
-  const sweep = gsap.timeline({ repeat: -1, repeatDelay: 6, paused: true })
+  const sweep = gsap.timeline({ paused: true })
     .set('.hero-sweep', { opacity: 1, maskPosition: '100% 0', webkitMaskPosition: '100% 0' })
     .to('.hero-sweep', { maskPosition: '0% 0', webkitMaskPosition: '0% 0', duration: 1.6, ease: 'power2.inOut' })
     .set('.hero-sweep', { opacity: 0 });
   hero.call(() => sweep.play(), null, '>-0.4');
-
-  ScrollTrigger.create({
-    trigger: '.hero',
-    start: 'top top',
-    end: 'bottom top',
-    onLeave: () => sweep.pause(),
-    onEnterBack: () => sweep.play()
-  });
 
   /* --- ADVISORY: the stack opens ------------------------------------
      The four slabs start pressed together, as one block, and separate
@@ -338,7 +335,7 @@ function motion() {
   renderMig(0);
 
   const mm = gsap.matchMedia();
-  mm.add('(min-height: 560px)', () => {
+  mm.add('(min-width: 861px) and (min-height: 560px)', () => {
     ScrollTrigger.create({
       trigger: mig,
       start: `top ${NAV_H + px('--s-4')}px`,
@@ -348,8 +345,9 @@ function motion() {
       onUpdate: self => renderMig(self.progress)
     });
   });
-  mm.add('(max-height: 559px)', () => {
-    /* Too short to pin: the scene plays as it scrolls past instead. */
+  mm.add('(max-width: 860px), (max-height: 559px)', () => {
+    /* Phones and short screens: no pin. The scene plays as it scrolls
+       past, all five steps stay on screen (DIRECTION.md). */
     ScrollTrigger.create({
       trigger: mig,
       start: 'top 70%',

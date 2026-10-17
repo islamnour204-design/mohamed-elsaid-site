@@ -128,6 +128,8 @@
 .statement + .prose, .statement + * { margin-top: var(--s-3); }
 
 .more { margin-top: var(--s-4); font-size: var(--t-small); }
+/* Standalone links meet the 44px tap floor (DESIGN.md A3). */
+.more a, .foot-in a { display: inline-flex; align-items: center; min-height: var(--tap-min); }
 
 /* --- HERO ------------------------------------------------------------ */
 .hero {
@@ -304,10 +306,12 @@
   flex-wrap: wrap;
   justify-content: space-between;
   gap: var(--s-2);
+  align-items: center;
   padding-block: var(--s-4);
   font-size: var(--t-small);
   color: var(--ink-inv-secondary);
 }
+main:focus { outline: none; }
 
 /* =====================================================================
    NARROW SCREENS

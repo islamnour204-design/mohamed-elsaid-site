@@ -87,8 +87,12 @@
 .mig-steps span { font-size: var(--t-small); color: var(--ink-inv-secondary); }
 /* While the scene plays, the steps not yet reached or already passed
    step back. Without the script every step stays at full strength. */
-.mig.is-live .mig-steps li { opacity: .38; }
-.mig.is-live .mig-steps li.is-on { opacity: 1; }
+/* Steps not yet reached or already passed drop to the secondary ink,
+   which still measures 6.1:1 on this ground. Transparency measured 2:1
+   and failed (Sol 6.1 review). */
+.mig.is-live .mig-steps li b { color: var(--ink-inv-secondary); font-weight: 500; transition: color var(--d-base) var(--ease); }
+.mig.is-live .mig-steps li.is-on b { color: var(--ink-inv); font-weight: 600; }
+.mig.is-live .mig-steps li.is-on span { color: var(--ink-inv); }
 
 .mig-stage { display: grid; gap: var(--s-3); }
 .hosts { display: grid; grid-template-columns: auto minmax(var(--s-6), 1fr) auto; align-items: center; }
@@ -200,9 +204,8 @@
   .amx-row { gap: var(--s-1); }
 
   .mig-in { grid-template-columns: minmax(0, 1fr); gap: var(--s-4); }
-  /* While pinned on a phone, only the current step shows. */
-  .mig.is-live .mig-steps li { display: none; }
-  .mig.is-live .mig-steps li.is-on { display: grid; }
+  /* Phones are not pinned: the scene flows with the page. */
+  .mig { min-height: 0; }
   .host { padding: var(--s-2); }
   .vm { padding: var(--s-1); }
   .pages { grid-template-columns: repeat(6, var(--cell-s)); }

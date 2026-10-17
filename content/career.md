@@ -86,3 +86,15 @@ invented and must not ship.
 
 These are Part A content-truth matters. A search professional will check
 them against LinkedIn. Ask Mohamed rather than guessing.
+
+---
+
+## Added by Mohamed, supplied via Islam on 2026-10-14
+
+Verbatim. Source for the Edge AI section and the Intel role on the CV page.
+
+> Designed and delivered several customer proofs of concept on edge AI using Intel AMX, validating infrastructure strategies with measurable improvements.
+>
+> Advised tens of enterprise and government customers as well as OEMs across EMEA (automotive, industrial, financial, telco, public sector) on datacenter and private cloud transformation for compute and software defined storage platforms.
+
+Keep "several" and "tens" as words. No figure exists for either.

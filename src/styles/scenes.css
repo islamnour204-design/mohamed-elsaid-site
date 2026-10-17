@@ -1,0 +1,217 @@
+/* =====================================================================
+   Scenes. The diagrams that move: the opened stack (Advisory), the AMX
+   tiles (Edge AI), the live-migration replay (Research, the signature),
+   the timeline (Career).
+
+   Every scene's default state, without the script, is its FINISHED
+   state. The script rewinds it and plays it on scroll, so a failed
+   script never leaves an empty diagram (BUILD-BRIEF section 5).
+   ===================================================================== */
+
+/* --- THE OPENED STACK (Advisory) --------------------------------------
+   Four slabs, lightest at the top, darkest at the base: the same descent
+   the page makes, at the size of one figure. */
+.xstack { display: grid; gap: var(--s-2); }
+.xslab {
+  display: grid;
+  gap: var(--s-1);
+  padding: var(--s-3);
+  border: 1px solid var(--rule-strong);
+}
+.xslab b { font-weight: 600; letter-spacing: var(--tracking-h); }
+.xslab span { font-size: var(--t-small); }
+.xslab:nth-child(1) { background: var(--ground-1); }
+.xslab:nth-child(1) span { color: var(--ink-secondary); }
+.xslab:nth-child(2) { background: var(--ground-3); }
+.xslab:nth-child(2) span { color: var(--ink-secondary); }
+.xslab:nth-child(3) { background: var(--ground-5); color: var(--ink-inv); border-color: var(--ground-5); }
+.xslab:nth-child(3) span { color: var(--ink-inv-secondary); }
+.xslab:nth-child(4) { background: var(--ground-6); color: var(--ink-inv); border-color: var(--ground-6); }
+.xslab:nth-child(4) span { color: var(--ink-inv-secondary); }
+
+/* --- AMX TILES (Edge AI) --------------------------------------------- */
+.amx { display: grid; gap: var(--s-3); justify-items: center; }
+.amx-row { display: flex; align-items: center; gap: var(--s-2); }
+.tile { display: grid; gap: var(--s-1); justify-items: start; }
+.tile-lb { font-size: var(--t-meta); letter-spacing: var(--tracking-meta); text-transform: uppercase; color: var(--ink-secondary); }
+.cells {
+  display: grid;
+  grid-template-columns: repeat(4, var(--cell));
+  gap: var(--cell-gap);
+  padding: var(--cell-gap);
+  border: 1px solid var(--rule-strong);
+  background: var(--ground-1);
+}
+.cell {
+  width: var(--cell);
+  height: var(--cell);
+  background: var(--rule);
+  transition: background-color var(--d-fast) var(--ease);
+}
+.cell.is-src { background: var(--accent); }
+.cell.is-done { background: var(--accent-deep); }
+.amx-op { font-size: var(--t-h3); font-weight: 500; color: var(--ink-secondary); }
+.amx figcaption { font-size: var(--t-small); color: var(--ink-secondary); text-align: center; max-width: 44ch; }
+
+/* --- LIVE MIGRATION (Research) ---------------------------------------- */
+.mig {
+  margin-top: var(--s-6);
+  /* Fills the screen under the navigation while pinned, content centred. */
+  min-height: calc(100svh - var(--nav-h) - var(--s-4) * 2);
+  display: grid;
+  align-content: center;
+}
+.mig-in {
+  display: grid;
+  grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr);
+  gap: var(--s-6);
+  align-items: center;
+}
+.mig-steps { display: grid; gap: var(--s-3); }
+.mig-steps li {
+  display: grid;
+  grid-template-columns: var(--s-4) minmax(0, 1fr);
+  column-gap: var(--s-2);
+  transition: opacity var(--d-base) var(--ease);
+}
+.mig-steps li::before {
+  /* Written into the markup: on a phone only the current step is
+     displayed, and a CSS counter skips hidden items. */
+  content: attr(data-n);
+  grid-row: span 2;
+  font-size: var(--t-small);
+  font-variant-numeric: tabular-nums;
+  color: var(--accent-light);
+}
+.mig-steps b { font-weight: 600; }
+.mig-steps span { font-size: var(--t-small); color: var(--ink-inv-secondary); }
+/* While the scene plays, the steps not yet reached or already passed
+   step back. Without the script every step stays at full strength. */
+.mig.is-live .mig-steps li { opacity: .38; }
+.mig.is-live .mig-steps li.is-on { opacity: 1; }
+
+.mig-stage { display: grid; gap: var(--s-3); }
+.hosts { display: grid; grid-template-columns: auto minmax(var(--s-6), 1fr) auto; align-items: center; }
+.host {
+  display: grid;
+  gap: var(--s-2);
+  padding: var(--s-3);
+  border: 1px solid var(--rule-inv-strong);
+}
+.host-lb { font-size: var(--t-meta); letter-spacing: var(--tracking-meta); text-transform: uppercase; color: var(--ink-inv-secondary); }
+.vm {
+  display: grid;
+  gap: var(--s-1);
+  padding: var(--s-2);
+  border: 1px solid var(--accent-light);
+  transition: opacity var(--d-base) var(--ease), border-color var(--d-base) var(--ease);
+}
+.vm-lb { font-size: var(--t-small); font-weight: 500; }
+.vm.is-paused { border-style: dashed; }
+.vm.is-gone { opacity: .25; border-color: var(--rule-inv-strong); }
+.pages {
+  display: grid;
+  grid-template-columns: repeat(6, var(--cell-mig));
+  gap: var(--cell-gap);
+}
+.page {
+  width: var(--cell-mig);
+  height: var(--cell-mig);
+  background: var(--rule-inv-strong);
+}
+/* Host B: an empty slot until a page arrives. */
+.vm-dest .page { background: transparent; box-shadow: inset 0 0 0 1px var(--rule-inv); }
+.vm-dest .page.is-copied { background: var(--accent-light); box-shadow: none; }
+/* Default (finished) state: every page has arrived. */
+.vm-dest:not(.is-rewound) .page { background: var(--accent-light); box-shadow: none; }
+.page.is-dirty { background: var(--ink-inv); }
+
+.wire { position: relative; height: 1px; margin-inline: var(--s-2); background: var(--rule-inv-strong); }
+.wire-pulse {
+  position: absolute;
+  top: calc(var(--cell-gap) * -1);
+  left: 0;
+  width: var(--s-3);
+  height: calc(var(--cell-gap) * 2 + 1px);
+  background: var(--accent-light);
+  opacity: 0;
+}
+.mig-stage figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--s-2);
+  font-size: var(--t-small);
+  color: var(--ink-inv-secondary);
+}
+.legend { display: inline-flex; align-items: center; gap: var(--s-1); }
+.lg { display: inline-block; width: var(--cell-s); height: var(--cell-s); }
+.lg-dirty { background: var(--ink-inv); }
+
+/* --- TIMELINE (Career) ------------------------------------------------ */
+.timeline {
+  position: relative;
+  display: grid;
+  gap: var(--s-5);
+  margin-top: var(--s-6);
+  padding-left: var(--s-5);
+}
+/* The line. Drawn by the script as the reader descends; drawn in full
+   by default. */
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: var(--s-1);
+  bottom: var(--s-1);
+  width: 1px;
+  background: var(--accent-light);
+  transform-origin: top;
+  transform: scaleY(var(--draw, 1));
+}
+.tl { position: relative; display: grid; grid-template-columns: var(--tl-when) minmax(0, 1fr); column-gap: var(--s-4); row-gap: var(--s-1); }
+.tl::before {
+  content: "";
+  position: absolute;
+  left: calc(var(--s-5) * -1 - (var(--stack-mark-h) - 1px) / 2);
+  top: var(--s-1);
+  width: var(--stack-mark-h);
+  height: var(--stack-mark-h);
+  background: var(--accent-light);
+}
+.tl-when { grid-row: span 2; font-size: var(--t-small); font-variant-numeric: tabular-nums; color: var(--accent-light); }
+.tl b { font-size: var(--t-h3); font-weight: 500; letter-spacing: var(--tracking-h); line-height: 1.25; }
+.tl-where { font-size: var(--t-small); color: var(--ink-inv-secondary); }
+
+/* --- HERO ENTRANCE START STATES --------------------------------------
+   Only while the script is alive (.js-motion). The script removes the
+   class when the entrance ends, and a 4-second failsafe removes it
+   regardless, so the page can never stay hidden. */
+.js-motion [data-rise] { opacity: 0; }
+.js-motion .hero-name-text { opacity: 0; }
+.js-motion .hero-portrait { opacity: 0; }
+
+/* =====================================================================
+   NARROW SCREENS
+   ===================================================================== */
+@media (max-width: 860px) {
+  .cells { grid-template-columns: repeat(4, var(--cell-s)); }
+  .cell { width: var(--cell-s); height: var(--cell-s); }
+  .amx-row { gap: var(--s-1); }
+
+  .mig-in { grid-template-columns: minmax(0, 1fr); gap: var(--s-4); }
+  /* While pinned on a phone, only the current step shows. */
+  .mig.is-live .mig-steps li { display: none; }
+  .mig.is-live .mig-steps li.is-on { display: grid; }
+  .host { padding: var(--s-2); }
+  .vm { padding: var(--s-1); }
+  .pages { grid-template-columns: repeat(6, var(--cell-s)); }
+  .page { width: var(--cell-s); height: var(--cell-s); }
+  .hosts { grid-template-columns: auto minmax(var(--s-3), 1fr) auto; }
+  .wire { margin-inline: var(--s-1); }
+
+  .timeline { padding-left: var(--s-4); }
+  .tl { grid-template-columns: minmax(0, 1fr); }
+  .tl::before { left: calc(var(--s-4) * -1 - (var(--stack-mark-h) - 1px) / 2); }
+  .tl-when { grid-row: auto; }
+}

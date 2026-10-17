@@ -1,0 +1,45 @@
+/* =====================================================================
+   Secondary pages: Publications and CV. Plain, readable records with no
+   scroll spectacle (Sol 6.1 round 2). Light ground throughout.
+   ===================================================================== */
+
+.doc { padding-block: calc(var(--nav-h) + var(--s-7)) var(--s-8); }
+.doc-title {
+  font-size: var(--t-claim);
+  font-weight: 600;
+  letter-spacing: var(--tracking-display);
+}
+.doc-lede { margin-top: var(--s-3); }
+
+.doc-sect { margin-top: var(--s-7); }
+.doc-h {
+  font-size: var(--t-meta);
+  font-weight: 500;
+  letter-spacing: var(--tracking-meta);
+  text-transform: uppercase;
+  color: var(--ink-secondary);
+  padding-bottom: var(--s-2);
+  margin-bottom: var(--s-2);
+  border-bottom: 1px solid var(--rule-strong);
+}
+
+.entries li {
+  display: grid;
+  grid-template-columns: var(--tl-when) minmax(0, 1fr);
+  column-gap: var(--s-4);
+  padding-block: var(--s-3);
+  border-bottom: 1px solid var(--rule);
+}
+.e-yr { font-size: var(--t-small); font-variant-numeric: tabular-nums; color: var(--accent); }
+.entries b { display: block; font-weight: 500; max-width: var(--measure); }
+.e-meta { display: block; margin-top: var(--s-1); font-size: var(--t-small); color: var(--ink-secondary); max-width: var(--measure); }
+.e-flag { color: var(--accent); font-weight: 600; margin-right: var(--s-1); }
+.e-body { margin-top: var(--s-2); font-size: var(--t-small); }
+.roles b { font-size: var(--t-h3); letter-spacing: var(--tracking-h); }
+
+.foot { margin-top: 0; }
+
+@media (max-width: 860px) {
+  .doc { padding-top: calc(var(--nav-h) + var(--s-5)); }
+  .entries li { grid-template-columns: minmax(0, 1fr); row-gap: var(--s-1); }
+}

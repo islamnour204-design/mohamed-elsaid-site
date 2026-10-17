@@ -1,0 +1,368 @@
+/* =====================================================================
+   Site. Navigation, stack indicator, and the static composition of
+   every section. Scenes (AMX, migration, timeline) live in scenes.css.
+   One breakpoint, 860px (see tokens.css for why it is literal).
+   ===================================================================== */
+
+/* --- NAVIGATION ------------------------------------------------------ */
+.nav {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 20;
+  background: var(--nav-ground);
+  backdrop-filter: blur(var(--nav-blur));
+  border-bottom: 1px solid var(--rule);
+  transition: background-color var(--d-base) var(--ease), color var(--d-base) var(--ease), border-color var(--d-base) var(--ease);
+}
+.nav-in {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  height: var(--nav-h);
+  max-width: var(--max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+.nav-name {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap-min);
+  font-weight: 600;
+  letter-spacing: var(--tracking-h);
+  text-decoration: none;
+}
+.nav-links ul { display: flex; align-items: center; gap: var(--s-1); }
+.nav-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap-min);
+  padding-inline: var(--s-1);
+  font-size: var(--t-small);
+  color: var(--ink-secondary);
+  text-decoration: none;
+  transition: color var(--d-fast) var(--ease);
+}
+.nav-links a:hover, .nav-links a.is-on { color: var(--ink); }
+.nav-links a.is-on { text-decoration: underline; text-decoration-thickness: 2px; text-decoration-color: var(--accent); }
+.nav-sep { margin-left: var(--s-2); padding-left: var(--s-2); border-left: 1px solid var(--rule); }
+.nav-toggle { display: none; }
+.depth { display: none; }
+
+/* The navigation follows the ground beneath it. */
+.on-dark .nav { background: var(--nav-ground-inv); color: var(--ink-inv); border-bottom-color: var(--rule-inv); }
+.on-dark .nav-links a { color: var(--ink-inv-secondary); }
+.on-dark .nav-links a:hover, .on-dark .nav-links a.is-on { color: var(--ink-inv); }
+.on-dark .nav-links a.is-on { text-decoration-color: var(--accent-light); }
+.on-dark .nav-sep { border-left-color: var(--rule-inv); }
+.on-dark .nav :focus-visible { outline-color: var(--accent-light); }
+
+/* --- STACK INDICATOR ------------------------------------------------- */
+.stack {
+  position: fixed;
+  left: 0;
+  top: 50%;
+  z-index: 15;
+  transform: translateY(-50%);
+}
+.stack a {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: var(--tap-min);
+  height: var(--tap-min);
+  text-decoration: none;
+}
+/* The slab itself. */
+.stack a::before {
+  content: "";
+  width: var(--stack-mark-w);
+  height: var(--stack-mark-h);
+  background: var(--rule-strong);
+  transition: width var(--d-base) var(--ease), background-color var(--d-base) var(--ease);
+}
+.stack a.is-past::before { background: var(--ink-muted); }
+.stack a.is-on::before { width: var(--stack-mark-w-on); background: var(--accent); }
+/* Label on hover and focus only. */
+.stack span {
+  position: absolute;
+  left: calc(var(--stack-mark-w-on) + var(--s-2));
+  padding: var(--s-1) var(--s-2);
+  font-size: var(--t-small);
+  white-space: nowrap;
+  background: var(--ground-1);
+  color: var(--ink);
+  border: 1px solid var(--rule-strong);
+  opacity: 0;
+  transform: translateX(calc(var(--s-1) * -1));
+  pointer-events: none;
+  transition: opacity var(--d-fast) var(--ease), transform var(--d-fast) var(--ease);
+}
+.stack a:hover span, .stack a:focus-visible span { opacity: 1; transform: none; }
+.on-dark .stack a::before { background: var(--rule-inv-strong); }
+.on-dark .stack a.is-past::before { background: var(--ink-inv-secondary); }
+.on-dark .stack a.is-on::before { background: var(--accent-light); }
+.on-dark .stack span { background: var(--ground-6); color: var(--ink-inv); border-color: var(--rule-inv-strong); }
+.on-dark .stack :focus-visible { outline-color: var(--accent-light); }
+
+/* --- LAYERS ---------------------------------------------------------- */
+.layer { position: relative; padding-block: var(--s-8) var(--s-7); }
+
+/* The section name is the hard boundary Mohamed asked for: a real
+   heading over a strong rule, not an eyebrow (craft-floor bans those). */
+.sect-name {
+  font-size: var(--t-h2);
+  font-weight: 500;
+  line-height: 1;
+  padding-bottom: var(--s-3);
+  margin-bottom: var(--s-6);
+  border-bottom: 1px solid var(--rule-strong);
+}
+.dark .sect-name { border-bottom-color: var(--rule-inv-strong); }
+
+.statement {
+  font-size: var(--t-statement);
+  font-weight: 600;
+  max-width: 24ch;
+}
+.statement + .prose, .statement + * { margin-top: var(--s-3); }
+
+.more { margin-top: var(--s-4); font-size: var(--t-small); }
+
+/* --- HERO ------------------------------------------------------------ */
+.hero {
+  min-height: 100svh;
+  padding-block: calc(var(--nav-h) + var(--s-5)) var(--s-5);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  border-bottom: 1px solid var(--rule-strong);
+}
+.hero-copy { position: relative; z-index: 1; }
+/* The name may run the full width; everything under it keeps clear of
+   the portrait. */
+.hero-copy > :not(.hero-name) { max-width: min(var(--hero-copy-max), calc(100vw - var(--portrait-v2) - var(--gutter) * 2)); }
+.hero-name {
+  position: relative;
+  font-size: var(--t-hero);
+  font-weight: 650;
+  letter-spacing: var(--tracking-display);
+  line-height: .95;
+}
+.hero-name-text { display: block; }
+/* Light sweep: a copy of the name in petrol, revealed through a moving
+   band. Hidden unless the script runs it. */
+.hero-sweep {
+  position: absolute;
+  inset: 0;
+  color: var(--accent);
+  -webkit-mask-image: linear-gradient(100deg, transparent 0 40%, var(--ink) 50%, transparent 60% 100%);
+  mask-image: linear-gradient(100deg, transparent 0 40%, var(--ink) 50%, transparent 60% 100%);
+  -webkit-mask-size: 300% 100%;
+  mask-size: 300% 100%;
+  -webkit-mask-position: 100% 0;
+  mask-position: 100% 0;
+  opacity: 0;
+  pointer-events: none;
+}
+.hero-role {
+  margin-top: var(--s-2);
+  font-size: var(--t-small);
+  font-weight: 500;
+  color: var(--accent);
+}
+.hero-claim {
+  margin-top: var(--s-4);
+  font-size: var(--t-claim);
+  font-weight: 500;
+  letter-spacing: var(--tracking-h);
+  line-height: 1.12;
+  text-wrap: balance;
+}
+.hero-claim strong { font-weight: 750; color: var(--accent); }
+.hero-sub { margin-top: var(--s-3); font-size: var(--t-small); }
+.hero .act { margin-top: var(--s-4); }
+
+/* The cut-out is cropped at its right and bottom edges, so those edges
+   sit on the hero's own right and bottom edges: merged into the ground,
+   never framed (DESIGN.md A4: "this is not a national ID"). */
+.hero-portrait {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: var(--portrait-v2);
+}
+.hero-portrait img { width: 100%; }
+
+/* --- ADVISORY -------------------------------------------------------- */
+.adv-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr);
+  gap: var(--s-7);
+  align-items: start;
+}
+.sectors { display: flex; flex-wrap: wrap; gap: var(--s-1); margin-top: var(--s-5); }
+.sectors li {
+  padding: var(--s-1) var(--s-2);
+  font-size: var(--t-small);
+  border: 1px solid var(--rule-strong);
+}
+
+/* --- EDGE AI --------------------------------------------------------- */
+.edge-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--s-7);
+  align-items: center;
+}
+.paper {
+  display: block;
+  margin-top: var(--s-5);
+  padding: var(--s-3);
+  max-width: 46ch;
+  border: 1px solid var(--rule-strong);
+  text-decoration: none;
+  transition: border-color var(--d-fast) var(--ease), background-color var(--d-fast) var(--ease);
+}
+.paper:hover { border-color: var(--accent); background: var(--ground-2); }
+.paper-kind { display: block; font-size: var(--t-meta); letter-spacing: var(--tracking-meta); text-transform: uppercase; color: var(--accent); }
+.paper-title { display: block; margin-top: var(--s-1); font-weight: 600; }
+
+/* --- RESEARCH -------------------------------------------------------- */
+.res-intro .prose { margin-top: var(--s-3); }
+
+.group { margin-top: var(--s-8); }
+.group-lb {
+  font-size: var(--t-meta);
+  font-weight: 500;
+  letter-spacing: var(--tracking-meta);
+  text-transform: uppercase;
+  color: var(--ink-inv-secondary);
+  padding-bottom: var(--s-2);
+  margin-bottom: var(--s-4);
+  border-bottom: 1px solid var(--rule-inv);
+}
+
+.pubs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 var(--s-6); }
+.pub { padding-block: var(--s-3); border-bottom: 1px solid var(--rule-inv); }
+.pub b { display: block; font-weight: 500; }
+.pub-meta { display: flex; justify-content: space-between; gap: var(--s-2); margin-top: var(--s-1); font-size: var(--t-small); color: var(--ink-inv-secondary); }
+.pub-meta em { font-style: normal; }
+.y, .yr { font-variant-numeric: tabular-nums; color: var(--accent-light); }
+
+.granted { display: grid; gap: var(--s-1); padding-bottom: var(--s-4); border-bottom: 1px solid var(--rule-inv); }
+.granted-title { font-size: var(--t-statement); font-weight: 600; letter-spacing: var(--tracking-h); line-height: 1.2; max-width: 34ch; }
+.pat-id { font-size: var(--t-small); font-variant-numeric: tabular-nums; color: var(--ink-inv-secondary); }
+.pat-state { font-size: var(--t-meta); letter-spacing: var(--tracking-meta); text-transform: uppercase; color: var(--ink-inv-secondary); }
+.pat-granted { color: var(--accent-light); }
+.filed { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-4); margin-top: var(--s-4); }
+.filed li { display: grid; gap: var(--s-1); align-content: start; }
+.filed b { font-weight: 500; }
+
+.edu { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-4); }
+.edu li { display: grid; gap: var(--s-1); align-content: start; }
+.edu b { font-weight: 500; }
+.where { font-size: var(--t-small); color: var(--ink-inv-secondary); }
+
+/* --- CONTACT --------------------------------------------------------- */
+.contact { padding-bottom: 0; }
+.contact-head {
+  position: relative;
+  font-size: var(--t-lede);
+  font-weight: 600;
+  letter-spacing: var(--tracking-display);
+  line-height: 1.05;
+  max-width: 18ch;
+}
+.fill-base { display: block; color: var(--ink-inv); }
+/* The closing fill: the same line in the accent, revealed left to
+   right once. Default state is fully filled, so a failed script still
+   shows the finished line. */
+.fill-top {
+  position: absolute;
+  inset: 0;
+  color: var(--accent-light);
+  clip-path: inset(0 0 0 0);
+}
+.links { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-5); margin-top: var(--s-6); }
+.links a {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-height: var(--tap-min);
+  color: var(--ink-inv);
+  text-decoration: none;
+}
+.links a:hover .link-v { text-decoration: underline; }
+.icon { width: var(--icon); height: var(--icon); color: var(--accent-light); flex: none; }
+.link-k { font-size: var(--t-meta); letter-spacing: var(--tracking-meta); text-transform: uppercase; color: var(--ink-inv-secondary); }
+.contact-meta { margin-top: var(--s-4); font-size: var(--t-small); color: var(--ink-inv-secondary); }
+
+.foot { margin-top: var(--s-8); border-top: 1px solid var(--rule-inv); }
+.foot-in {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--s-2);
+  padding-block: var(--s-4);
+  font-size: var(--t-small);
+  color: var(--ink-inv-secondary);
+}
+
+/* =====================================================================
+   NARROW SCREENS
+   ===================================================================== */
+@media (max-width: 860px) {
+  .stack { display: none; }
+
+  .nav-toggle {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap-min);
+    padding: 0 var(--s-2);
+    font: inherit;
+    font-size: var(--t-small);
+    color: inherit;
+    background: none;
+    border: 1px solid currentColor;
+    cursor: pointer;
+  }
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: var(--nav-h);
+    left: 0;
+    right: 0;
+    background: var(--ground-1);
+    border-bottom: 1px solid var(--rule-strong);
+  }
+  .on-dark .nav-links { background: var(--ground-6); border-bottom-color: var(--rule-inv-strong); }
+  .nav.is-open .nav-links { display: block; }
+  .nav-links ul { flex-direction: column; align-items: stretch; gap: 0; padding: var(--s-1) var(--gutter) var(--s-3); }
+  .nav-links a { width: 100%; font-size: var(--t-body); padding-inline: 0; }
+  .nav-sep { margin: var(--s-1) 0 0; padding: var(--s-1) 0 0; border-left: 0; border-top: 1px solid var(--rule); }
+  .on-dark .nav-sep { border-top-color: var(--rule-inv); }
+
+  /* Phone version of the stack indicator. */
+  .depth { display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--depth-gap); height: var(--depth-h); }
+  .depth li { background: var(--rule); transition: background-color var(--d-base) var(--ease); }
+  .depth li.is-past { background: var(--ink-muted); }
+  .depth li.is-on { background: var(--accent); }
+  .on-dark .depth li { background: var(--rule-inv); }
+  .on-dark .depth li.is-past { background: var(--ink-inv-secondary); }
+  .on-dark .depth li.is-on { background: var(--accent-light); }
+
+  .layer { padding-block: var(--s-7) var(--s-6); }
+  .sect-name { margin-bottom: var(--s-5); }
+
+  /* Name, role and proposition come before the portrait on a phone. */
+  .hero { display: block; min-height: 0; padding-bottom: 0; }
+  .hero-copy > :not(.hero-name) { max-width: none; }
+  .hero-claim { margin-top: var(--s-4); }
+  .hero-portrait { position: relative; width: min(86vw, 420px); margin: var(--s-5) 0 0 auto; }
+
+  .adv-grid, .edge-grid { grid-template-columns: minmax(0, 1fr); gap: var(--s-6); }
+  .pubs, .filed, .edu { grid-template-columns: minmax(0, 1fr); }
+  .pubs { gap: 0; }
+  .group { margin-top: var(--s-7); }
+}

@@ -1,6 +1,7 @@
 /* =====================================================================
-   Site. Navigation, stack indicator, and the static composition of
-   every section. Scenes (AMX, migration, timeline) live in scenes.css.
+   Site. Navigation and the static composition of every section.
+   v3: the old (f97d6ec) structure and section order, which is the
+   client's, with the v2 navigation, hero and fixes carried over.
    One breakpoint, 860px (see tokens.css for why it is literal).
    ===================================================================== */
 
@@ -47,7 +48,6 @@
 .nav-links a.is-on { text-decoration: underline; text-decoration-thickness: 2px; text-decoration-color: var(--accent); }
 .nav-sep { margin-left: var(--s-2); padding-left: var(--s-2); border-left: 1px solid var(--rule); }
 .nav-toggle { display: none; }
-.depth { display: none; }
 
 /* The navigation follows the ground beneath it. */
 .on-dark .nav { background: var(--nav-ground-inv); color: var(--ink-inv); border-bottom-color: var(--rule-inv); }
@@ -57,115 +57,67 @@
 .on-dark .nav-sep { border-left-color: var(--rule-inv); }
 .on-dark .nav :focus-visible { outline-color: var(--accent-light); }
 
-/* --- STACK INDICATOR ------------------------------------------------- */
-.stack {
-  position: fixed;
-  left: 0;
-  top: 50%;
-  z-index: 15;
-  transform: translateY(-50%);
-}
-.stack a {
-  position: relative;
+/* --- SECTIONS -------------------------------------------------------- */
+.layer { position: relative; padding-block: var(--s-7) var(--s-8); }
+main:focus { outline: none; }
+
+/* The section head is the hard boundary between sections: number,
+   name, one line saying what is inside, over a strong rule. */
+.sect-head {
   display: flex;
-  align-items: center;
-  width: var(--tap-min);
-  height: var(--tap-min);
-  text-decoration: none;
-}
-/* The slab itself. */
-.stack a::before {
-  content: "";
-  width: var(--stack-mark-w);
-  height: var(--stack-mark-h);
-  background: var(--rule-strong);
-  transition: width var(--d-base) var(--ease), background-color var(--d-base) var(--ease);
-}
-.stack a.is-past::before { background: var(--ink-muted); }
-.stack a.is-on::before { width: var(--stack-mark-w-on); background: var(--accent); }
-/* Label on hover and focus only. */
-.stack span {
-  position: absolute;
-  left: calc(var(--stack-mark-w-on) + var(--s-2));
-  padding: var(--s-1) var(--s-2);
-  font-size: var(--t-small);
-  white-space: nowrap;
-  background: var(--ground-1);
-  color: var(--ink);
-  border: 1px solid var(--rule-strong);
-  opacity: 0;
-  transform: translateX(calc(var(--s-1) * -1));
-  pointer-events: none;
-  transition: opacity var(--d-fast) var(--ease), transform var(--d-fast) var(--ease);
-}
-.stack a:hover span, .stack a:focus-visible span { opacity: 1; transform: none; }
-.on-dark .stack a::before { background: var(--rule-inv-strong); }
-.on-dark .stack a.is-past::before { background: var(--ink-inv-secondary); }
-.on-dark .stack a.is-on::before { background: var(--accent-light); }
-.on-dark .stack span { background: var(--ground-6); color: var(--ink-inv); border-color: var(--rule-inv-strong); }
-.on-dark .stack :focus-visible { outline-color: var(--accent-light); }
-
-/* --- LAYERS ---------------------------------------------------------- */
-.layer { position: relative; padding-block: var(--s-8) var(--s-7); }
-
-/* The section name is the hard boundary Mohamed asked for: a real
-   heading over a strong rule, not an eyebrow (craft-floor bans those). */
-.sect-name {
-  font-size: var(--t-h2);
-  font-weight: 500;
-  line-height: 1;
+  align-items: baseline;
+  gap: var(--s-3);
   padding-bottom: var(--s-3);
   margin-bottom: var(--s-6);
   border-bottom: 1px solid var(--rule-strong);
 }
-.dark .sect-name { border-bottom-color: var(--rule-inv-strong); }
+.sect-n {
+  font-size: var(--t-small);
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+}
+.sect-name {
+  font-size: var(--t-h2);
+  font-weight: 500;
+  line-height: 1;
+}
+.sect-desc {
+  margin-left: auto;
+  font-size: var(--t-small);
+  color: var(--ink-secondary);
+  text-align: right;
+}
+.dark .sect-head { border-bottom-color: var(--rule-inv-strong); }
+.dark .sect-n { color: var(--accent-light); }
+.dark .sect-desc { color: var(--ink-inv-secondary); }
 
 .statement {
   font-size: var(--t-statement);
   font-weight: 600;
-  max-width: 24ch;
+  max-width: 30ch;
 }
-.statement + .prose, .statement + * { margin-top: var(--s-3); }
 
-.more { margin-top: var(--s-4); font-size: var(--t-small); }
+.more { margin-top: var(--s-5); font-size: var(--t-small); }
 /* Standalone links meet the 44px tap floor (DESIGN.md A3). */
 .more a, .foot-in a { display: inline-flex; align-items: center; min-height: var(--tap-min); }
 
-/* --- HERO ------------------------------------------------------------ */
+/* --- INTRODUCTION ---------------------------------------------------- */
 .hero {
   min-height: 100svh;
   padding-block: calc(var(--nav-h) + var(--s-5)) var(--s-5);
   display: flex;
   align-items: center;
   overflow: hidden;
-  border-bottom: 1px solid var(--rule-strong);
 }
 .hero-copy { position: relative; z-index: 1; }
 /* The name may run the full width; everything under it keeps clear of
    the portrait. */
 .hero-copy > :not(.hero-name) { max-width: min(var(--hero-copy-max), calc(100vw - var(--portrait-v2) - var(--gutter) * 2)); }
 .hero-name {
-  position: relative;
   font-size: var(--t-hero);
   font-weight: 650;
   letter-spacing: var(--tracking-display);
   line-height: .95;
-}
-.hero-name-text { display: block; }
-/* Light sweep: a copy of the name in petrol, revealed through a moving
-   band. Hidden unless the script runs it. */
-.hero-sweep {
-  position: absolute;
-  inset: 0;
-  color: var(--accent);
-  -webkit-mask-image: linear-gradient(100deg, transparent 0 40%, var(--ink) 50%, transparent 60% 100%);
-  mask-image: linear-gradient(100deg, transparent 0 40%, var(--ink) 50%, transparent 60% 100%);
-  -webkit-mask-size: 300% 100%;
-  mask-size: 300% 100%;
-  -webkit-mask-position: 100% 0;
-  mask-position: 100% 0;
-  opacity: 0;
-  pointer-events: none;
 }
 .hero-role {
   margin-top: var(--s-2);
@@ -187,7 +139,7 @@
 
 /* The cut-out is cropped at its right and bottom edges, so those edges
    sit on the hero's own right and bottom edges: merged into the ground,
-   never framed (DESIGN.md A4: "this is not a national ID"). */
+   never framed (DESIGN.md A4). */
 .hero-portrait {
   position: absolute;
   right: 0;
@@ -196,30 +148,77 @@
 }
 .hero-portrait img { width: 100%; }
 
-/* --- ADVISORY -------------------------------------------------------- */
-.adv-grid {
+/* --- 01 PRACTICE ----------------------------------------------------- */
+.l2-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr);
-  gap: var(--s-7);
+  grid-template-columns: minmax(0, 1fr) minmax(0, var(--portrait-w));
+  gap: var(--s-6);
   align-items: start;
+  margin-top: var(--s-4);
 }
-.sectors { display: flex; flex-wrap: wrap; gap: var(--s-1); margin-top: var(--s-5); }
+.figures {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  column-gap: var(--s-4);
+  row-gap: var(--s-4);
+  align-items: baseline;
+  padding-top: var(--s-3);
+  border-top: 1px solid var(--rule-strong);
+}
+.figure { display: contents; }
+.figure dt {
+  font-size: var(--t-lede);
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: var(--tracking-h);
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+}
+.figure dd { margin: 0; font-size: var(--t-small); color: var(--ink-secondary); }
+
+.sectors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1);
+  margin-top: var(--s-6);
+}
 .sectors li {
   padding: var(--s-1) var(--s-2);
   font-size: var(--t-small);
   border: 1px solid var(--rule-strong);
 }
 
-/* --- EDGE AI --------------------------------------------------------- */
-.edge-grid {
+/* --- 02 FOCUS -------------------------------------------------------- */
+.focus { margin-top: var(--s-4); }
+.frow {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: var(--s-7);
-  align-items: center;
+  gap: var(--s-3) var(--s-6);
+  padding: var(--s-5) 0;
 }
+/* The rule above each row is drawn by the script on entry; at rest it
+   is simply there. */
+.frow::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: var(--rule-strong);
+  transform-origin: left center;
+  transform: scaleX(var(--draw, 1));
+}
+.frow h4 {
+  font-size: var(--t-h2);
+  font-weight: 500;
+  max-width: 16ch;
+}
+.frow p { max-width: var(--measure); font-size: var(--t-small); color: var(--ink-secondary); }
+.frow p + p { margin-top: var(--s-2); }
+
 .paper {
   display: block;
-  margin-top: var(--s-5);
+  margin-top: var(--s-4);
   padding: var(--s-3);
   max-width: 46ch;
   border: 1px solid var(--rule-strong);
@@ -230,20 +229,100 @@
 .paper-kind { display: block; font-size: var(--t-meta); letter-spacing: var(--tracking-meta); text-transform: uppercase; color: var(--accent); }
 .paper-title { display: block; margin-top: var(--s-1); font-weight: 600; }
 
-/* --- RESEARCH -------------------------------------------------------- */
-.res-intro .prose { margin-top: var(--s-3); }
-
-.group { margin-top: var(--s-8); }
-.group-lb {
-  font-size: var(--t-meta);
-  font-weight: 500;
-  letter-spacing: var(--tracking-meta);
-  text-transform: uppercase;
-  color: var(--ink-inv-secondary);
-  padding-bottom: var(--s-2);
-  margin-bottom: var(--s-4);
-  border-bottom: 1px solid var(--rule-inv);
+.also {
+  display: flex;
+  gap: var(--s-5);
+  align-items: baseline;
+  margin-top: var(--s-4);
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--rule-strong);
 }
+.also-lb {
+  flex: none;
+  font-size: var(--t-meta);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-meta);
+  color: var(--ink-secondary);
+}
+.also ul { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-5); font-size: var(--t-small); }
+
+/* --- 03 CAREER ------------------------------------------------------- */
+/* Grouped by employer, the mark once per employer, sitting directly on
+   the light ground: no box, no border, no container (DESIGN.md A4). */
+.jobs { display: grid; gap: var(--s-7); }
+.job {
+  display: grid;
+  grid-template-columns: var(--logo-col) minmax(0, 1fr);
+  gap: var(--s-6);
+  padding-top: var(--s-6);
+  border-top: 1px solid var(--rule-strong);
+}
+.job:first-child { padding-top: 0; border-top: 0; }
+.job-mark { margin: 0; padding-top: var(--s-1); }
+/* On wide screens the mark stays beside its roles while they scroll
+   past, so a long employer block never loses its name. */
+@media (min-width: 861px) {
+  .job-mark { position: sticky; top: calc(var(--nav-h) + var(--s-5)); align-self: start; }
+}
+.logo { display: block; height: auto; }
+/* Sized by optical weight, not by pixel width: the marks have very
+   different proportions (Dell EMC 5.55:1, Intel 2.56:1, GUC 2.18:1). */
+.logo-intel { width: var(--logo-intel); }
+.logo-dell  { width: var(--logo-dell); }
+.logo-guc   { width: var(--logo-guc); }
+
+.job-roles { display: grid; gap: var(--s-6); }
+.role-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--s-4);
+}
+.role-top h3 {
+  max-width: 30ch;
+  font-size: var(--t-h3);
+  font-weight: 500;
+  line-height: 1.2;
+}
+.role-when {
+  flex: none;
+  font-size: var(--t-small);
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+}
+.role-where {
+  margin-top: var(--s-1);
+  font-size: var(--t-meta);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-meta);
+  color: var(--ink-secondary);
+}
+.role .prose { margin-top: var(--s-3); font-size: var(--t-small); }
+
+/* --- 04 RESEARCH ----------------------------------------------------- */
+.ev-intro .prose { margin-top: var(--s-3); }
+
+/* Each part of the research section has a real, visible heading: the
+   reader must be able to tell publications from patents from education
+   at a glance (Islam, 17 October). Smaller than the section name, larger
+   than everything inside the group. */
+.group { margin-top: var(--s-8); }
+.group-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-1) var(--s-4);
+  padding-bottom: var(--s-3);
+  margin-bottom: var(--s-4);
+  border-bottom: 1px solid var(--rule-inv-strong);
+}
+.group-lb {
+  font-size: var(--t-statement);
+  font-weight: 600;
+  color: var(--ink-inv);
+}
+.group-n { font-size: var(--t-small); color: var(--accent-light); }
 
 .pubs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 var(--s-6); }
 .pub { padding-block: var(--s-3); border-bottom: 1px solid var(--rule-inv); }
@@ -252,53 +331,73 @@
 .pub-meta em { font-style: normal; }
 .y, .yr { font-variant-numeric: tabular-nums; color: var(--accent-light); }
 
-.granted { display: grid; gap: var(--s-1); padding-bottom: var(--s-4); border-bottom: 1px solid var(--rule-inv); }
-.granted-title { font-size: var(--t-statement); font-weight: 600; letter-spacing: var(--tracking-h); line-height: 1.2; max-width: 34ch; }
+.granted-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--s-5);
+  padding-bottom: var(--s-4);
+  border-bottom: 1px solid var(--rule-inv);
+}
+.granted-title {
+  display: block;
+  max-width: 46ch;
+  font-size: var(--t-h3);
+  font-weight: 500;
+  line-height: 1.3;
+}
+.granted-main .pat-id { display: block; margin-top: var(--s-1); }
 .pat-id { font-size: var(--t-small); font-variant-numeric: tabular-nums; color: var(--ink-inv-secondary); }
 .pat-state { font-size: var(--t-meta); letter-spacing: var(--tracking-meta); text-transform: uppercase; color: var(--ink-inv-secondary); }
-.pat-granted { color: var(--accent-light); }
-.filed { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-4); margin-top: var(--s-4); }
+.pat-granted { flex: none; color: var(--accent-light); font-weight: 600; }
+.filed { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-5); margin-top: var(--s-4); }
 .filed li { display: grid; gap: var(--s-1); align-content: start; }
 .filed b { font-weight: 500; }
 
-.edu { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-4); }
-.edu li { display: grid; gap: var(--s-1); align-content: start; }
-.edu b { font-weight: 500; }
-.where { font-size: var(--t-small); color: var(--ink-inv-secondary); }
+.base { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-6); }
+.col-lb {
+  margin-bottom: var(--s-3);
+  font-size: var(--t-meta);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-meta);
+  color: var(--ink-inv-secondary);
+}
+.edu li + li { margin-top: var(--s-3); }
+.edu b { display: block; font-weight: 500; }
+.edu .yr { display: block; font-size: var(--t-small); }
+.where { display: block; font-size: var(--t-small); color: var(--ink-inv-secondary); }
 
-/* --- CONTACT --------------------------------------------------------- */
+/* --- 05 CONTACT ------------------------------------------------------ */
 .contact { padding-bottom: 0; }
+.contact-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: var(--s-7);
+  align-items: start;
+}
 .contact-head {
-  position: relative;
   font-size: var(--t-lede);
   font-weight: 600;
   letter-spacing: var(--tracking-display);
   line-height: 1.05;
   max-width: 18ch;
 }
-.fill-base { display: block; color: var(--ink-inv); }
-/* The closing fill: the same line in the accent, revealed left to
-   right once. Default state is fully filled, so a failed script still
-   shows the finished line. */
-.fill-top {
-  position: absolute;
-  inset: 0;
-  color: var(--accent-light);
-  clip-path: inset(0 0 0 0);
-}
-.links { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-5); margin-top: var(--s-6); }
+.contact-meta { margin-top: var(--s-4); font-size: var(--t-small); color: var(--ink-inv-secondary); }
 .links a {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: var(--s-2);
+  gap: var(--s-3);
   min-height: var(--tap-min);
+  padding-block: var(--s-3);
+  border-top: 1px solid var(--rule-inv);
   color: var(--ink-inv);
   text-decoration: none;
 }
+.links li:last-child a { border-bottom: 1px solid var(--rule-inv); }
 .links a:hover .link-v { text-decoration: underline; }
 .icon { width: var(--icon); height: var(--icon); color: var(--accent-light); flex: none; }
-.link-k { font-size: var(--t-meta); letter-spacing: var(--tracking-meta); text-transform: uppercase; color: var(--ink-inv-secondary); }
-.contact-meta { margin-top: var(--s-4); font-size: var(--t-small); color: var(--ink-inv-secondary); }
+.link-k { min-width: 6em; font-size: var(--t-meta); letter-spacing: var(--tracking-meta); text-transform: uppercase; color: var(--ink-inv-secondary); }
 
 .foot { margin-top: var(--s-8); border-top: 1px solid var(--rule-inv); }
 .foot-in {
@@ -311,14 +410,18 @@
   font-size: var(--t-small);
   color: var(--ink-inv-secondary);
 }
-main:focus { outline: none; }
+
+/* --- HERO ENTRANCE START STATES --------------------------------------
+   Only while the script is alive (.js-motion). The script removes the
+   class when the entrance ends, and a failsafe removes it regardless,
+   so the page can never stay hidden. Everything below the hero starts
+   visible in CSS; the script hides and plays each block itself. */
+.js-motion [data-rise], .js-motion .hero-name, .js-motion .hero-portrait { opacity: 0; }
 
 /* =====================================================================
    NARROW SCREENS
    ===================================================================== */
 @media (max-width: 860px) {
-  .stack { display: none; }
-
   .nav-toggle {
     display: inline-flex;
     align-items: center;
@@ -347,26 +450,29 @@ main:focus { outline: none; }
   .nav-sep { margin: var(--s-1) 0 0; padding: var(--s-1) 0 0; border-left: 0; border-top: 1px solid var(--rule); }
   .on-dark .nav-sep { border-top-color: var(--rule-inv); }
 
-  /* Phone version of the stack indicator. */
-  .depth { display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--depth-gap); height: var(--depth-h); }
-  .depth li { background: var(--rule); transition: background-color var(--d-base) var(--ease); }
-  .depth li.is-past { background: var(--ink-muted); }
-  .depth li.is-on { background: var(--accent); }
-  .on-dark .depth li { background: var(--rule-inv); }
-  .on-dark .depth li.is-past { background: var(--ink-inv-secondary); }
-  .on-dark .depth li.is-on { background: var(--accent-light); }
-
-  .layer { padding-block: var(--s-7) var(--s-6); }
-  .sect-name { margin-bottom: var(--s-5); }
+  .layer { padding-block: var(--s-7) var(--s-7); }
+  .sect-head { flex-wrap: wrap; margin-bottom: var(--s-5); }
+  .sect-desc { flex-basis: 100%; margin-left: 0; text-align: left; }
 
   /* Name, role and proposition come before the portrait on a phone. */
   .hero { display: block; min-height: 0; padding-bottom: 0; }
   .hero-copy > :not(.hero-name) { max-width: none; }
-  .hero-claim { margin-top: var(--s-4); }
   .hero-portrait { position: relative; width: min(86vw, 420px); margin: var(--s-5) 0 0 auto; }
 
-  .adv-grid, .edge-grid { grid-template-columns: minmax(0, 1fr); gap: var(--s-6); }
-  .pubs, .filed, .edu { grid-template-columns: minmax(0, 1fr); }
-  .pubs { gap: 0; }
+  .l2-grid { grid-template-columns: minmax(0, 1fr); gap: var(--s-5); }
+  .frow { grid-template-columns: minmax(0, 1fr); gap: var(--s-2); }
+  .frow h4 { max-width: none; }
+  .also { flex-direction: column; gap: var(--s-2); }
+
+  /* Logo above its employer's roles. */
+  .job { grid-template-columns: minmax(0, 1fr); gap: var(--s-4); }
+  .role-top { flex-direction: column; gap: var(--s-1); }
+
   .group { margin-top: var(--s-7); }
+  .pubs, .filed, .base { grid-template-columns: minmax(0, 1fr); }
+  .pubs { gap: 0; }
+  .granted-row { flex-direction: column; gap: var(--s-2); }
+  .base { gap: var(--s-6); }
+
+  .contact-grid { grid-template-columns: minmax(0, 1fr); gap: var(--s-5); }
 }

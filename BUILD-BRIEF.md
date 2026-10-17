@@ -40,10 +40,11 @@ advisory. It is not a job application and must not read as one.
 
 Content constraints, including what must never be claimed, are in
 `DESIGN.md` under *Content rules*. Read them. They are not stylistic
-preferences; one of them exists because he was defrauded by someone
-impersonating a US executive recruiter, and the documents in this folder
-that describe him as a "technology executive" who is "Board Ready" came
-from that fraud. They are unreliable. His CV is the only source of truth.
+preferences. The documents in this folder that describe him as a
+"technology executive" who is "Board Ready" were written by a genuine
+search professional for a private dossier (DESIGN.md corrects an earlier
+note here that called them fraudulent). They position him aspirationally
+and must not be copied onto a public site. His CV is the source of truth.
 
 ---
 

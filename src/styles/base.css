@@ -83,7 +83,6 @@ html { scrollbar-color: var(--accent) var(--ground-2); }
 .g3 { background: var(--ground-3); }
 .g4 { background: var(--ground-4); }
 .g5 { background: var(--ground-5); }
-.g5b { background: var(--ground-5b); }
 .g6 { background: var(--ground-6); }
 
 /* Dark grounds invert their ink. Anything that differs on dark is

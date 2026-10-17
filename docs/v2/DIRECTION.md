@@ -1,3 +1,5 @@
+> **Superseded 17 October 2026.** Islam rejected the v2 build: it changed the client's section order, dropped the employer logos and pinned a scroll scene. The current plan is docs/v3/CLAUDE-PLAN.md with Sol 6.1's review in docs/v3/SOL-6.1-OLD-VS-NEW.md.
+
 # v2 direction — APPROVED by Islam, 2026-10-17
 
 Merged from Claude's proposal and two Sol 6.1 rounds (files beside this one). This is the build spec.

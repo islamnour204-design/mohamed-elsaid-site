@@ -69,7 +69,7 @@ These apply to every task. They are copied verbatim from the spec.
 - [ ] **Step 1: Initialise Git before anything else**
 
 ```bash
-cd "C:/Users/Access/OneDrive/Desktop/Business/Mohamed essam website"
+cd "D:/Business/Clients/Mohamed Essam Website"
 git init
 ```
 

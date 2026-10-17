@@ -288,7 +288,7 @@ than publish either.
 ## 7. How to start
 
 ```
-cd "C:\Users\Access\OneDrive\Desktop\Business\Mohamed essam website"
+cd "D:\Business\Clients\Mohamed Essam Website"
 claude
 ```
 

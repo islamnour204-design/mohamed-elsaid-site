@@ -11,7 +11,7 @@ Written for Islam, August 2026. Two routes. Route A is the one to use.
 3. Point it at the project folder. Type this exactly, including the quotation marks, then press Enter:
 
    ```
-   cd "C:\Users\Access\OneDrive\Desktop\Business\Mohamed essam website"
+   cd "D:\Business\Clients\Mohamed Essam Website"
    ```
 
    `cd` means "change directory" — it tells the window which folder to work in.

@@ -12,8 +12,10 @@
   <link rel="stylesheet" href="/styles/site.css">
   <!-- Marks that scripting is alive before first paint, so the hero can
        start hidden without a flash. If the script never runs, CSS leaves
-       every element visible and the page is simply static. -->
-  <script>document.documentElement.classList.add('js-motion');</script>
+       every element visible and the page is simply static. The timer
+       lives here, not in the module, so the hero is revealed even when
+       the module fails to load. -->
+  <script>document.documentElement.classList.add('js-motion');setTimeout(function(){document.documentElement.classList.remove('js-motion')},4000);</script>
   <script type="module" src="/scripts/main.js"></script>
 </head>
 <body>
@@ -52,9 +54,7 @@
 
         <p class="hero-claim" data-rise>The question is not whether to adopt AI. It is what the infrastructure underneath it <strong>costs</strong>.</p>
 
-        <p class="hero-sub prose" data-rise>I advise enterprise and government customers and OEMs across EMEA on datacenter and private cloud transformation. My doctorate at the Hasso-Plattner Institute models what it costs to move a running virtual machine.</p>
-
-        <div class="act" data-rise>
+        <div class="act">
           <a href="#research" class="btn btn-p">See the research</a>
           <a href="#contact" class="btn btn-s">Get in touch</a>
         </div>
@@ -67,87 +67,91 @@
     </figure>
   </section>
 
-  <!-- ========== 01 PRACTICE ========== -->
+  <!-- ========== PRACTICE ========== -->
   <section class="layer g2" id="practice" data-layer="practice" data-theme="light">
     <div class="shell">
 
       <header class="sect-head" data-head>
-        <span class="sect-n">01</span>
         <h2 class="sect-name">Practice</h2>
         <span class="sect-desc">Enterprise, government and OEMs across EMEA</span>
       </header>
 
-      <h3 class="statement" data-up>Sixteen years turning infrastructure decisions into commercial ones</h3>
-
-      <div class="l2-grid">
-        <div class="prose" data-up>
+      <div class="practice">
+        <h3 class="practice-lead" data-up>Sixteen years turning infrastructure decisions into commercial ones</h3>
+        <div class="prose">
           <p>At Intel I lead datacenter transformation and private and hybrid cloud architecture work for tens of enterprise and government customers, and for OEMs, across EMEA. The work covers compute and software defined storage: which CPU, which accelerator, which storage backend, and what each choice costs once the pilot ends.</p>
           <p>Before Intel, six years at Dell EMC, first as a level two support engineer on enterprise storage, then as a solutions architect. That period taught me how infrastructure <em>fails in production</em>, which is a different education from how it behaves on a slide.</p>
         </div>
-
-        <dl class="figures" data-figures>
-          <div class="figure">
-            <dt><span class="fig-n" data-count="16">16</span></dt>
-            <dd>Years across Dell EMC and Intel</dd>
-          </div>
-          <div class="figure">
-            <dt><span class="fig-n" data-count="3">3</span></dt>
-            <dd>Languages used in client work: English, German, Arabic</dd>
-          </div>
-        </dl>
       </div>
 
-      <ul class="sectors" aria-label="Sectors" data-sectors>
-        <li>Automotive</li>
-        <li>Industrial</li>
-        <li>Financial</li>
-        <li>Telco</li>
-        <li>Public sector</li>
-      </ul>
+      <dl class="facts" data-figures>
+        <div class="fact">
+          <dt><span class="fig-n" data-count="16">16</span> years</dt>
+          <dd>across Dell EMC and Intel</dd>
+        </div>
+        <div class="fact">
+          <dt><span class="fig-n" data-count="3">3</span> languages</dt>
+          <dd>English, German, Arabic</dd>
+        </div>
+        <div class="fact fact-sectors">
+          <dt>Sectors</dt>
+          <dd>
+            <ul class="sectors" aria-label="Sectors">
+              <li>Automotive</li>
+              <li>Industrial</li>
+              <li>Financial</li>
+              <li>Telco</li>
+              <li>Public sector</li>
+            </ul>
+          </dd>
+        </div>
+      </dl>
 
     </div>
   </section>
 
-  <!-- ========== 02 FOCUS ========== -->
+  <!-- ========== FOCUS ==========
+       AI infrastructure carries the evidence, so it gets the space. The
+       other two areas sit side by side, smaller. -->
   <section class="layer g3" id="focus" data-layer="focus" data-theme="light">
     <div class="shell">
 
       <header class="sect-head" data-head>
-        <span class="sect-n">02</span>
         <h2 class="sect-name">Focus</h2>
-        <span class="sect-desc">Eight practice areas</span>
+        <span class="sect-desc">Where the work concentrates</span>
       </header>
 
-      <h3 class="statement" data-up>Where the work concentrates</h3>
-
-      <div class="focus">
-        <div class="frow" data-row>
-          <h4>AI infrastructure</h4>
-          <div>
+      <article class="feature">
+        <div class="feature-text">
+          <h3 class="feature-h">AI infrastructure</h3>
+          <div class="prose">
             <p>Accelerator selection, capacity sizing, and what it actually costs to run inference at scale. The question most enterprises answer too late.</p>
             <p>I designed and delivered several customer proofs of concept on edge AI using Intel AMX, validating infrastructure strategies with measurable improvements.</p>
-            <a class="paper" href="https://www.intel.com/content/www/us/en/content-details/866175/efficient-and-sustainable-llms-on-intel-xeon-with-intel-amx.html" rel="noopener">
-              <span class="paper-kind">Whitepaper, Intel, 2025</span>
-              <b class="paper-title">Efficient and Sustainable LLMs on Intel Xeon with Intel AMX</b>
-            </a>
           </div>
         </div>
-        <div class="frow" data-row>
-          <h4>Cloud and datacenter architecture</h4>
-          <div>
-            <p>Hybrid and multi-cloud design, migration planning, and total cost of ownership across performance, compliance, and budget.</p>
-          </div>
-        </div>
-        <div class="frow" data-row>
-          <h4>Executive advisory</h4>
-          <div>
-            <p>Translating infrastructure choices into commercial consequences for the people signing off on them.</p>
-          </div>
-        </div>
+
+        <a class="doc-card" data-paper href="https://www.intel.com/content/www/us/en/content-details/866175/efficient-and-sustainable-llms-on-intel-xeon-with-intel-amx.html" rel="noopener">
+          <span class="doc-card-title">Efficient and Sustainable LLMs on Intel Xeon with Intel AMX</span>
+          <span class="doc-card-foot">
+            <span>Whitepaper, Intel, 2025</span>
+            <span class="doc-card-go">Read on intel.com <svg class="arrow" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M200,64V168a8,8,0,0,1-16,0V83.31L69.66,197.66a8,8,0,0,1-11.32-11.32L172.69,72H88a8,8,0,0,1,0-16H192A8,8,0,0,1,200,64Z"/></svg></span>
+          </span>
+        </a>
+      </article>
+
+      <div class="pair">
+        <article class="pair-item">
+          <h3>Cloud and datacenter architecture</h3>
+          <p>Hybrid and multi-cloud design, migration planning, and total cost of ownership across performance, compliance, and budget.</p>
+        </article>
+        <article class="pair-item">
+          <h3>Executive advisory</h3>
+          <p>Translating infrastructure choices into commercial consequences for the people signing off on them.</p>
+        </article>
       </div>
 
-      <div class="also" data-up>
-        <span class="also-lb">Also</span>
+      <div class="also">
+        <h3 class="also-lb">Also</h3>
         <ul>
           <li>Virtualisation</li>
           <li>Enterprise storage</li>
@@ -160,16 +164,16 @@
     </div>
   </section>
 
-  <!-- ========== 03 CAREER ==========
+  <!-- ========== CAREER ==========
        Light ground: the employer logos are only legible on light.
-       Role text is verbatim from content/career.md and the PDF CV,
-       Mohamed's own wording. The two shortest-lived roles show their
-       first line here; the CV page carries every line. -->
+       One band per employer: mark, name, place and tenure on the left,
+       roles on the right. Role text is verbatim from content/career.md
+       and the PDF CV, Mohamed's own wording; nothing is cut, the longer
+       descriptions continue behind "Read role details". -->
   <section class="layer g4" id="career" data-layer="career" data-theme="light">
     <div class="shell">
 
       <header class="sect-head" data-head>
-        <span class="sect-n">03</span>
         <h2 class="sect-name">Career</h2>
         <span class="sect-desc">Five positions, three employers</span>
       </header>
@@ -177,14 +181,19 @@
       <div class="jobs">
 
         <article class="job" data-job>
-          <figure class="job-mark">
+          <header class="job-mark">
             <img class="logo logo-intel" src="/assets/img/logos/intel.png"
-                 width="1008" height="393" alt="Intel" decoding="async">
-          </figure>
+                 width="1008" height="393" alt="" decoding="async">
+            <div class="job-id">
+              <h3 class="job-name">Intel</h3>
+              <p class="job-meta">Munich, Germany</p>
+              <p class="job-span">2017 to now</p>
+            </div>
+          </header>
           <div class="job-roles">
-            <div class="role">
+            <div class="role role-now">
               <div class="role-top">
-                <h3>Senior Cloud &amp; AI Infrastructure Solutions Specialist</h3>
+                <h4>Senior Cloud &amp; AI Infrastructure Solutions Specialist</h4>
                 <span class="role-when">04/2022 to now</span>
               </div>
               <div class="prose">
@@ -194,40 +203,53 @@
             </div>
             <div class="role">
               <div class="role-top">
-                <h3>Cloud Technical Solutions Specialist</h3>
+                <h4>Cloud Technical Solutions Specialist</h4>
                 <span class="role-when">01/2017 to 03/2022</span>
               </div>
-              <p class="role-where">Munich, Germany</p>
               <div class="prose">
                 <p>Advised enterprise and public-sector organizations on cloud, AI, and infrastructure modernization strategies, helping align technology investments with long-term business objectives.</p>
-                <p>Partnered with senior executives and key stakeholders to shape scalable digital transformation initiatives, strengthening operational resilience and innovation capabilities.</p>
               </div>
+              <details class="more-role">
+                <summary>Read role details</summary>
+                <div class="prose">
+                  <p>Partnered with senior executives and key stakeholders to shape scalable digital transformation initiatives, strengthening operational resilience and innovation capabilities.</p>
+                </div>
+              </details>
             </div>
           </div>
         </article>
 
         <article class="job" data-job>
-          <figure class="job-mark">
+          <header class="job-mark">
             <img class="logo logo-dell" src="/assets/img/logos/dell-emc.png"
-                 width="533" height="96" alt="Dell EMC" decoding="async">
-          </figure>
+                 width="533" height="96" alt="" decoding="async">
+            <div class="job-id">
+              <h3 class="job-name">Dell EMC</h3>
+              <p class="job-meta">Cairo, Egypt</p>
+              <p class="job-span">2010 to 2016</p>
+            </div>
+          </header>
           <div class="job-roles">
             <div class="role">
               <div class="role-top">
-                <h3>Solutions Architect</h3>
+                <h4>Solutions Architect</h4>
                 <span class="role-when">11/2012 to 12/2016</span>
               </div>
-              <p class="role-where">Cairo, Egypt</p>
               <div class="prose">
-                <p>Designed and implemented enterprise high-end and intermediate tiers storage and server solutions tailored to customer datacenter modernization and scalability requirements. Supported global technology partnerships through integration of Dell-EMC storage systems in hybrid cloud and AI infrastructure environments.</p>
+                <p>Designed and implemented enterprise high-end and intermediate tiers storage and server solutions tailored to customer datacenter modernization and scalability requirements.</p>
               </div>
+              <details class="more-role">
+                <summary>Read role details</summary>
+                <div class="prose">
+                  <p>Supported global technology partnerships through integration of Dell-EMC storage systems in hybrid cloud and AI infrastructure environments.</p>
+                </div>
+              </details>
             </div>
             <div class="role">
               <div class="role-top">
-                <h3>Technical Support Engineer, level II</h3>
+                <h4>Technical Support Engineer, level II</h4>
                 <span class="role-when">08/2010 to 10/2012</span>
               </div>
-              <p class="role-where">Cairo, Egypt</p>
               <div class="prose">
                 <p>Delivered advanced technical support for enterprise storage and infrastructure environments, ensuring system stability and minimizing operational disruptions for global customers.</p>
               </div>
@@ -236,49 +258,80 @@
         </article>
 
         <article class="job" data-job>
-          <figure class="job-mark">
+          <header class="job-mark">
             <img class="logo logo-guc" src="/assets/img/logos/guc.png"
-                 width="1573" height="720" alt="German University in Cairo" decoding="async">
-          </figure>
+                 width="1573" height="720" alt="" decoding="async">
+            <div class="job-id">
+              <h3 class="job-name">German University in Cairo</h3>
+              <p class="job-meta">Cairo, Egypt</p>
+              <p class="job-span">2006 to 2010</p>
+            </div>
+          </header>
           <div class="job-roles">
             <div class="role">
               <div class="role-top">
-                <h3>Teaching and Research Assistant</h3>
+                <h4>Teaching and Research Assistant</h4>
                 <span class="role-when">09/2006 to 06/2010</span>
               </div>
-              <p class="role-where">Cairo, Egypt</p>
               <div class="prose">
                 <p>Supported the delivery of undergraduate and postgraduate courses, fostering an engaging learning environment and strengthening student academic performance.</p>
-                <p>Contributed to research initiatives through literature reviews, data analysis, and technical investigations, supporting the advancement of high-quality academic publications.</p>
               </div>
+              <details class="more-role">
+                <summary>Read role details</summary>
+                <div class="prose">
+                  <p>Contributed to research initiatives through literature reviews, data analysis, and technical investigations, supporting the advancement of high-quality academic publications.</p>
+                </div>
+              </details>
             </div>
           </div>
         </article>
 
       </div>
 
-      <p class="more"><a href="/cv.html">Read the full CV</a></p>
+      <p class="more"><a href="/cv.html">Read the CV</a></p>
     </div>
   </section>
 
-  <!-- ========== 04 RESEARCH ==========
-       Four parts, each under its own visible heading: the research
-       question, then publications, patents, education. -->
+  <!-- ========== RESEARCH ==========
+       The research question first, explained by one diagram that plays
+       by itself once and can be replayed. Then publications, patents and
+       education, each under its own visible heading. -->
   <section class="layer g5 dark" id="research" data-layer="research" data-theme="dark">
     <div class="shell">
 
       <header class="sect-head" data-head>
-        <span class="sect-n">04</span>
         <h2 class="sect-name">Research</h2>
         <span class="sect-desc">Publications, patents, education</span>
       </header>
 
-      <div class="ev-intro" data-up>
-        <h3 class="statement">A decade modelling what migration actually costs</h3>
-        <div class="prose">
-          <p>Doctorate in IT Systems Engineering at the Hasso-Plattner Institute under Professor Christoph Meinel. The thesis uses machine learning to model and predict the overhead of live migration: moving a running virtual machine from one server to another without switching it off.</p>
-          <p>It began as an academic question about overhead. It describes the same capacity problem enterprises meet when they move workloads, AI included, onto shared infrastructure.</p>
+      <div class="thesis">
+        <div class="thesis-text">
+          <h3 class="statement">A decade modelling what migration actually costs</h3>
+          <div class="prose">
+            <p>Doctorate in IT Systems Engineering at the Hasso-Plattner Institute under Professor Christoph Meinel. The thesis uses machine learning to model and predict the overhead of live migration: moving a running virtual machine from one server to another without switching it off.</p>
+          </div>
+          <ol class="steps" data-steps>
+            <li><b>Copy while running.</b> Memory is copied to the new server while the machine keeps working.</li>
+            <li><b>Copy what changed.</b> Pages written in the meantime are copied again, round after round.</li>
+            <li><b>Pause and switch.</b> A short pause copies the last pages, and the machine resumes on the new server.</li>
+          </ol>
+          <p class="steps-cost">Every round costs time, network traffic and, at the end, a pause. That overhead is what the research models and predicts.</p>
         </div>
+
+        <figure class="migr" data-migr>
+          <svg class="migr-svg" viewBox="0 0 640 300" role="img" aria-labelledby="migr-t">
+            <title id="migr-t">Live migration: a running virtual machine's memory is copied from server A to server B in rounds, then the machine moves to server B.</title>
+          </svg>
+          <figcaption class="migr-foot">
+            <span class="key"><i class="key-sw key-mem"></i>Memory page</span>
+            <span class="key"><i class="key-sw key-dirty"></i>Changed during copy</span>
+            <span class="key"><i class="key-sw key-copied"></i>Copied</span>
+            <button class="replay" type="button" data-replay hidden>
+              <svg class="icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M224,128a96,96,0,0,1-94.71,96H128A95.38,95.38,0,0,1,62.1,197.8a8,8,0,0,1,11-11.63A80,80,0,1,0,71.43,71.39a3.07,3.07,0,0,1-.26.25L44.59,96H72a8,8,0,0,1,0,16H24a8,8,0,0,1-8-8V56a8,8,0,0,1,16,0V85.8L60.25,60A96,96,0,0,1,224,128Z"/></svg>
+              Replay
+            </button>
+          </figcaption>
+        </figure>
       </div>
 
       <div class="group" id="publications" data-group>
@@ -289,28 +342,20 @@
 
         <ol class="pubs">
           <li class="pub">
-            <b>Efficient and Sustainable LLMs on Intel Xeon with Intel AMX</b>
+            <a href="https://www.intel.com/content/www/us/en/content-details/866175/efficient-and-sustainable-llms-on-intel-xeon-with-intel-amx.html" rel="noopener">Efficient and Sustainable LLMs on Intel Xeon with Intel AMX</a>
             <span class="pub-meta"><em>Whitepaper, Intel</em><span class="y">2025</span></span>
           </li>
           <li class="pub">
-            <b>Virtual Machines Pre-Copy Live Migration Cost Modeling and Prediction: A Survey</b>
+            <a href="https://doi.org/10.1007/s10619-021-07387-2" rel="noopener">Virtual Machines Pre-Copy Live Migration Cost Modeling and Prediction: A Survey</a>
             <span class="pub-meta"><em>Distributed and Parallel Databases, Springer</em><span class="y">2021</span></span>
           </li>
           <li class="pub">
-            <b>Machine Learning Approach for Live Migration Cost Prediction in VMware Environments</b>
+            <a href="https://doi.org/10.5220/0007749204560463" rel="noopener">Machine Learning Approach for Live Migration Cost Prediction in VMware Environments</a>
             <span class="pub-meta"><em>CLOSER, Crete</em><span class="y">2019</span></span>
           </li>
           <li class="pub">
-            <b>Enhanced Cost Analysis of Multiple Virtual Machines Live Migration in VMware Environments</b>
+            <a href="https://doi.org/10.1109/sc2.2018.00010" rel="noopener">Enhanced Cost Analysis of Multiple Virtual Machines Live Migration in VMware Environments</a>
             <span class="pub-meta"><em>IEEE SC2, Paris</em><span class="y">2018</span></span>
-          </li>
-          <li class="pub">
-            <b>Multiple Virtual Machines Live Migration Performance Modelling VMware motion based Study</b>
-            <span class="pub-meta"><em>IEEE IC2E, Berlin</em><span class="y">2016</span></span>
-          </li>
-          <li class="pub">
-            <b>IEEE 802.11s Mesh Wireless LAN Channel Assignment and Power Management</b>
-            <span class="pub-meta"><em>Textbook, ISBN-10 3846502286</em><span class="y">2011</span></span>
           </li>
         </ol>
 
@@ -320,32 +365,25 @@
       <div class="group" id="patents" data-group>
         <div class="group-head">
           <h3 class="group-lb">United States patents</h3>
-          <span class="group-n">1 granted, 3 applications</span>
+          <span class="group-n">4 granted, 2016 to 2019</span>
         </div>
 
-        <div class="granted-row">
-          <div class="granted-main">
-            <b class="granted-title">Network load balance aware live migration for virtual machines in cloud computing</b>
-            <span class="pat-id">US 10,356,005 B1</span>
-          </div>
-          <span class="pat-state pat-granted">Granted 2019</span>
-        </div>
-
-        <ul class="filed" aria-label="Patent applications">
-          <li>
-            <span class="pat-id">US 15/222,499</span>
-            <b>Data replication optimization for online social network cloud computing</b>
-            <span class="pat-state">Application, 2018</span>
+        <ul class="patents">
+          <li class="patent">
+            <a href="https://patents.google.com/patent/US10356005B1/en" rel="noopener">Network switch aware migration of virtual resources</a>
+            <span class="pat-meta"><span class="pat-id">US 10,356,005 B1</span><span class="y">Granted 2019</span></span>
           </li>
-          <li>
-            <span class="pat-id">US 14/853,437</span>
-            <b>Data storage path optimization for Internet of Things computing systems</b>
-            <span class="pat-state">Application, 2015</span>
+          <li class="patent">
+            <a href="https://patents.google.com/patent/US10037386B1/en" rel="noopener">Data replication optimization for online social network cloud computing</a>
+            <span class="pat-meta"><span class="pat-id">US 10,037,386 B1</span><span class="y">Granted 2018</span></span>
           </li>
-          <li>
-            <span class="pat-id">US 14/138,756</span>
-            <b>Storage optimization for social networks</b>
-            <span class="pat-state">Application, 2013</span>
+          <li class="patent">
+            <a href="https://patents.google.com/patent/US9882985B1/en" rel="noopener">Data storage path optimization for internet of things computing system</a>
+            <span class="pat-meta"><span class="pat-id">US 9,882,985 B1</span><span class="y">Granted 2018</span></span>
+          </li>
+          <li class="patent">
+            <a href="https://patents.google.com/patent/US9507829B1/en" rel="noopener">Storage optimization for social networks</a>
+            <span class="pat-meta"><span class="pat-id">US 9,507,829 B1</span><span class="y">Granted 2016</span></span>
           </li>
         </ul>
       </div>
@@ -402,28 +440,26 @@
     </div>
   </section>
 
-  <!-- ========== 05 CONTACT ========== -->
+  <!-- ========== CONTACT ========== -->
   <section class="layer g6 dark contact" id="contact" data-layer="contact" data-theme="dark">
     <div class="shell">
 
       <header class="sect-head" data-head>
-        <span class="sect-n">05</span>
         <h2 class="sect-name">Contact</h2>
         <span class="sect-desc">Munich, Germany</span>
       </header>
 
-      <div class="contact-grid" data-up>
+      <div class="contact-grid" data-contact>
         <div>
           <p class="contact-head">For research collaboration, speaking, and advisory work.</p>
           <p class="contact-meta">Based in Munich. Working in English, German and Arabic.</p>
         </div>
 
         <ul class="links">
-          <li>
+          <li class="link-main">
             <a href="https://www.linkedin.com/in/mohamed-esam-elsaid-ph-d-86454a5" rel="me noopener">
               <svg class="icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M216,24H40A16,16,0,0,0,24,40V216a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V40A16,16,0,0,0,216,24Zm0,192H40V40H216V216ZM96,112v64a8,8,0,0,1-16,0V112a8,8,0,0,1,16,0Zm88,28v36a8,8,0,0,1-16,0V140a20,20,0,0,0-40,0v36a8,8,0,0,1-16,0V112a8,8,0,0,1,15.79-1.78A36,36,0,0,1,184,140ZM100,84A12,12,0,1,1,88,72,12,12,0,0,1,100,84Z"/></svg>
-              <span class="link-k">LinkedIn</span>
-              <span class="link-v">mohamed-esam-elsaid</span>
+              <span class="link-v">Message on LinkedIn</span>
             </a>
           </li>
           <li>

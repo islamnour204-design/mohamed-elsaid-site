@@ -235,6 +235,15 @@
   /* Width of the claim, text and buttons beside the portrait. */
   --hero-copy-max: 660px;
 
+  /* --- v4, added 17 October ------------------------------------------ */
+
+  /* Depth for the whitepaper card: an offset and a soft blur, tinted from
+     the ink (craft-floor, Depth). */
+  --shadow-rest: 0 2px 6px rgba(16, 22, 20, .08), 0 12px 28px -14px rgba(16, 22, 20, .22);
+  --shadow-lift: 0 4px 10px rgba(16, 22, 20, .10), 0 24px 44px -18px rgba(16, 22, 20, .34);
+  /* Phone width of the logo column, beside the employer name. */
+  --logo-col-s: 112px;
+
   --nav-blur: 10px;      /* frosted navigation */
   --tl-when: 9rem;       /* date column on the CV and Publications pages */
 

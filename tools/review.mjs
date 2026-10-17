@@ -62,7 +62,7 @@ for (const [w, h] of sizes) {
     stillHidden: [...document.querySelectorAll('main *')].filter(e => {
       let o = 1;
       for (let n = e; n && n !== document.body; n = n.parentElement) o *= +getComputedStyle(n).opacity;
-      return o < 0.99 && e.getBoundingClientRect().height > 0;
+      return o < 0.99 && e.getBoundingClientRect().height > 0 && !e.closest("svg");
     }).slice(0, 5).map(e => e.className || e.tagName),
     activeNav: document.querySelector('[data-link].is-on')?.dataset.link ?? null
   }));

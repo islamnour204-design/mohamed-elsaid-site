@@ -33,6 +33,7 @@
 .e-yr { font-size: var(--t-small); font-variant-numeric: tabular-nums; color: var(--accent); }
 .entries b { display: block; font-weight: 500; max-width: var(--measure); }
 .e-meta { display: block; margin-top: var(--s-1); font-size: var(--t-small); color: var(--ink-secondary); max-width: var(--measure); }
+.e-meta a { color: var(--accent); }
 .e-flag { color: var(--accent); font-weight: 600; margin-right: var(--s-1); }
 .e-body { margin-top: var(--s-2); font-size: var(--t-small); }
 .roles b { font-size: var(--t-h3); letter-spacing: var(--tracking-h); }

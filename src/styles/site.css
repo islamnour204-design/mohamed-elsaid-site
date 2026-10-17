@@ -1,7 +1,7 @@
 /* =====================================================================
    Site. Navigation and the static composition of every section.
-   v3: the old (f97d6ec) structure and section order, which is the
-   client's, with the v2 navigation, hero and fixes carried over.
+   v4: the client's section order (kept since f97d6ec), with each
+   section recomposed inside it after Sol 6.1's review of 17 October.
    One breakpoint, 860px (see tokens.css for why it is literal).
    ===================================================================== */
 
@@ -61,8 +61,10 @@
 .layer { position: relative; padding-block: var(--s-7) var(--s-8); }
 main:focus { outline: none; }
 
-/* The section head is the hard boundary between sections: number,
-   name, one line saying what is inside, over a strong rule. */
+/* The section head is the hard boundary between sections: name and one
+   line saying what is inside, over a strong rule. No section numbers:
+   craft-floor refuses them "unless the sequence itself carries
+   information the reader needs", and here it does not. */
 .sect-head {
   display: flex;
   align-items: baseline;
@@ -70,11 +72,6 @@ main:focus { outline: none; }
   padding-bottom: var(--s-3);
   margin-bottom: var(--s-6);
   border-bottom: 1px solid var(--rule-strong);
-}
-.sect-n {
-  font-size: var(--t-small);
-  font-variant-numeric: tabular-nums;
-  color: var(--accent);
 }
 .sect-name {
   font-size: var(--t-h2);
@@ -88,7 +85,6 @@ main:focus { outline: none; }
   text-align: right;
 }
 .dark .sect-head { border-bottom-color: var(--rule-inv-strong); }
-.dark .sect-n { color: var(--accent-light); }
 .dark .sect-desc { color: var(--ink-inv-secondary); }
 
 .statement {
@@ -126,7 +122,7 @@ main:focus { outline: none; }
   color: var(--accent);
 }
 .hero-claim {
-  margin-top: var(--s-4);
+  margin-top: var(--s-5);
   font-size: var(--t-claim);
   font-weight: 500;
   letter-spacing: var(--tracking-h);
@@ -134,8 +130,7 @@ main:focus { outline: none; }
   text-wrap: balance;
 }
 .hero-claim strong { font-weight: 750; color: var(--accent); }
-.hero-sub { margin-top: var(--s-3); font-size: var(--t-small); }
-.hero .act { margin-top: var(--s-4); }
+.hero .act { margin-top: var(--s-5); }
 
 /* The cut-out is cropped at its right and bottom edges, so those edges
    sit on the hero's own right and bottom edges: merged into the ground,
@@ -148,117 +143,134 @@ main:focus { outline: none; }
 }
 .hero-portrait img { width: 100%; }
 
-/* --- 01 PRACTICE ----------------------------------------------------- */
-.l2-grid {
+/* --- PRACTICE -------------------------------------------------------- */
+/* The opening statement and the prose side by side; the numbers drop to
+   a quiet strip underneath. craft-floor refuses "the hero-metric
+   template: big number, small label", and Sol 6.1 asked that the counts
+   support the prose rather than compete with it. */
+.practice {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, var(--portrait-w));
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
   gap: var(--s-6);
   align-items: start;
-  margin-top: var(--s-4);
 }
-.figures {
-  display: grid;
-  grid-template-columns: max-content minmax(0, 1fr);
-  column-gap: var(--s-4);
-  row-gap: var(--s-4);
-  align-items: baseline;
-  padding-top: var(--s-3);
-  border-top: 1px solid var(--rule-strong);
-}
-.figure { display: contents; }
-.figure dt {
+.practice-lead {
   font-size: var(--t-lede);
-  font-weight: 300;
-  line-height: 1;
-  letter-spacing: var(--tracking-h);
-  font-variant-numeric: tabular-nums;
-  color: var(--accent);
+  font-weight: 600;
+  letter-spacing: var(--tracking-display);
+  line-height: 1.04;
+  text-wrap: pretty;
 }
-.figure dd { margin: 0; font-size: var(--t-small); color: var(--ink-secondary); }
+.practice .prose { padding-top: var(--s-1); }
 
-.sectors {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--s-1);
-  margin-top: var(--s-6);
-}
-.sectors li {
-  padding: var(--s-1) var(--s-2);
-  font-size: var(--t-small);
-  border: 1px solid var(--rule-strong);
-}
-
-/* --- 02 FOCUS -------------------------------------------------------- */
-.focus { margin-top: var(--s-4); }
-.frow {
-  position: relative;
+.facts {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: var(--s-3) var(--s-6);
-  padding: var(--s-5) 0;
+  grid-template-columns: max-content max-content minmax(0, 1fr);
+  margin-top: var(--s-7);
+  border-block: 1px solid var(--rule-strong);
 }
-/* The rule above each row is drawn by the script on entry; at rest it
-   is simply there. */
-.frow::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 1px;
-  background: var(--rule-strong);
-  transform-origin: left center;
-  transform: scaleX(var(--draw, 1));
+.fact { padding: var(--s-3) var(--s-5) var(--s-3) 0; }
+.fact + .fact { padding-left: var(--s-5); border-left: 1px solid var(--rule); }
+.fact dt {
+  font-size: var(--t-h3);
+  font-weight: 600;
+  letter-spacing: var(--tracking-h);
 }
-.frow h4 {
-  font-size: var(--t-h2);
-  font-weight: 500;
-  max-width: 16ch;
-}
-.frow p { max-width: var(--measure); font-size: var(--t-small); color: var(--ink-secondary); }
-.frow p + p { margin-top: var(--s-2); }
+.fig-n { font-variant-numeric: tabular-nums; color: var(--accent); }
+.fact dd { margin: var(--s-1) 0 0; font-size: var(--t-small); color: var(--ink-secondary); }
+.sectors { display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-3); }
+.sectors li { color: var(--ink); }
 
-.paper {
-  display: block;
-  margin-top: var(--s-4);
-  padding: var(--s-3);
-  max-width: 46ch;
-  border: 1px solid var(--rule-strong);
-  text-decoration: none;
-  transition: border-color var(--d-fast) var(--ease), background-color var(--d-fast) var(--ease);
+/* --- FOCUS ----------------------------------------------------------- */
+/* One featured area with its evidence, then two compact ones. */
+.feature {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: var(--s-6);
+  align-items: center;
 }
-.paper:hover { border-color: var(--accent); background: var(--ground-2); }
-.paper-kind { display: block; font-size: var(--t-meta); letter-spacing: var(--tracking-meta); text-transform: uppercase; color: var(--accent); }
-.paper-title { display: block; margin-top: var(--s-1); font-weight: 600; }
+.feature-h {
+  font-size: var(--t-lede);
+  font-weight: 600;
+  letter-spacing: var(--tracking-display);
+  line-height: 1.04;
+}
+.feature .prose { margin-top: var(--s-4); }
+
+/* The whitepaper, shown as the document it is: a page with its title,
+   its publisher and year at the foot. Resting depth is a short soft
+   shadow; hover lifts it (craft-floor, Depth: "shadows carry an offset
+   and a soft blur"). */
+.doc-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--s-5);
+  aspect-ratio: 4 / 5;
+  max-width: 300px;
+  width: 100%;
+  justify-self: end;
+  padding: var(--s-4);
+  background: var(--ground-1);
+  box-shadow: var(--shadow-rest);
+  text-decoration: none;
+  transition: transform var(--d-base) var(--ease), box-shadow var(--d-base) var(--ease);
+}
+.doc-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lift); }
+.doc-card-title {
+  font-size: var(--t-statement);
+  font-weight: 600;
+  letter-spacing: var(--tracking-h);
+  line-height: 1.15;
+  text-wrap: balance;
+}
+.doc-card-foot {
+  display: grid;
+  gap: var(--s-1);
+  padding-top: var(--s-2);
+  border-top: 1px solid var(--rule-strong);
+  font-size: var(--t-small);
+  color: var(--ink-secondary);
+}
+.doc-card-go { display: inline-flex; align-items: center; gap: var(--s-1); color: var(--accent); font-weight: 500; }
+.doc-card:hover .doc-card-go { text-decoration: underline; }
+.arrow { width: 16px; height: 16px; }
+
+.pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-6);
+  margin-top: var(--s-7);
+}
+.pair-item { padding-top: var(--s-3); border-top: 1px solid var(--rule-strong); }
+.pair-item h3 { font-size: var(--t-h3); font-weight: 600; }
+.pair-item p { margin-top: var(--s-2); max-width: 46ch; font-size: var(--t-small); color: var(--ink-secondary); }
 
 .also {
   display: flex;
   gap: var(--s-5);
   align-items: baseline;
-  margin-top: var(--s-4);
-  padding-top: var(--s-4);
-  border-top: 1px solid var(--rule-strong);
+  margin-top: var(--s-6);
+  padding-top: var(--s-3);
+  border-top: 1px solid var(--rule);
 }
-.also-lb {
-  flex: none;
-  font-size: var(--t-meta);
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-meta);
-  color: var(--ink-secondary);
-}
-.also ul { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-5); font-size: var(--t-small); }
+.also-lb { flex: none; font-size: var(--t-small); font-weight: 600; letter-spacing: 0; }
+.also ul { display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-5); font-size: var(--t-small); color: var(--ink-secondary); }
 
-/* --- 03 CAREER ------------------------------------------------------- */
-/* Grouped by employer, the mark once per employer, sitting directly on
-   the light ground: no box, no border, no container (DESIGN.md A4). */
-.jobs { display: grid; gap: var(--s-7); }
+/* --- CAREER ---------------------------------------------------------- */
+/* One band per employer. The mark sits directly on the light ground with
+   the employer's name, place and tenure under it: no box, no container
+   (DESIGN.md A4). The current role leads; earlier roles are quieter. */
+.jobs { display: grid; }
 .job {
   display: grid;
   grid-template-columns: var(--logo-col) minmax(0, 1fr);
   gap: var(--s-6);
-  padding-top: var(--s-6);
+  padding-block: var(--s-6);
   border-top: 1px solid var(--rule-strong);
 }
 .job:first-child { padding-top: 0; border-top: 0; }
-.job-mark { margin: 0; padding-top: var(--s-1); }
+.job-mark { display: grid; gap: var(--s-3); align-content: start; }
 /* On wide screens the mark stays beside its roles while they scroll
    past, so a long employer block never loses its name. */
 @media (min-width: 861px) {
@@ -270,42 +282,148 @@ main:focus { outline: none; }
 .logo-intel { width: var(--logo-intel); }
 .logo-dell  { width: var(--logo-dell); }
 .logo-guc   { width: var(--logo-guc); }
+.job-name { font-size: var(--t-h3); font-weight: 600; }
+.job-meta { margin-top: var(--s-1); font-size: var(--t-small); color: var(--ink-secondary); }
+.job-span { font-size: var(--t-small); font-variant-numeric: tabular-nums; color: var(--accent); font-weight: 500; }
 
-.job-roles { display: grid; gap: var(--s-6); }
+.job-roles { display: grid; }
+.role + .role { margin-top: var(--s-5); padding-top: var(--s-5); border-top: 1px solid var(--rule); }
 .role-top {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
   gap: var(--s-4);
 }
-.role-top h3 {
+.role-top h4 {
   max-width: 30ch;
-  font-size: var(--t-h3);
-  font-weight: 500;
-  line-height: 1.2;
+  font-size: var(--t-body);
+  font-weight: 600;
+  letter-spacing: -.01em;
+  line-height: 1.3;
 }
+.role-now .role-top h4 { font-size: var(--t-statement); letter-spacing: var(--tracking-h); line-height: 1.15; }
 .role-when {
   flex: none;
   font-size: var(--t-small);
   font-variant-numeric: tabular-nums;
-  color: var(--accent);
-}
-.role-where {
-  margin-top: var(--s-1);
-  font-size: var(--t-meta);
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-meta);
   color: var(--ink-secondary);
 }
-.role .prose { margin-top: var(--s-3); font-size: var(--t-small); }
+.role-now .role-when { color: var(--accent); font-weight: 500; }
+.role .prose { margin-top: var(--s-2); font-size: var(--t-small); }
+.role-now .prose { margin-top: var(--s-3); font-size: var(--t-body); }
 
-/* --- 04 RESEARCH ----------------------------------------------------- */
-.ev-intro .prose { margin-top: var(--s-3); }
+/* The rest of a role's own wording, one tap away. The panel opens with
+   a short height transition where the browser supports it. */
+.more-role { interpolate-size: allow-keywords; }
+.more-role summary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-1);
+  min-height: var(--tap-min);
+  font-size: var(--t-small);
+  font-weight: 500;
+  color: var(--accent);
+  cursor: pointer;
+  list-style: none;
+}
+.more-role summary::-webkit-details-marker { display: none; }
+.more-role summary::after {
+  content: "";
+  width: 7px;
+  height: 7px;
+  margin-top: -3px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform var(--d-base) var(--ease), margin var(--d-base) var(--ease);
+}
+.more-role[open] summary::after { transform: rotate(-135deg); margin-top: 3px; }
+.more-role summary:hover { text-decoration: underline; }
+.more-role::details-content {
+  block-size: 0;
+  overflow: hidden;
+  transition: block-size var(--d-base) var(--ease), content-visibility var(--d-base) allow-discrete;
+}
+.more-role[open]::details-content { block-size: auto; }
+.more-role .prose { margin-top: 0; padding-bottom: var(--s-1); }
 
-/* Each part of the research section has a real, visible heading: the
-   reader must be able to tell publications from patents from education
-   at a glance (Islam, 17 October). Smaller than the section name, larger
-   than everything inside the group. */
+/* --- RESEARCH -------------------------------------------------------- */
+/* The research question, explained beside one diagram. */
+.thesis {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  gap: var(--s-6);
+  align-items: center;
+}
+.thesis .prose { margin-top: var(--s-3); }
+
+/* The steps carry an order, so they are numbered. While the diagram
+   plays, the current step is lit; at rest all three read at full ink. */
+.steps { counter-reset: step; display: grid; gap: var(--s-2); margin-top: var(--s-4); }
+.steps li {
+  counter-increment: step;
+  position: relative;
+  padding-left: var(--s-4);
+  font-size: var(--t-small);
+  color: var(--ink-inv);
+  transition: color var(--d-base) var(--ease);
+}
+.steps li::before { content: counter(step); position: absolute; left: 0; font-variant-numeric: tabular-nums; font-weight: 600; color: var(--accent-light); }
+.steps b { font-weight: 600; }
+.migr-live .steps li { color: var(--ink-inv-secondary); }
+.migr-live .steps li.is-on { color: var(--ink-inv); }
+.steps-cost { margin-top: var(--s-4); max-width: var(--measure); font-size: var(--t-small); color: var(--ink-inv-secondary); }
+
+.migr { padding: var(--s-4); background: var(--ground-6); border: 1px solid var(--rule-inv); }
+.migr-svg { display: block; width: 100%; height: auto; overflow: visible; font-family: var(--font); }
+.migr-svg .host { fill: none; stroke: var(--rule-inv-strong); }
+.migr-svg .lb { fill: var(--ink-inv-secondary); font-size: 15px; }
+.migr-svg .lb-strong { fill: var(--ink-inv); font-size: 18px; font-weight: 600; }
+.migr-svg .state { fill: var(--accent-light); font-size: 15px; font-weight: 600; }
+.migr-svg .vm { fill: none; stroke: var(--accent-light); stroke-width: 1.5; }
+.migr-svg .vm.is-target { stroke: var(--rule-inv-strong); stroke-dasharray: 5 5; }
+.migr-svg .pg { fill: var(--accent-light); opacity: .35; }
+.migr-svg .dirty { fill: var(--ink-inv); }
+.migr-svg .slot { fill: none; stroke: var(--rule-inv); }
+.migr-svg .copied { fill: var(--accent-light); }
+.migr-svg .wire { stroke: var(--rule-inv-strong); }
+.migr-svg .pkt { fill: var(--accent-light); }
+
+.migr-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-1) var(--s-3);
+  margin-top: var(--s-3);
+  font-size: var(--t-small);
+  color: var(--ink-inv-secondary);
+}
+.key { display: inline-flex; align-items: center; gap: var(--s-1); }
+.key-sw { width: 12px; height: 12px; }
+.key-mem { background: var(--accent-light); opacity: .35; }
+.key-dirty { background: var(--ink-inv); }
+.key-copied { background: var(--accent-light); }
+.replay {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-1);
+  min-height: var(--tap-min);
+  margin-left: auto;
+  padding: 0 var(--s-2);
+  font: inherit;
+  font-size: var(--t-small);
+  color: var(--accent-light);
+  background: none;
+  border: 1px solid var(--accent-light);
+  cursor: pointer;
+  transition: background-color var(--d-fast) var(--ease), color var(--d-fast) var(--ease);
+}
+.replay:hover { background: var(--accent-light); color: var(--ground-6); }
+.replay[hidden] { display: none; }
+
+/* Each part of the record has a real, visible heading: the reader must
+   be able to tell publications from patents from education at a glance
+   (Islam, 17 October). */
 .group { margin-top: var(--s-8); }
 .group-head {
   display: flex;
@@ -314,7 +432,7 @@ main:focus { outline: none; }
   justify-content: space-between;
   gap: var(--s-1) var(--s-4);
   padding-bottom: var(--s-3);
-  margin-bottom: var(--s-4);
+  margin-bottom: var(--s-2);
   border-bottom: 1px solid var(--rule-inv-strong);
 }
 .group-lb {
@@ -324,51 +442,37 @@ main:focus { outline: none; }
 }
 .group-n { font-size: var(--t-small); color: var(--accent-light); }
 
-.pubs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 var(--s-6); }
-.pub { padding-block: var(--s-3); border-bottom: 1px solid var(--rule-inv); }
-.pub b { display: block; font-weight: 500; }
-.pub-meta { display: flex; justify-content: space-between; gap: var(--s-2); margin-top: var(--s-1); font-size: var(--t-small); color: var(--ink-inv-secondary); }
+/* Publications and patents share one entry style: the title is the link
+   to the source, the venue or number and the year under it. */
+.pubs, .patents { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 var(--s-6); }
+.pub, .patent { padding-block: var(--s-3); border-bottom: 1px solid var(--rule-inv); }
+.dark .pub a, .dark .patent a {
+  display: block;
+  font-weight: 500;
+  color: var(--ink-inv);
+  text-decoration-color: var(--rule-inv-strong);
+  transition: text-decoration-color var(--d-fast) var(--ease);
+}
+.dark .pub a:hover, .dark .patent a:hover { text-decoration-color: var(--accent-light); }
+.pub-meta, .pat-meta { display: flex; justify-content: space-between; gap: var(--s-2); margin-top: var(--s-1); font-size: var(--t-small); color: var(--ink-inv-secondary); }
 .pub-meta em { font-style: normal; }
+.pat-id { font-variant-numeric: tabular-nums; }
 .y, .yr { font-variant-numeric: tabular-nums; color: var(--accent-light); }
 
-.granted-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: var(--s-5);
-  padding-bottom: var(--s-4);
-  border-bottom: 1px solid var(--rule-inv);
-}
-.granted-title {
-  display: block;
-  max-width: 46ch;
-  font-size: var(--t-h3);
-  font-weight: 500;
-  line-height: 1.3;
-}
-.granted-main .pat-id { display: block; margin-top: var(--s-1); }
-.pat-id { font-size: var(--t-small); font-variant-numeric: tabular-nums; color: var(--ink-inv-secondary); }
-.pat-state { font-size: var(--t-meta); letter-spacing: var(--tracking-meta); text-transform: uppercase; color: var(--ink-inv-secondary); }
-.pat-granted { flex: none; color: var(--accent-light); font-weight: 600; }
-.filed { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-5); margin-top: var(--s-4); }
-.filed li { display: grid; gap: var(--s-1); align-content: start; }
-.filed b { font-weight: 500; }
-
-.base { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-6); }
+.base { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-6); margin-top: var(--s-3); }
 .col-lb {
   margin-bottom: var(--s-3);
-  font-size: var(--t-meta);
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-meta);
-  color: var(--ink-inv-secondary);
+  font-size: var(--t-small);
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--ink-inv);
 }
 .edu li + li { margin-top: var(--s-3); }
 .edu b { display: block; font-weight: 500; }
 .edu .yr { display: block; font-size: var(--t-small); }
 .where { display: block; font-size: var(--t-small); color: var(--ink-inv-secondary); }
 
-/* --- 05 CONTACT ------------------------------------------------------ */
+/* --- CONTACT --------------------------------------------------------- */
 .contact { padding-bottom: 0; }
 .contact-grid {
   display: grid;
@@ -384,20 +488,33 @@ main:focus { outline: none; }
   max-width: 18ch;
 }
 .contact-meta { margin-top: var(--s-4); font-size: var(--t-small); color: var(--ink-inv-secondary); }
+.links { display: grid; gap: var(--s-2); }
 .links a {
   display: flex;
   align-items: center;
   gap: var(--s-3);
   min-height: var(--tap-min);
   padding-block: var(--s-3);
-  border-top: 1px solid var(--rule-inv);
+  border-bottom: 1px solid var(--rule-inv);
   color: var(--ink-inv);
   text-decoration: none;
 }
-.links li:last-child a { border-bottom: 1px solid var(--rule-inv); }
 .links a:hover .link-v { text-decoration: underline; }
+/* LinkedIn is the main route, so it is the one solid button. */
+.dark .link-main a {
+  justify-content: center;
+  padding: var(--s-2) var(--s-4);
+  border: 0;
+  background: var(--accent-light);
+  color: var(--ground-6);
+  font-weight: 600;
+  transition: background-color var(--d-fast) var(--ease);
+}
+.dark .link-main a:hover { background: var(--ink-inv); }
+.dark .link-main a:hover .link-v { text-decoration: none; }
 .icon { width: var(--icon); height: var(--icon); color: var(--accent-light); flex: none; }
-.link-k { min-width: 6em; font-size: var(--t-meta); letter-spacing: var(--tracking-meta); text-transform: uppercase; color: var(--ink-inv-secondary); }
+.link-main .icon { color: currentColor; }
+.link-k { min-width: 6em; font-size: var(--t-small); color: var(--ink-inv-secondary); }
 
 .foot { margin-top: var(--s-8); border-top: 1px solid var(--rule-inv); }
 .foot-in {
@@ -413,9 +530,9 @@ main:focus { outline: none; }
 
 /* --- HERO ENTRANCE START STATES --------------------------------------
    Only while the script is alive (.js-motion). The script removes the
-   class when the entrance ends, and a failsafe removes it regardless,
-   so the page can never stay hidden. Everything below the hero starts
-   visible in CSS; the script hides and plays each block itself. */
+   class when the entrance ends, and a timer in the page head removes it
+   regardless, so the page can never stay hidden. The buttons are never
+   hidden: they work from the first frame. */
 .js-motion [data-rise], .js-motion .hero-name, .js-motion .hero-portrait { opacity: 0; }
 
 /* =====================================================================
@@ -454,25 +571,54 @@ main:focus { outline: none; }
   .sect-head { flex-wrap: wrap; margin-bottom: var(--s-5); }
   .sect-desc { flex-basis: 100%; margin-left: 0; text-align: left; }
 
-  /* Name, role and proposition come before the portrait on a phone. */
-  .hero { display: block; min-height: 0; padding-bottom: 0; }
+  /* On a phone he is on the first screen: the portrait comes first,
+     standing on a rule, with the name directly under it. */
+  .hero { flex-direction: column; align-items: stretch; min-height: 0; padding-top: calc(var(--nav-h) + var(--s-2)); padding-bottom: var(--s-6); }
+  .hero-portrait {
+    position: relative;
+    order: -1;
+    width: min(60vw, 300px);
+    margin-left: auto;
+    border-bottom: 1px solid var(--rule-strong);
+  }
+  .hero-in { margin-top: var(--s-3); }
   .hero-copy > :not(.hero-name) { max-width: none; }
-  .hero-portrait { position: relative; width: min(86vw, 420px); margin: var(--s-5) 0 0 auto; }
+  .hero-claim { margin-top: var(--s-3); }
+  .hero .act { margin-top: var(--s-4); }
 
-  .l2-grid { grid-template-columns: minmax(0, 1fr); gap: var(--s-5); }
-  .frow { grid-template-columns: minmax(0, 1fr); gap: var(--s-2); }
-  .frow h4 { max-width: none; }
+  .practice { grid-template-columns: minmax(0, 1fr); gap: var(--s-4); }
+  .facts { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); margin-top: var(--s-6); }
+  .fact { padding-right: var(--s-2); }
+  .fact + .fact { padding-left: var(--s-3); }
+  .fact-sectors { grid-column: 1 / -1; padding-left: 0; border-left: 0; border-top: 1px solid var(--rule); }
+  .fact.fact-sectors { padding-left: 0; border-left: 0; }
+
+  .feature { grid-template-columns: minmax(0, 1fr); gap: var(--s-5); }
+  .doc-card { justify-self: start; aspect-ratio: auto; min-height: 240px; max-width: 320px; }
+  .pair { grid-template-columns: minmax(0, 1fr); gap: var(--s-4); margin-top: var(--s-6); }
   .also { flex-direction: column; gap: var(--s-2); }
 
-  /* Logo above its employer's roles. */
-  .job { grid-template-columns: minmax(0, 1fr); gap: var(--s-4); }
+  /* The mark sits beside the employer's name; the roles run full width
+     below. */
+  .job { grid-template-columns: minmax(0, 1fr); gap: var(--s-4); padding-block: var(--s-5); }
+  .job-mark { grid-template-columns: var(--logo-col-s) minmax(0, 1fr); align-items: center; gap: var(--s-3); }
+  .logo-intel { width: calc(var(--logo-intel) * .62); }
+  .logo-dell  { width: calc(var(--logo-dell) * .62); }
+  .logo-guc   { width: calc(var(--logo-guc) * .56); }
   .role-top { flex-direction: column; gap: var(--s-1); }
+  .role-now .prose { font-size: var(--t-small); }
 
+  .thesis { grid-template-columns: minmax(0, 1fr); gap: var(--s-5); }
+  .migr { padding: var(--s-2); }
+  /* The diagram renders at about half size on a phone; its labels are
+     enlarged in drawing units so they stay readable. */
+  .migr-svg .lb-strong { font-size: 28px; }
+  .migr-svg .lb, .migr-svg .state { font-size: 22px; }
+  .migr-svg .vm-lb { display: none; }
   .group { margin-top: var(--s-7); }
-  .pubs, .filed, .base { grid-template-columns: minmax(0, 1fr); }
-  .pubs { gap: 0; }
-  .granted-row { flex-direction: column; gap: var(--s-2); }
-  .base { gap: var(--s-6); }
+  .pubs, .patents, .base { grid-template-columns: minmax(0, 1fr); }
+  .base { gap: var(--s-5); }
 
   .contact-grid { grid-template-columns: minmax(0, 1fr); gap: var(--s-5); }
 }
+

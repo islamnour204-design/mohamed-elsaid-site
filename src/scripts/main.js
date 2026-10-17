@@ -1,12 +1,14 @@
 /* =====================================================================
-   Mohamed Elsaid, v3. One script for the home page.
+   Mohamed Elsaid, v4. One script for the home page.
 
      Navigation   active section, theme follows the ground, phone menu
-     Introduction the name rises letter by letter, then the rest follows
-     Sections     each block plays a short entrance once, when it is
-                  first seen
+     Introduction the name rises letter by letter, about 1.2 seconds
+     Research     the live migration diagram, the page's one authored
+                  moment: plays once when seen, about 3.5 seconds, with
+                  a replay button
+     Elsewhere    a few quiet arrivals, played once, and nothing else
 
-   Every entrance runs on its own clock. Nothing is pinned and nothing
+   Every movement runs on its own clock. Nothing is pinned and nothing
    is scrubbed to the scroll position, so the page never holds or lags
    behind the reader (Islam, 17 October). Native scrolling, no smooth-
    scroll library. With reduced motion nothing moves at all.
@@ -23,10 +25,9 @@ const root = document.documentElement;
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 
-/* Safety net. If anything below throws or stalls, the hero start state
-   is cleared and the page is complete and readable. */
+/* Clears the hero start state. A timer in the page head does the same
+   after four seconds, even if this module never loads. */
 const reveal = () => root.classList.remove('js-motion');
-const failsafe = setTimeout(reveal, 4000);
 
 const css = getComputedStyle(root);
 const ms = n => (parseFloat(css.getPropertyValue(n)) || 0) / 1000;
@@ -112,87 +113,200 @@ addEventListener('scroll', () => {
 addEventListener('resize', trackLayer);
 trackLayer();
 
+/* Opening a role's details changes the page height; triggers below it
+   are recalculated (gsap-scrolltrigger: "call ScrollTrigger.refresh()
+   after DOM/layout changes"). */
+$$('.more-role').forEach(d => d.addEventListener('toggle', () => {
+  setTimeout(() => ScrollTrigger.refresh(), ms('--d-base') * 1000 + 50);
+}));
+
+/* =====================================================================
+   RESEARCH: THE LIVE MIGRATION DIAGRAM
+   Two servers. The virtual machine's memory pages are copied from A to
+   B while it runs; pages it changes meanwhile turn white and are copied
+   again; then a short pause, the last pages, and the machine runs on B.
+   Built here so the markup stays short. With reduced motion it is drawn
+   in its finished state.
+   ===================================================================== */
+const SVG = 'http://www.w3.org/2000/svg';
+function node(tag, attrs, parent) {
+  const el = document.createElementNS(SVG, tag);
+  for (const k in attrs) el.setAttribute(k, attrs[k]);
+  parent.appendChild(el);
+  return el;
+}
+function text(str, attrs, parent) {
+  const el = node('text', attrs, parent);
+  el.textContent = str;
+  return el;
+}
+
+function buildMigration() {
+  const fig = $('[data-migr]');
+  if (!fig) return null;
+  const svg = $('svg', fig);
+  const thesis = fig.closest('.thesis');
+  const steps = $$('[data-steps] li');
+  const replay = $('[data-replay]', fig);
+
+  const COLS = 6, ROWS = 4, SIZE = 26, GAP = 8;
+  const gridW = COLS * SIZE + (COLS - 1) * GAP;
+
+  function server(x, name) {
+    const g = node('g', {}, svg);
+    text(name, { x, y: 22, class: 'lb-strong' }, g);
+    node('rect', { x, y: 36, width: 264, height: 240, class: 'host' }, g);
+    const vm = node('g', {}, g);
+    const box = node('rect', { x: x + 20, y: 62, width: 224, height: 196, class: 'vm' }, vm);
+    text('Virtual machine', { x: x + 34, y: 90, class: 'lb vm-lb' }, vm);
+    const state = text('', { x: x + 230, y: 90, 'text-anchor': 'end', class: 'state' }, vm);
+    const x0 = x + 20 + (224 - gridW) / 2;
+    const cells = [];
+    for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+      cells.push({ x: x0 + c * (SIZE + GAP), y: 106 + r * (SIZE + GAP) });
+    }
+    return { vm, box, state, cells };
+  }
+
+  const A = server(8, 'Server A');
+  const B = server(368, 'Server B');
+  B.box.classList.add('is-target');
+
+  node('line', { x1: 272, y1: 156, x2: 368, y2: 156, class: 'wire' }, svg);
+  text('Network', { x: 320, y: 146, 'text-anchor': 'middle', class: 'lb' }, svg);
+  const pkts = [0, 1, 2].map(() => node('rect', { x: 272, y: 152, width: 8, height: 8, class: 'pkt', opacity: 0 }, svg));
+
+  const pages = A.cells.map(p => node('rect', { ...p, width: SIZE, height: SIZE, class: 'pg' }, A.vm));
+  const dirty = A.cells.map(p => node('rect', { ...p, width: SIZE, height: SIZE, class: 'dirty', opacity: 0 }, A.vm));
+  B.cells.forEach(p => node('rect', { x: p.x + .5, y: p.y + .5, width: SIZE - 1, height: SIZE - 1, class: 'slot' }, B.vm));
+  const copied = B.cells.map(p => node('rect', { ...p, width: SIZE, height: SIZE, class: 'copied', opacity: 0 }, B.vm));
+
+  /* Pages the machine writes during round one, then during round two. */
+  const D1 = [2, 7, 9, 13, 16, 20, 22];
+  const D2 = [9, 20];
+
+  const setStep = i => steps.forEach((li, n) => li.classList.toggle('is-on', n === i));
+  const start = () => {
+    thesis.classList.add('migr-live');
+    setStep(0);
+    A.state.textContent = 'running';
+    B.state.textContent = '';
+    B.box.classList.add('is-target');
+    replay.hidden = true;
+  };
+  const finish = () => {
+    thesis.classList.remove('migr-live');
+    setStep(-1);
+    A.state.textContent = '';
+    B.state.textContent = 'running';
+    B.box.classList.remove('is-target');
+    replay.hidden = reduced;
+  };
+
+  const tl = gsap.timeline({ paused: true, defaults: { ease: 'none' } });
+  tl.call(start, null, 0)
+    .set(A.vm, { opacity: 1 }, 0)
+    .set(dirty, { opacity: 0 }, 0)
+    .set(copied, { opacity: 0 }, 0)
+
+    /* Round one: every page crosses while the machine keeps running. */
+    .to(pkts, { opacity: 1, duration: .1, stagger: .12 }, 0)
+    .fromTo(pkts, { x: 0 }, { x: 88, duration: .4, stagger: { each: .12, repeat: 2 } }, 0)
+    .to(pkts, { opacity: 0, duration: .1 }, 1.25)
+    .to(copied, { opacity: 1, duration: .2, stagger: .035 }, .05);
+  D1.forEach((i, n) => {
+    const t = .35 + n * .1;
+    tl.to(dirty[i], { opacity: 1, duration: .15 }, t).to(copied[i], { opacity: .25, duration: .15 }, t);
+  });
+
+  /* Round two: the changed pages are copied again; two more change. */
+  tl.call(() => setStep(1), null, 1.4);
+  D1.forEach((i, n) => {
+    const t = 1.5 + n * .09;
+    tl.to(dirty[i], { opacity: 0, duration: .15 }, t).to(copied[i], { opacity: 1, duration: .15 }, t);
+  });
+  D2.forEach((i, n) => {
+    const t = 1.85 + n * .2;
+    tl.to(dirty[i], { opacity: 1, duration: .15 }, t).to(copied[i], { opacity: .25, duration: .15 }, t);
+  });
+
+  /* Pause and switch: the last pages, then the machine runs on B. */
+  tl.call(() => { setStep(2); A.state.textContent = 'paused'; }, null, 2.5)
+    .to(D2.map(i => dirty[i]), { opacity: 0, duration: .15 }, 2.7)
+    .to(D2.map(i => copied[i]), { opacity: 1, duration: .15 }, 2.7)
+    .to(A.vm, { opacity: .3, duration: .5, ease: EASE }, 3.0)
+    .call(finish, null, 3.3);
+
+  replay.addEventListener('click', () => tl.restart());
+
+  if (reduced) { tl.progress(1); finish(); }
+  return { fig, tl };
+}
+const migration = buildMigration();
+
+
 /* =====================================================================
    MOTION
    ===================================================================== */
 if (reduced) {
-  clearTimeout(failsafe);
   reveal();
 } else {
   try { motion(); } catch (err) { reveal(); throw err; }
 }
 
 /* Plays a timeline once, the first time its trigger comes into view.
-   The timeline runs on time, not on scroll. */
+   The timeline runs on time, not on scroll. Triggers are created in
+   page order, top to bottom. */
 function once(trigger, build, start = 'top 82%') {
+  if (!trigger) return;
   const tl = gsap.timeline({ paused: true });
   build(tl);
   ScrollTrigger.create({ trigger, start, once: true, onEnter: () => tl.play() });
 }
 
 function motion() {
-  /* --- INTRODUCTION ------------------------------------------------- */
+  /* --- INTRODUCTION: about 1.2 seconds in all. The buttons are never
+     hidden, so they work from the first frame. ---------------------- */
   const name = $('[data-hero-name]');
   const split = SplitText.create(name, { type: 'words,chars', mask: 'chars' });
   gsap.set(name, { opacity: 1 });
 
-  const intro = gsap.timeline({
-    delay: 0.15,
-    onComplete: () => { clearTimeout(failsafe); reveal(); }
-  });
-  intro
-    .from(split.chars, { yPercent: 110, duration: D_REVEAL, stagger: 0.035 })
-    .fromTo('.hero-portrait', { opacity: 0, y: T_LEAD }, { opacity: 1, y: 0, duration: D_REVEAL }, 0.25)
-    .fromTo('[data-rise]', { opacity: 0, y: T_BODY }, { opacity: 1, y: 0, stagger: 0.1 }, 0.55);
+  gsap.timeline({ delay: 0.1, onComplete: reveal })
+    .from(split.chars, { yPercent: 110, duration: 0.9, stagger: 0.025 })
+    .fromTo('.hero-portrait', { opacity: 0, y: T_LEAD }, { opacity: 1, y: 0, duration: 0.9 }, 0.15)
+    .fromTo('[data-rise]', { opacity: 0, y: T_BODY }, { opacity: 1, y: 0, stagger: 0.08 }, 0.35);
 
-  /* --- SECTION HEADS: number, name and line arrive in turn ---------- */
-  $$('[data-head]').forEach(head => {
-    once(head, tl => tl.from(head.children, { opacity: 0, y: T_FINE, stagger: 0.08 }));
-  });
-
-  /* --- GENERIC BLOCKS: rise into place ------------------------------- */
-  $$('[data-up]').forEach(el => {
-    once(el, tl => tl.from(el, { opacity: 0, y: T_BODY }));
-  });
-
-  /* --- PRACTICE: the figures count up, the sectors follow ------------ */
-  const figures = $('[data-figures]');
-  once(figures, tl => {
-    tl.from(figures, { opacity: 0, y: T_BODY });
-    $$('[data-count]', figures).forEach((el, i) => {
+  /* --- PRACTICE: the lead settles, the two counts run once ---------- */
+  const lead = $('.practice-lead');
+  once(lead, tl => tl.from(lead, { opacity: 0, y: T_BODY }));
+  const facts = $('[data-figures]');
+  once(facts, tl => {
+    $$('[data-count]', facts).forEach((el, i) => {
       const end = +el.dataset.count;
       const n = { v: 0 };
-      tl.to(n, {
-        v: end,
-        duration: D_REVEAL,
-        onUpdate: () => { el.textContent = Math.round(n.v); }
-      }, 0.1 + i * 0.15);
+      tl.to(n, { v: end, duration: D_REVEAL, onUpdate: () => { el.textContent = Math.round(n.v); } }, i * 0.15);
     });
-  });
-  const sectors = $('[data-sectors]');
-  once(sectors, tl => tl.from(sectors.children, { opacity: 0, y: T_FINE, stagger: 0.07 }), 'top 90%');
+  }, 'top 90%');
 
-  /* --- FOCUS: each row's rule draws, then its content arrives -------- */
-  $$('[data-row]').forEach(row => {
-    once(row, tl => tl
-      .fromTo(row, { '--draw': 0 }, { '--draw': 1, duration: D_REVEAL })
-      .from(row.children, { opacity: 0, y: T_BODY, stagger: 0.12 }, 0.2));
-  });
+  /* --- FOCUS: the whitepaper arrives, 700ms ------------------------- */
+  const paper = $('[data-paper]');
+  once(paper, tl => tl.from(paper, { opacity: 0, y: T_LEAD, duration: D_MID }));
 
-  /* --- CAREER: the employer mark settles, then its roles -------------- */
+  /* --- CAREER: each employer's mark and name settle, 700ms. The role
+     text is there from the start. ------------------------------------ */
   $$('[data-job]').forEach(job => {
-    once(job, tl => tl
-      .from($('.logo', job), { opacity: 0, scale: 1.12, transformOrigin: 'left center', duration: D_REVEAL })
-      .from($$('.role', job), { opacity: 0, y: T_BODY, stagger: 0.15 }, 0.2));
+    const mark = $('.job-mark', job);
+    once(job, tl => tl.from(mark.children, { opacity: 0, y: T_FINE, duration: D_MID, stagger: 0.1 }));
   });
 
-  /* --- RESEARCH: each group's heading, then its entries -------------- */
-  $$('[data-group]').forEach(group => {
-    const items = $$('.pub, .granted-row, .filed li, .base-col', group);
-    once(group, tl => tl
-      .from($('.group-head', group), { opacity: 0, y: T_FINE })
-      .from(items, { opacity: 0, y: T_FINE, stagger: 0.06 }, 0.15));
-  });
+  /* --- RESEARCH: the diagram plays once when it is well in view ------ */
+  if (migration) {
+    ScrollTrigger.create({ trigger: migration.fig, start: 'top 70%', once: true, onEnter: () => migration.tl.play(0) });
+  }
+
+  /* --- CONTACT: the invitation, 340ms -------------------------------- */
+  const contact = $('[data-contact]');
+  once(contact, tl => tl.from(contact, { opacity: 0, y: T_FINE, duration: ms('--d-base') || 0.34 }), 'top 90%');
 
   /* Fonts change line heights; recalculate every trigger once they land. */
   document.fonts?.ready.then(() => ScrollTrigger.refresh());

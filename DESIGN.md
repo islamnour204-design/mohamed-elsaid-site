@@ -136,7 +136,7 @@ skills themselves and does not need repeating.
 - **Decorative geometry** — floating triangles, confetti, half-circles.
   This is what marks the template Mohamed sent as a bought theme, and
   avoiding it is the point of the exercise.
-- **Rounded corners** — `--radius: 0`, a house decision, applies site-wide
+- **Rounded corners** — SUPERSEDED 18 October 2026 (v5): Islam overrode the old `--radius: 0` rule. One token, `--radius: 8px`, for buttons, cards, the diagram panel and the portrait panel; section boundaries, rules, photos and logos stay straight. Enforced by tools/check.mjs (a radius must come from the token).
 - **Em-dashes in copy** — enforced by the build check
 
 ## B4. The standard

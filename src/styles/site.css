@@ -47,7 +47,7 @@
 .nav-links a:hover, .nav-links a.is-on { color: var(--ink); }
 .nav-links a.is-on { text-decoration: underline; text-decoration-thickness: 2px; text-decoration-color: var(--accent); }
 .nav-sep { margin-left: var(--s-2); padding-left: var(--s-2); border-left: 1px solid var(--rule); }
-.nav-toggle { display: none; }
+.nav-phone { display: none; }
 
 /* The navigation follows the ground beneath it. */
 .on-dark .nav { background: var(--nav-ground-inv); color: var(--ink-inv); border-bottom-color: var(--rule-inv); }
@@ -98,23 +98,33 @@ main:focus { outline: none; }
 .more a, .foot-in a { display: inline-flex; align-items: center; min-height: var(--tap-min); }
 
 /* --- INTRODUCTION ---------------------------------------------------- */
-.hero {
-  min-height: 100svh;
-  padding-block: calc(var(--nav-h) + var(--s-5)) var(--s-5);
-  display: flex;
-  align-items: center;
-  overflow: hidden;
+/* v5. Copy and portrait share one grid inside the content column, so
+   both sides start and end on the same edges as the navigation (Islam:
+   "no symmetry, the dimension is messed up"). The copy is centred on
+   the portrait's height; the portrait stands on the hero's floor. */
+.hero { padding-block: calc(var(--nav-h) + var(--s-5)) 0; }
+/* The name runs across both columns on one line. Under it, the claim
+   and buttons on the left; the portrait on the right, its head rising
+   into the space beside the name. Both columns end on the same floor. */
+.hero-in {
+  display: grid;
+  grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+  grid-template-rows: auto auto;
+  column-gap: var(--s-6);
+  align-items: end;
 }
-.hero-copy { position: relative; z-index: 1; }
-/* The name may run the full width; everything under it keeps clear of
-   the portrait. */
-.hero-copy > :not(.hero-name) { max-width: min(var(--hero-copy-max), calc(100vw - var(--portrait-v2) - var(--gutter) * 2)); }
+.hero-copy { display: contents; }
 .hero-name {
-  font-size: var(--t-hero);
+  grid-area: 1 / 1 / 2 / 3;
+  position: relative;
+  z-index: 1;
+  font-size: var(--t-hero-v5);
   font-weight: 650;
   letter-spacing: var(--tracking-display);
   line-height: .95;
+  white-space: nowrap;
 }
+.hero-sub { grid-area: 2 / 1; align-self: end; padding-bottom: var(--s-5); }
 .hero-role {
   margin-top: var(--s-2);
   font-size: var(--t-small);
@@ -132,16 +142,26 @@ main:focus { outline: none; }
 .hero-claim strong { font-weight: 750; color: var(--accent); }
 .hero .act { margin-top: var(--s-5); }
 
-/* The cut-out is cropped at its right and bottom edges, so those edges
-   sit on the hero's own right and bottom edges: merged into the ground,
-   never framed (DESIGN.md A4). */
+/* The cut-out is cropped at its right and bottom edges. The panel
+   behind it ends exactly on those crop lines, so the crop reads as the
+   panel's edge, and the head rises above the panel's top: a ground step
+   with depth, not a frame (DESIGN.md A4). */
 .hero-portrait {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  width: var(--portrait-v2);
+  grid-area: 1 / 2 / 3 / 3;
+  position: relative;
+  justify-self: end;
+  align-self: end;
+  width: var(--portrait-hero);
 }
-.hero-portrait img { width: 100%; }
+.hero-portrait::before {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: var(--portrait-panel);
+  background: var(--ground-3);
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+.hero-portrait img { position: relative; width: 100%; }
 
 /* --- PRACTICE -------------------------------------------------------- */
 /* The opening statement and the prose side by side; the numbers drop to
@@ -212,6 +232,7 @@ main:focus { outline: none; }
   justify-self: end;
   padding: var(--s-4);
   background: var(--ground-1);
+  border-radius: var(--radius);
   box-shadow: var(--shadow-rest);
   text-decoration: none;
   transition: transform var(--d-base) var(--ease), box-shadow var(--d-base) var(--ease);
@@ -315,7 +336,7 @@ main:focus { outline: none; }
 /* The rest of a role's own wording, one tap away. The panel opens with
    a short height transition where the browser supports it. */
 .more-role { interpolate-size: allow-keywords; }
-.more-role summary {
+.more-role summary, .role-fold {
   display: inline-flex;
   align-items: center;
   gap: var(--s-1);
@@ -327,6 +348,9 @@ main:focus { outline: none; }
   list-style: none;
 }
 .more-role summary::-webkit-details-marker { display: none; }
+/* Phone only: opens an earlier role's text (see NARROW SCREENS). */
+.role-fold { display: none; padding: 0; font: inherit; font-size: var(--t-small); background: none; border: 0; }
+.role.is-open > .role-fold { display: none; }
 .more-role summary::after {
   content: "";
   width: 7px;
@@ -374,7 +398,11 @@ main:focus { outline: none; }
 .migr-live .steps li.is-on { color: var(--ink-inv); }
 .steps-cost { margin-top: var(--s-4); max-width: var(--measure); font-size: var(--t-small); color: var(--ink-inv-secondary); }
 
-.migr { padding: var(--s-4); background: var(--ground-6); border: 1px solid var(--rule-inv); }
+.migr { padding: var(--s-4); background: var(--ground-6); border: 1px solid var(--rule-inv); border-radius: var(--radius); }
+/* The caption repeats the lit step for phones, where the list is not
+   beside the diagram. The list stays the readable source, so the
+   caption is hidden from screen readers. */
+.migr-cap { display: none; }
 .migr-svg { display: block; width: 100%; height: auto; overflow: visible; font-family: var(--font); }
 .migr-svg .host { fill: none; stroke: var(--rule-inv-strong); }
 .migr-svg .lb { fill: var(--ink-inv-secondary); font-size: 15px; }
@@ -415,6 +443,7 @@ main:focus { outline: none; }
   color: var(--accent-light);
   background: none;
   border: 1px solid var(--accent-light);
+  border-radius: var(--radius);
   cursor: pointer;
   transition: background-color var(--d-fast) var(--ease), color var(--d-fast) var(--ease);
 }
@@ -447,8 +476,11 @@ main:focus { outline: none; }
    to the source, the venue or number and the year under it. */
 .pubs, .patents { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 var(--s-6); }
 .pub, .patent { padding-block: var(--s-3); border-bottom: 1px solid var(--rule-inv); }
+/* Titles are links: at least 44px tall to tap (Sol 6.1 measured 26px). */
 .dark .pub a, .dark .patent a {
-  display: block;
+  display: flex;
+  align-items: center;
+  min-height: var(--tap-min);
   font-weight: 500;
   color: var(--ink-inv);
   text-decoration-color: var(--rule-inv-strong);
@@ -468,6 +500,10 @@ main:focus { outline: none; }
   letter-spacing: 0;
   color: var(--ink-inv);
 }
+/* On wide screens the folds are always open and their summaries read as
+   plain column headings. */
+.col-fold summary { list-style: none; pointer-events: none; }
+.col-fold summary::-webkit-details-marker { display: none; }
 .edu li + li { margin-top: var(--s-3); }
 .edu b { display: block; font-weight: 500; }
 .edu .yr { display: block; font-size: var(--t-small); }
@@ -506,6 +542,7 @@ main:focus { outline: none; }
   justify-content: center;
   padding: var(--s-2) var(--s-4);
   border: 0;
+  border-radius: var(--radius);
   background: var(--accent-light);
   color: var(--ground-6);
   font-weight: 600;
@@ -540,18 +577,33 @@ main:focus { outline: none; }
    NARROW SCREENS
    ===================================================================== */
 @media (max-width: 860px) {
-  .nav-toggle {
+  /* Navigation, v5 (Islam chose Sol 6.1's proposal on 18 October): no
+     boxed Menu button. Contact is always one tap away; a quiet
+     "Sections" control opens a compact panel with the five home
+     sections, then the two record pages side by side. */
+  .nav-in { gap: var(--s-1); }
+  .nav-name { white-space: nowrap; }
+  .nav-phone { display: flex; align-items: center; }
+  .nav-contact, .nav-toggle {
     display: inline-flex;
     align-items: center;
+    gap: var(--s-1);
     min-height: var(--tap-min);
-    padding: 0 var(--s-2);
+    padding: 0 var(--s-1);
     font: inherit;
     font-size: var(--t-small);
+    font-weight: 500;
     color: inherit;
+    text-decoration: none;
     background: none;
-    border: 1px solid currentColor;
+    border: 0;
+    border-radius: var(--radius);
     cursor: pointer;
   }
+  .nav-contact { color: var(--accent); }
+  .on-dark .nav-contact { color: var(--accent-light); }
+  .chev { width: var(--chev); height: var(--chev); transition: transform var(--d-base) var(--ease); }
+  .nav.is-open .chev { transform: rotate(180deg); }
   .nav-links {
     display: none;
     position: absolute;
@@ -560,66 +612,147 @@ main:focus { outline: none; }
     right: 0;
     background: var(--ground-1);
     border-bottom: 1px solid var(--rule-strong);
+    box-shadow: var(--shadow-rest);
   }
   .on-dark .nav-links { background: var(--ground-6); border-bottom-color: var(--rule-inv-strong); }
   .nav.is-open .nav-links { display: block; }
-  .nav-links ul { flex-direction: column; align-items: stretch; gap: 0; padding: var(--s-1) var(--gutter) var(--s-3); }
+  .nav-links ul {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 var(--s-3);
+    padding: var(--s-1) var(--gutter) var(--s-2);
+  }
+  .nav-links li { grid-column: 1 / -1; }
+  .nav-links li.nav-sep, .nav-links li.nav-sep + li {
+    grid-column: auto;
+    margin: var(--s-1) 0 0;
+    padding: var(--s-1) 0 0;
+    border-left: 0;
+    border-top: 1px solid var(--rule);
+  }
+  .on-dark .nav-links li.nav-sep, .on-dark .nav-links li.nav-sep + li { border-top-color: var(--rule-inv); }
   .nav-links a { width: 100%; font-size: var(--t-body); padding-inline: 0; }
-  .nav-sep { margin: var(--s-1) 0 0; padding: var(--s-1) 0 0; border-left: 0; border-top: 1px solid var(--rule); }
-  .on-dark .nav-sep { border-top-color: var(--rule-inv); }
 
-  .layer { padding-block: var(--s-7) var(--s-7); }
-  .sect-head { flex-wrap: wrap; margin-bottom: var(--s-5); }
+  /* Sections: tight groups, generous separation (craft-floor). Head and
+     description close together, clearly apart from the next section. */
+  .layer { padding-block: var(--s-6); }
+  .sect-head { flex-wrap: wrap; gap: var(--s-1); padding-bottom: var(--s-2); margin-bottom: var(--s-4); }
   .sect-desc { flex-basis: 100%; margin-left: 0; text-align: left; }
 
-  /* On a phone he is on the first screen: the portrait comes first,
-     standing on a rule, with the name directly under it. */
-  .hero { flex-direction: column; align-items: stretch; min-height: 0; padding-top: calc(var(--nav-h) + var(--s-2)); padding-bottom: var(--s-6); }
-  .hero-portrait {
-    position: relative;
-    order: -1;
-    width: min(60vw, 300px);
-    margin-left: auto;
-    border-bottom: 1px solid var(--rule-strong);
-  }
-  .hero-in { margin-top: var(--s-3); }
-  .hero-copy > :not(.hero-name) { max-width: none; }
-  .hero-claim { margin-top: var(--s-3); }
-  .hero .act { margin-top: var(--s-4); }
+  /* Hero, v5 (Islam chose the centred layout): portrait first on its
+     panel, then name, title, claim and two equal buttons, all on one
+     centre line, inside the first screen down to 360x640. */
+  .hero { padding-top: calc(var(--nav-h) + var(--s-3)); padding-bottom: var(--s-6); }
+  .hero-in { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; gap: var(--s-3); justify-items: center; text-align: center; }
+  .hero-name, .hero-sub, .hero-portrait { grid-area: auto; }
+  .hero-name { white-space: normal; }
+  .hero-sub { padding-bottom: 0; }
+  .hero-portrait { order: -1; justify-self: center; width: var(--portrait-phone); }
+  .hero-role { margin-top: var(--s-1); }
+  .hero-claim { margin-top: var(--s-3); font-size: var(--t-claim-s); }
+  .hero .act { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-1); margin-top: var(--s-4); }
+  .hero .btn { justify-content: center; padding-inline: var(--s-1); }
 
-  .practice { grid-template-columns: minmax(0, 1fr); gap: var(--s-4); }
-  .facts { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); margin-top: var(--s-6); }
-  .fact { padding-right: var(--s-2); }
-  .fact + .fact { padding-left: var(--s-3); }
+  /* Practice: the statement and the first paragraph. The Dell EMC
+     paragraph is left to Career, two screens below, on a phone. */
+  .practice { grid-template-columns: minmax(0, 1fr); gap: var(--s-3); }
+  .practice-lead { font-size: var(--t-statement); }
+  .practice .prose p + p { display: none; }
+  .facts { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); margin-top: var(--s-5); }
+  /* Space, not a divider, between the two counts, so "3 languages"
+     never wraps at 360px (Sol 6.1). */
+  .fact { padding: var(--s-2) var(--s-2) var(--s-2) 0; }
+  .fact + .fact { padding-left: var(--s-2); border-left: 0; }
   .fact-sectors { grid-column: 1 / -1; padding-left: 0; border-left: 0; border-top: 1px solid var(--rule); }
   .fact.fact-sectors { padding-left: 0; border-left: 0; }
 
-  .feature { grid-template-columns: minmax(0, 1fr); gap: var(--s-5); }
-  .doc-card { justify-self: start; aspect-ratio: auto; min-height: 240px; max-width: 320px; }
-  .pair { grid-template-columns: minmax(0, 1fr); gap: var(--s-4); margin-top: var(--s-6); }
-  .also { flex-direction: column; gap: var(--s-2); }
+  /* Focus: the whitepaper as a slim link card, not a tall page. */
+  .feature { grid-template-columns: minmax(0, 1fr); gap: var(--s-4); }
+  .feature-h { font-size: var(--t-statement); }
+  .feature .prose { margin-top: var(--s-2); }
+  .doc-card { justify-self: stretch; aspect-ratio: auto; max-width: none; gap: var(--s-3); padding: var(--s-3); }
+  .pair { grid-template-columns: minmax(0, 1fr); gap: var(--s-3); margin-top: var(--s-5); }
+  .also { flex-direction: column; gap: var(--s-1); margin-top: var(--s-4); }
 
-  /* The mark sits beside the employer's name; the roles run full width
-     below. */
-  .job { grid-template-columns: minmax(0, 1fr); gap: var(--s-4); padding-block: var(--s-5); }
-  .job-mark { grid-template-columns: var(--logo-col-s) minmax(0, 1fr); align-items: center; gap: var(--s-3); }
+  /* Career: all logos, titles and dates stay. The current role is open;
+     each earlier role shows its title and dates, its text one tap away
+     (both v5 reviews). */
+  .job { grid-template-columns: minmax(0, 1fr); gap: var(--s-3); padding-block: var(--s-4); }
+  .job-mark { grid-template-columns: var(--logo-col-s) minmax(0, 1fr); align-items: center; gap: var(--s-2); }
   .logo-intel { width: calc(var(--logo-intel) * .62); }
   .logo-dell  { width: calc(var(--logo-dell) * .62); }
   .logo-guc   { width: calc(var(--logo-guc) * .56); }
   .role-top { flex-direction: column; gap: var(--s-1); }
-  .role-now .prose { font-size: var(--t-small); }
+  .role-now .prose { margin-top: var(--s-2); font-size: var(--t-body); }
+  .role + .role { margin-top: var(--s-3); padding-top: var(--s-3); }
+  .role-fold { display: inline-flex; }
+  .role:not(.role-now):not(.is-open) > .prose,
+  .role:not(.role-now):not(.is-open) > .more-role { display: none; }
+  .role.is-open > .more-role > summary { display: none; }
+  .role.is-open > .more-role .prose { margin-top: var(--s-2); }
+  .role .prose { font-size: var(--t-body); }
 
-  .thesis { grid-template-columns: minmax(0, 1fr); gap: var(--s-5); }
-  .migr { padding: var(--s-2); }
-  /* The diagram renders at about half size on a phone; its labels are
-     enlarged in drawing units so they stay readable. */
-  .migr-svg .lb-strong { font-size: 28px; }
-  .migr-svg .lb, .migr-svg .state { font-size: 22px; }
-  .migr-svg .vm-lb { display: none; }
-  .group { margin-top: var(--s-7); }
+  /* Research on a phone: the question, then the diagram with its live
+     caption, then the three steps, so the reader watches and reads in
+     one place (both v5 reviews). */
+  .thesis { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .thesis-text { display: contents; }
+  .thesis .statement { order: 1; }
+  .thesis .prose { order: 2; }
+  .migr { order: 3; margin-top: var(--s-4); padding: var(--s-2) var(--s-1) var(--s-1); }
+  .steps { order: 4; margin-top: var(--s-4); }
+  .steps-cost { order: 5; }
+  .migr-cap {
+    display: block;
+    min-height: calc(var(--t-small) * 1.55 * 2);
+    margin: 0 var(--s-1) var(--s-2);
+    font-size: var(--t-small);
+    color: var(--ink-inv);
+  }
+  .migr-cap b { font-weight: 600; }
+  .cap-n { margin-right: var(--s-1); font-variant-numeric: tabular-nums; font-weight: 600; color: var(--accent-light); }
+  .migr-foot { margin: var(--s-2) var(--s-1) 0; }
+  /* The drawing renders at under half size on a phone. Its labels are
+     set larger in drawing units so they land at about 14px on screen;
+     the network and machine labels give way, the caption carries them. */
+  .migr-svg .lb-strong { font-size: 32px; }
+  .migr-svg .state { font-size: 30px; }
+  .migr-svg .lb, .migr-svg .vm-lb { display: none; }
+
+  .group { margin-top: var(--s-6); }
   .pubs, .patents, .base { grid-template-columns: minmax(0, 1fr); }
-  .base { gap: var(--s-5); }
+  /* A short selection on the home page; the full record is one tap
+     away. The four granted patents all stay. */
+  .pubs .pub:nth-child(n+3) { display: none; }
+  .pub, .patent { padding-block: var(--s-2); }
+  .group-head { padding-bottom: var(--s-2); }
+  .base { gap: var(--s-3); }
+  .col-fold summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: var(--tap-min);
+    margin-bottom: 0;
+    border-top: 1px solid var(--rule-inv);
+    pointer-events: auto;
+    cursor: pointer;
+  }
+  .col-fold summary::after {
+    content: "";
+    width: 7px;
+    height: 7px;
+    margin-right: var(--s-1);
+    border-right: 1.5px solid var(--accent-light);
+    border-bottom: 1.5px solid var(--accent-light);
+    transform: rotate(45deg);
+    transition: transform var(--d-base) var(--ease);
+  }
+  .col-fold[open] summary { margin-bottom: var(--s-2); }
+  .col-fold[open] summary::after { transform: rotate(-135deg); }
 
-  .contact-grid { grid-template-columns: minmax(0, 1fr); gap: var(--s-5); }
+  .contact-grid { grid-template-columns: minmax(0, 1fr); gap: var(--s-4); }
+  .contact-head { font-size: var(--t-statement); max-width: none; }
+  .contact-meta { margin-top: var(--s-2); }
+  .foot { margin-top: var(--s-6); }
 }
 

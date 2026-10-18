@@ -12,12 +12,12 @@
 .doc-lede { margin-top: var(--s-3); }
 
 .doc-sect { margin-top: var(--s-7); }
+/* v5: a real heading, not an 11px caps label (Sol 6.1). */
 .doc-h {
-  font-size: var(--t-meta);
-  font-weight: 500;
-  letter-spacing: var(--tracking-meta);
-  text-transform: uppercase;
-  color: var(--ink-secondary);
+  font-size: var(--t-statement);
+  font-weight: 600;
+  letter-spacing: var(--tracking-h);
+  color: var(--ink);
   padding-bottom: var(--s-2);
   margin-bottom: var(--s-2);
   border-bottom: 1px solid var(--rule-strong);

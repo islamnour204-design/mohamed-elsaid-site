@@ -63,13 +63,14 @@ const RULES = [
   { name: 'banned typeface', test: /Fraunces|Instrument Serif/gi },
   { name: 'gradient background wash', test: /background(-image)?\s*:[^;]*gradient/gi },
   {
-    /* --radius is 0 everywhere without exception. Capture the value and
-     * test it, rather than trying to exclude it with a lookahead: \s*
-     * backtracks to zero width and the lookahead then never sees the
-     * value it was meant to permit. */
-    name: 'non-zero border radius',
+    /* Every radius comes from the --radius token (8px since Islam's
+     * decision of 18 October; it was 0 before). A raw value fails.
+     * Capture the value and test it, rather than trying to exclude it
+     * with a lookahead: \s* backtracks to zero width and the lookahead
+     * then never sees the value it was meant to permit. */
+    name: 'border radius not from the token',
     test: /border-radius\s*:\s*([^;}]+)/gi,
-    allow: /^(0|0px|var\(--radius\))$/i
+    allow: /^(0|0px|var\(--radius\))( (0|var\(--radius\))){0,3}$/i
   },
   { name: 'banned claim', test: /technology executive|nearly two decades|board.ready/gi }
 ];

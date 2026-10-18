@@ -92,7 +92,12 @@
   --max:    1160px;
 
   /* --- SHAPE --- */
-  --radius: 0;   /* everywhere, without exception */
+  /* v5, 18 October: Islam overrode the old radius 0 rule ("sharp angles
+     everywhere... it could be better"). One soft radius for anything you
+     press or that holds content: buttons, cards, the diagram panel, the
+     portrait panel. Section boundaries, rules, photos and logos stay
+     straight. */
+  --radius: 8px;
 
   /* --- TAP TARGETS -----------------------------------------------------
      Minimum size for anything a finger has to hit. 44px is the
@@ -245,6 +250,29 @@
   --logo-col-s: 112px;
 
   --nav-blur: 10px;      /* frosted navigation */
+
+  /* --- v5, added 18 October ------------------------------------------ */
+
+  /* Hero, rebuilt on the content grid. The name sets in two lines so
+     the copy column and the portrait column carry equal weight. */
+  --t-hero-v5: clamp(44px, 6.6vw, 92px);
+  /* How much of the portrait the panel behind it covers, from the
+     bottom. The head stands above the panel's top edge; that overlap is
+     the depth. */
+  --portrait-panel: 74%;
+  /* Desktop portrait: wider than its column by up to the column gap, so
+     the head rises beside the name. 560px is under the photo's own
+     680px, so it stays sharp. */
+  --portrait-hero: min(560px, calc(100% + var(--s-6)));
+  /* Phone portrait: as wide as the screen allows while name, title,
+     claim and both buttons still fit the first screen at 360x640
+     (Sol 6.1: they did not). 1.21 is the image's width over height,
+     680/564, applied to the height left after about 480px of
+     text, navigation and gaps. */
+  /* The claim on a phone: four short lines at 360px. */
+  --t-claim-s: clamp(21px, 6vw, 26px);
+  --chev: 14px;          /* the Sections chevron, smaller than --icon */
+  --portrait-phone: min(74vw, 300px, calc((100svh - 480px) * 1.21));
   --tl-when: 9rem;       /* date column on the CV and Publications pages */
 
 }

@@ -23,6 +23,16 @@
 1. **Phone navigation.** (a) A swipeable strip of section names under the header, like desktop: Claude's proposal. (b) A light "Sections ⌄" control plus a direct Contact link, opening a compact grouped panel: Sol's proposal.
 2. **Phone hero order.** (a) Portrait first, centred, then the name, title, claim and two buttons: Claude. (b) Name and title first, then a smaller portrait (150–170px), one full-width Contact button with Research as a text link, and the long claim moved lower: Sol.
 
+**Islam decided, 2026-10-18:** navigation **(b)**, Sol's "Sections ⌄" plus a direct Contact link. Hero **(a)**, Claude's centred layout with the photo first. On short phones (360x640) the photo shrinks so both buttons stay on the first screen (Sol's finding).
+
+## Built 2026-10-18 (Islam approved: "go")
+All eight agreed items, plus both decisions. Deviations from the plan, stated plainly:
+- **Copy:** the Career text is Mohamed's verbatim CV wording (marked "not rewritten" in the source), so it was not reworded. The repeated AMX sentence moved behind "Read role details" in the Intel role and stays visible in Focus.
+- **Phone length:** 11,100px → 8,200px at 390 wide (−26%), not the ~6,000 targeted. The rest is real content (the Intel role text, Focus areas, four patents); cutting further means hiding facts, which is Islam's call.
+- **Phone Practice:** the Dell EMC paragraph is hidden on phones only. Career repeats it two screens below.
+- **Desktop hero:** the name runs on one line across both columns; the portrait (up to 560px) rises beside it on its panel.
+- The checker (`tools/check.mjs`) now requires every radius to come from the token, instead of banning radius.
+
 ## Later, not in this round
 A section index on the CV and Publications pages, and a print layout for the CV (Sol, medium impact). An email in Contact if Mohamed sends one.
 

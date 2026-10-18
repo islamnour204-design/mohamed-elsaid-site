@@ -26,7 +26,15 @@
 <header class="nav" data-nav>
   <div class="nav-in">
     <a class="nav-name" href="#top">Mohamed Elsaid</a>
-    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" data-nav-toggle>Menu</button>
+    <!-- Phone only: Contact stays one tap away, the rest sit behind
+         Sections (Islam, 18 October, Sol 6.1's proposal). -->
+    <div class="nav-phone">
+      <a class="nav-contact" href="#contact">Contact</a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" data-nav-toggle>
+        Sections
+        <svg class="chev" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></svg>
+      </button>
+    </div>
     <nav id="nav-links" class="nav-links" aria-label="Sections">
       <ul>
         <li><a href="#practice" data-link="practice">Practice</a></li>
@@ -50,6 +58,7 @@
     <div class="shell hero-in">
       <div class="hero-copy">
         <h1 class="hero-name" data-hero-name>Mohamed Elsaid</h1>
+        <div class="hero-sub">
         <p class="hero-role" data-rise>Senior Cloud and AI Infrastructure Solutions Specialist, Intel, Munich</p>
 
         <p class="hero-claim" data-rise>The question is not whether to adopt AI. It is what the infrastructure underneath it <strong>costs</strong>.</p>
@@ -58,13 +67,18 @@
           <a href="#research" class="btn btn-p">See the research</a>
           <a href="#contact" class="btn btn-s">Get in touch</a>
         </div>
+        </div>
       </div>
-    </div>
 
-    <figure class="hero-portrait">
-      <img src="/assets/img/mohamed-elsaid.webp" width="680" height="564"
-           alt="Mohamed Elsaid" decoding="async" fetchpriority="high">
-    </figure>
+      <!-- v5: the portrait shares the content grid with the copy. It
+           stands on the hero's floor, in front of a tonal panel whose
+           right and bottom edges are the photo's own crop lines; the
+           head rises above the panel. -->
+      <figure class="hero-portrait">
+        <img src="/assets/img/mohamed-elsaid.webp" width="680" height="564"
+             alt="Mohamed Elsaid" decoding="async" fetchpriority="high">
+      </figure>
+    </div>
   </section>
 
   <!-- ========== PRACTICE ========== -->
@@ -183,7 +197,7 @@
         <article class="job" data-job>
           <header class="job-mark">
             <img class="logo logo-intel" src="/assets/img/logos/intel.png"
-                 width="1008" height="393" alt="" decoding="async">
+                 width="1008" height="393" alt="" decoding="async" loading="lazy">
             <div class="job-id">
               <h3 class="job-name">Intel</h3>
               <p class="job-meta">Munich, Germany</p>
@@ -198,14 +212,22 @@
               </div>
               <div class="prose">
                 <p>Spearheaded datacenter transformation and private/hybrid cloud architecture initiatives for tens of Intel Enterprise and Government potential customers across EMEA including automotive, industrial, financial, telco and public sector accounts. Driving tailored selection of Intel CPU SKUs, AI accelerators, workload accelerators, and storage backends to maximize performance and ROI.</p>
-                <p>Designed and delivered several customer proofs of concept on edge AI using Intel AMX, validating infrastructure strategies with measurable improvements.</p>
               </div>
+              <!-- v5: the AMX sentence is shown in Focus; here it waits one
+                   tap away so the page does not say it twice. -->
+              <details class="more-role">
+                <summary>Read role details</summary>
+                <div class="prose">
+                  <p>Designed and delivered several customer proofs of concept on edge AI using Intel AMX, validating infrastructure strategies with measurable improvements.</p>
+                </div>
+              </details>
             </div>
             <div class="role">
               <div class="role-top">
                 <h4>Cloud Technical Solutions Specialist</h4>
                 <span class="role-when">01/2017 to 03/2022</span>
               </div>
+              <button class="role-fold" type="button" aria-expanded="false" data-fold>Read role details</button>
               <div class="prose">
                 <p>Advised enterprise and public-sector organizations on cloud, AI, and infrastructure modernization strategies, helping align technology investments with long-term business objectives.</p>
               </div>
@@ -222,7 +244,7 @@
         <article class="job" data-job>
           <header class="job-mark">
             <img class="logo logo-dell" src="/assets/img/logos/dell-emc.png"
-                 width="533" height="96" alt="" decoding="async">
+                 width="533" height="96" alt="" decoding="async" loading="lazy">
             <div class="job-id">
               <h3 class="job-name">Dell EMC</h3>
               <p class="job-meta">Cairo, Egypt</p>
@@ -235,6 +257,7 @@
                 <h4>Solutions Architect</h4>
                 <span class="role-when">11/2012 to 12/2016</span>
               </div>
+              <button class="role-fold" type="button" aria-expanded="false" data-fold>Read role details</button>
               <div class="prose">
                 <p>Designed and implemented enterprise high-end and intermediate tiers storage and server solutions tailored to customer datacenter modernization and scalability requirements.</p>
               </div>
@@ -250,6 +273,7 @@
                 <h4>Technical Support Engineer, level II</h4>
                 <span class="role-when">08/2010 to 10/2012</span>
               </div>
+              <button class="role-fold" type="button" aria-expanded="false" data-fold>Read role details</button>
               <div class="prose">
                 <p>Delivered advanced technical support for enterprise storage and infrastructure environments, ensuring system stability and minimizing operational disruptions for global customers.</p>
               </div>
@@ -260,7 +284,7 @@
         <article class="job" data-job>
           <header class="job-mark">
             <img class="logo logo-guc" src="/assets/img/logos/guc.png"
-                 width="1573" height="720" alt="" decoding="async">
+                 width="600" height="275" alt="" decoding="async" loading="lazy">
             <div class="job-id">
               <h3 class="job-name">German University in Cairo</h3>
               <p class="job-meta">Cairo, Egypt</p>
@@ -273,6 +297,7 @@
                 <h4>Teaching and Research Assistant</h4>
                 <span class="role-when">09/2006 to 06/2010</span>
               </div>
+              <button class="role-fold" type="button" aria-expanded="false" data-fold>Read role details</button>
               <div class="prose">
                 <p>Supported the delivery of undergraduate and postgraduate courses, fostering an engaging learning environment and strengthening student academic performance.</p>
               </div>
@@ -319,6 +344,8 @@
         </div>
 
         <figure class="migr" data-migr>
+          <!-- Phone only: the step being shown, filled in by the script. -->
+          <p class="migr-cap" data-cap aria-hidden="true"></p>
           <svg class="migr-svg" viewBox="0 0 640 300" role="img" aria-labelledby="migr-t">
             <title id="migr-t">Live migration: a running virtual machine's memory is copied from server A to server B in rounds, then the machine moves to server B.</title>
           </svg>
@@ -338,7 +365,7 @@
       <div class="group" id="publications" data-group>
         <div class="group-head">
           <h3 class="group-lb">Publications</h3>
-          <span class="group-n">13 papers and a textbook, 2011 to 2025</span>
+          <span class="group-n">13 publications and a textbook, 2011 to 2025</span>
         </div>
 
         <ol class="pubs">
@@ -418,7 +445,8 @@
           </div>
 
           <div class="base-col">
-            <h4 class="col-lb">Certification</h4>
+            <details class="col-fold" open data-col-fold>
+              <summary class="col-lb">Certification</summary>
             <ul class="edu">
               <li><span class="yr">2026</span><b>VMware Cloud Foundation Architect</b><span class="where">Broadcom</span></li>
               <li><span class="yr">2024</span><b>Principles of AI</b><span class="where">Intel</span></li>
@@ -426,14 +454,17 @@
               <li><span class="yr">2020</span><b>Azure Fundamentals</b><span class="where">Microsoft</span></li>
               <li><b>Information Storage Management</b><span class="where">Dell EMC</span></li>
             </ul>
+            </details>
           </div>
 
           <div class="base-col">
-            <h4 class="col-lb">Service</h4>
+            <details class="col-fold" open data-col-fold>
+              <summary class="col-lb">Service</summary>
             <ul class="edu">
               <li><span class="yr">2022 to 2024</span><b>Conference papers reviewer</b><span class="where">IEEE Computer Society</span></li>
               <li><span class="yr">2021 to 2023</span><b>Professional exams reviewer</b><span class="where">SNIA, Storage Networking Industry Association</span></li>
             </ul>
+            </details>
           </div>
         </div>
       </div>

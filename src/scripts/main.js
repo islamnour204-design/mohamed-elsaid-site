@@ -4,8 +4,9 @@
      Navigation   active section, theme follows the ground, phone menu
      Introduction the name rises letter by letter, about 1.2 seconds
      Research     the live migration diagram, the page's one authored
-                  moment: loops by itself while it is in view, about 3.5
-                  seconds and a 2 second rest, with a pause button
+                  moment: loops by itself while it is in view, about 5
+                  seconds a round including its rest and reset, with a
+                  pause button
      Elsewhere    a few quiet arrivals, played once, and nothing else
 
    Every movement runs on its own clock. Nothing is pinned and nothing
@@ -120,6 +121,26 @@ $$('.more-role').forEach(d => d.addEventListener('toggle', () => {
   setTimeout(() => ScrollTrigger.refresh(), ms('--d-base') * 1000 + 50);
 }));
 
+/* Certification and Service are open on wide screens and folded on a
+   phone, where the doctorate and degrees lead (both v5 reviews). */
+const phone = matchMedia('(max-width: 860px)');
+const foldCols = () => $$('[data-col-fold]').forEach(d => { d.open = !phone.matches; });
+foldCols();
+phone.addEventListener('change', foldCols);
+
+/* Phone only (the button is hidden on wide screens): an earlier role
+   shows its title and dates; this opens its whole text at once. */
+$$('[data-fold]').forEach(btn => btn.addEventListener('click', () => {
+  const role = btn.closest('.role');
+  role.classList.add('is-open');
+  btn.setAttribute('aria-expanded', 'true');
+  const more = $('.more-role', role);
+  if (more) more.open = true;
+  const first = $('.prose', role);
+  if (first) { first.setAttribute('tabindex', '-1'); first.focus({ preventScroll: true }); }
+  ScrollTrigger.refresh();
+}));
+
 /* =====================================================================
    RESEARCH: THE LIVE MIGRATION DIAGRAM
    Two servers. The virtual machine's memory pages are copied from A to
@@ -186,7 +207,13 @@ function buildMigration() {
   const D1 = [2, 7, 9, 13, 16, 20, 22];
   const D2 = [9, 20];
 
-  const setStep = i => steps.forEach((li, n) => li.classList.toggle('is-on', n === i));
+  /* The current step, lit in the list and written into the caption
+     inside the panel, so a phone reader sees both at once. */
+  const cap = $('[data-cap]', fig);
+  const setStep = i => {
+    steps.forEach((li, n) => li.classList.toggle('is-on', n === i));
+    if (cap && steps[i]) cap.innerHTML = `<span class="cap-n">${i + 1} of 3</span> ${steps[i].innerHTML}`;
+  };
   const start = () => {
     thesis.classList.add('migr-live');
     setStep(0);
@@ -194,17 +221,24 @@ function buildMigration() {
     B.state.textContent = '';
     B.box.classList.add('is-target');
   };
+  /* The machine runs on B. Step 3 stays lit through the rest, so the
+     story ends on its resolution instead of going blank. */
   const finish = () => {
-    thesis.classList.remove('migr-live');
-    setStep(-1);
     A.state.textContent = '';
     B.state.textContent = 'running';
     B.box.classList.remove('is-target');
   };
+  const resetting = () => {
+    B.state.textContent = '';
+    B.box.classList.add('is-target');
+  };
 
-  /* Loops on its own (Islam, 18 October): the finished state rests for
-     two seconds, then the copy starts again from round one. */
-  const tl = gsap.timeline({ paused: true, repeat: -1, repeatDelay: 2, onRepeat: start, defaults: { ease: 'none' } });
+  /* Loops on its own (Islam, 18 October), in three acts (motion-design,
+     Setup, Action, Resolution): the copy, a rest on the finished state,
+     then a visible reset where B empties and A brightens back. The next
+     round starts as the reset ends, so there is no dead pause and no
+     jump (Islam: "a weird lag when it finishes and starts again"). */
+  const tl = gsap.timeline({ paused: true, repeat: -1, defaults: { ease: 'none' } });
   tl.call(start, null, 0)
     .set(A.vm, { opacity: 1 }, 0)
     .set(dirty, { opacity: 0 }, 0)
@@ -212,9 +246,18 @@ function buildMigration() {
 
     /* Round one: every page crosses while the machine keeps running. */
     .to(pkts, { opacity: 1, duration: .1, stagger: .12 }, 0)
-    .fromTo(pkts, { x: 0 }, { x: 88, duration: .4, stagger: { each: .12, repeat: 2 } }, 0)
+    .fromTo(pkts, { x: 0 }, { x: 88, duration: .4, stagger: { each: .12, repeat: 2 }, immediateRender: false }, 0)
     .to(pkts, { opacity: 0, duration: .1 }, 1.25)
-    .to(copied, { opacity: 1, duration: .2, stagger: .035 }, .05);
+    .to(copied, { opacity: 1, duration: .2, stagger: .035 }, .05)
+
+    /* Round two and the final copy send fewer packets, because fewer
+       pages are left to move. */
+    .to(pkts.slice(0, 2), { opacity: 1, duration: .1, stagger: .12 }, 1.5)
+    .fromTo(pkts.slice(0, 2), { x: 0 }, { x: 88, duration: .4, stagger: { each: .12, repeat: 1 }, immediateRender: false }, 1.5)
+    .to(pkts.slice(0, 2), { opacity: 0, duration: .1 }, 2.35)
+    .to(pkts[0], { opacity: 1, duration: .1 }, 2.7)
+    .fromTo(pkts[0], { x: 0 }, { x: 88, duration: .4, immediateRender: false }, 2.7)
+    .to(pkts[0], { opacity: 0, duration: .1 }, 3.05);
   D1.forEach((i, n) => {
     const t = .35 + n * .1;
     tl.to(dirty[i], { opacity: 1, duration: .15 }, t).to(copied[i], { opacity: .25, duration: .15 }, t);
@@ -236,7 +279,12 @@ function buildMigration() {
     .to(D2.map(i => dirty[i]), { opacity: 0, duration: .15 }, 2.7)
     .to(D2.map(i => copied[i]), { opacity: 1, duration: .15 }, 2.7)
     .to(A.vm, { opacity: .3, duration: .5, ease: EASE }, 3.0)
-    .call(finish, null, 3.3);
+    .call(finish, null, 3.3)
+
+    /* Rest on the result, then the reset, in view. */
+    .call(resetting, null, 4.6)
+    .to(copied, { opacity: 0, duration: .45, stagger: { each: .006, from: 'end' }, ease: EASE }, 4.6)
+    .to(A.vm, { opacity: 1, duration: .6, ease: EASE }, 4.6);
 
   /* Anything that moves on its own for more than five seconds needs a
      way to stop it (WCAG 2.2.2, level A). The reader's choice holds:
@@ -252,8 +300,17 @@ function buildMigration() {
   });
   const seen = on => { inView = on; sync(); };
 
-  if (reduced) { tl.progress(1); tl.pause(); finish(); }
-  else pause.hidden = false;
+  if (reduced) {
+    /* Drawn finished and still: all three steps at full ink. */
+    tl.pause(3.4);
+    finish();
+    thesis.classList.remove('migr-live');
+    steps.forEach(li => li.classList.remove('is-on'));
+    if (cap) cap.hidden = true;
+  } else {
+    pause.hidden = false;
+    setStep(0);
+  }
   return { fig, tl, seen };
 }
 const migration = buildMigration();

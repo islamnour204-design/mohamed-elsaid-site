@@ -74,6 +74,7 @@ html { scrollbar-color: var(--accent) var(--ground-2); }
   background: var(--accent);
   color: var(--on-accent);
   padding: var(--s-1) var(--s-2);
+  border-radius: var(--radius);
   text-decoration: none;
 }
 
@@ -103,6 +104,7 @@ html { scrollbar-color: var(--accent) var(--ground-2); }
   font-weight: 500;
   text-decoration: none;
   border: 1px solid var(--accent);
+  border-radius: var(--radius);
   transition: background-color var(--d-fast) var(--ease), color var(--d-fast) var(--ease);
 }
 .btn-p { background: var(--accent); color: var(--on-accent); }

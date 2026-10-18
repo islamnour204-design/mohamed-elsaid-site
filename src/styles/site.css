@@ -94,6 +94,7 @@ main:focus { outline: none; }
 }
 
 .more { margin-top: var(--s-5); font-size: var(--t-small); }
+.more-phone { display: none; }
 /* Standalone links meet the 44px tap floor (DESIGN.md A3). */
 .more a, .foot-in a { display: inline-flex; align-items: center; min-height: var(--tap-min); }
 
@@ -350,7 +351,17 @@ main:focus { outline: none; }
 .more-role summary::-webkit-details-marker { display: none; }
 /* Phone only: opens an earlier role's text (see NARROW SCREENS). */
 .role-fold { display: none; padding: 0; font: inherit; font-size: var(--t-small); background: none; border: 0; }
-.role.is-open > .role-fold { display: none; }
+.role-fold::after {
+  content: "";
+  width: 7px;
+  height: 7px;
+  margin-top: -3px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform var(--d-base) var(--ease), margin var(--d-base) var(--ease);
+}
+.role.is-open > .role-fold::after { transform: rotate(-135deg); margin-top: 3px; }
 .more-role summary::after {
   content: "";
   width: 7px;
@@ -723,7 +734,9 @@ main:focus { outline: none; }
   .pubs, .patents, .base { grid-template-columns: minmax(0, 1fr); }
   /* A short selection on the home page; the full record is one tap
      away. The four granted patents all stay. */
-  .pubs .pub:nth-child(n+3) { display: none; }
+  .pubs .pub:nth-child(n+3), .patents .patent:nth-child(n+3) { display: none; }
+  .more-phone { display: block; }
+  .pair-item p { font-size: var(--t-body); }
   .pub, .patent { padding-block: var(--s-2); }
   .group-head { padding-bottom: var(--s-2); }
   .base { gap: var(--s-3); }

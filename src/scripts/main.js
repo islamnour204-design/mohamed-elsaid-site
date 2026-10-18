@@ -124,20 +124,29 @@ $$('.more-role').forEach(d => d.addEventListener('toggle', () => {
 /* Certification and Service are open on wide screens and folded on a
    phone, where the doctorate and degrees lead (both v5 reviews). */
 const phone = matchMedia('(max-width: 860px)');
-const foldCols = () => $$('[data-col-fold]').forEach(d => { d.open = !phone.matches; });
+/* On wide screens they are plain headings: out of the tab order, and
+   reopened at once if anything closes them (Sol 6.1 found Enter could
+   collapse a column with no way back). */
+const foldCols = () => $$('[data-col-fold]').forEach(d => {
+  d.open = !phone.matches;
+  const s = $('summary', d);
+  if (phone.matches) s.removeAttribute('tabindex'); else s.setAttribute('tabindex', '-1');
+});
 foldCols();
 phone.addEventListener('change', foldCols);
+$$('[data-col-fold]').forEach(d => d.addEventListener('toggle', () => {
+  if (!phone.matches && !d.open) d.open = true;
+}));
 
 /* Phone only (the button is hidden on wide screens): an earlier role
-   shows its title and dates; this opens its whole text at once. */
+   shows its title and dates; this opens and closes its whole text. */
 $$('[data-fold]').forEach(btn => btn.addEventListener('click', () => {
   const role = btn.closest('.role');
-  role.classList.add('is-open');
-  btn.setAttribute('aria-expanded', 'true');
+  const open = role.classList.toggle('is-open');
+  btn.setAttribute('aria-expanded', String(open));
+  btn.textContent = open ? 'Hide role details' : 'Read role details';
   const more = $('.more-role', role);
-  if (more) more.open = true;
-  const first = $('.prose', role);
-  if (first) { first.setAttribute('tabindex', '-1'); first.focus({ preventScroll: true }); }
+  if (more) more.open = open;
   ScrollTrigger.refresh();
 }));
 

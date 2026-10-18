@@ -33,7 +33,13 @@
 .e-yr { font-size: var(--t-small); font-variant-numeric: tabular-nums; color: var(--accent); }
 .entries b { display: block; font-weight: 500; max-width: var(--measure); }
 .e-meta { display: block; margin-top: var(--s-1); font-size: var(--t-small); color: var(--ink-secondary); max-width: var(--measure); }
-.e-meta a { color: var(--accent); }
+/* Record links keep their place in the line but get a 44px tall tap
+   area (Sol 6.1). */
+.e-meta a {
+  color: var(--accent);
+  padding-block: calc((var(--tap-min) - 1em) / 2);
+  margin-block: calc((var(--tap-min) - 1em) / -2);
+}
 .e-flag { color: var(--accent); font-weight: 600; margin-right: var(--s-1); }
 .e-body { margin-top: var(--s-2); font-size: var(--t-small); }
 .roles b { font-size: var(--t-h3); letter-spacing: var(--tracking-h); }
@@ -43,4 +49,5 @@
 @media (max-width: 860px) {
   .doc { padding-top: calc(var(--nav-h) + var(--s-5)); }
   .entries li { grid-template-columns: minmax(0, 1fr); row-gap: var(--s-1); }
+  .e-body { font-size: var(--t-body); }
 }

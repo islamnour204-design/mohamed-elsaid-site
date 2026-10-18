@@ -358,7 +358,7 @@ main:focus { outline: none; }
 .thesis .prose { margin-top: var(--s-3); }
 
 /* The steps carry an order, so they are numbered. While the diagram
-   plays, the current step is lit; at rest all three read at full ink. */
+   plays, the current step is lit; between loops all three read at full ink. */
 .steps { counter-reset: step; display: grid; gap: var(--s-2); margin-top: var(--s-4); }
 .steps li {
   counter-increment: step;
@@ -420,6 +420,7 @@ main:focus { outline: none; }
 }
 .replay:hover { background: var(--accent-light); color: var(--ground-6); }
 .replay[hidden] { display: none; }
+.replay:not(.is-paused) .ico-play, .replay.is-paused .ico-pause { display: none; }
 
 /* Each part of the record has a real, visible heading: the reader must
    be able to tell publications from patents from education at a glance
@@ -513,7 +514,7 @@ main:focus { outline: none; }
 .dark .link-main a:hover { background: var(--ink-inv); }
 .dark .link-main a:hover .link-v { text-decoration: none; }
 .icon { width: var(--icon); height: var(--icon); color: var(--accent-light); flex: none; }
-.link-main .icon { color: currentColor; }
+.link-main .icon, .replay .icon { color: currentColor; }
 .link-k { min-width: 6em; font-size: var(--t-small); color: var(--ink-inv-secondary); }
 
 .foot { margin-top: var(--s-8); border-top: 1px solid var(--rule-inv); }

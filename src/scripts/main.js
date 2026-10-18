@@ -4,8 +4,8 @@
      Navigation   active section, theme follows the ground, phone menu
      Introduction the name rises letter by letter, about 1.2 seconds
      Research     the live migration diagram, the page's one authored
-                  moment: plays once when seen, about 3.5 seconds, with
-                  a replay button
+                  moment: loops by itself while it is in view, about 3.5
+                  seconds and a 2 second rest, with a pause button
      Elsewhere    a few quiet arrivals, played once, and nothing else
 
    Every movement runs on its own clock. Nothing is pinned and nothing
@@ -147,7 +147,8 @@ function buildMigration() {
   const svg = $('svg', fig);
   const thesis = fig.closest('.thesis');
   const steps = $$('[data-steps] li');
-  const replay = $('[data-replay]', fig);
+  const pause = $('[data-pause]', fig);
+  const pauseLb = $('[data-pause-lb]', pause);
 
   const COLS = 6, ROWS = 4, SIZE = 26, GAP = 8;
   const gridW = COLS * SIZE + (COLS - 1) * GAP;
@@ -192,7 +193,6 @@ function buildMigration() {
     A.state.textContent = 'running';
     B.state.textContent = '';
     B.box.classList.add('is-target');
-    replay.hidden = true;
   };
   const finish = () => {
     thesis.classList.remove('migr-live');
@@ -200,10 +200,11 @@ function buildMigration() {
     A.state.textContent = '';
     B.state.textContent = 'running';
     B.box.classList.remove('is-target');
-    replay.hidden = reduced;
   };
 
-  const tl = gsap.timeline({ paused: true, defaults: { ease: 'none' } });
+  /* Loops on its own (Islam, 18 October): the finished state rests for
+     two seconds, then the copy starts again from round one. */
+  const tl = gsap.timeline({ paused: true, repeat: -1, repeatDelay: 2, onRepeat: start, defaults: { ease: 'none' } });
   tl.call(start, null, 0)
     .set(A.vm, { opacity: 1 }, 0)
     .set(dirty, { opacity: 0 }, 0)
@@ -237,10 +238,23 @@ function buildMigration() {
     .to(A.vm, { opacity: .3, duration: .5, ease: EASE }, 3.0)
     .call(finish, null, 3.3);
 
-  replay.addEventListener('click', () => tl.restart());
+  /* Anything that moves on its own for more than five seconds needs a
+     way to stop it (WCAG 2.2.2, level A). The reader's choice holds:
+     a paused diagram stays paused when it scrolls back into view. */
+  let held = false;
+  let inView = false;
+  const sync = () => (inView && !held ? tl.play() : tl.pause());
+  pause.addEventListener('click', () => {
+    held = !held;
+    pause.classList.toggle('is-paused', held);
+    pauseLb.textContent = held ? 'Play' : 'Pause';
+    sync();
+  });
+  const seen = on => { inView = on; sync(); };
 
-  if (reduced) { tl.progress(1); finish(); }
-  return { fig, tl };
+  if (reduced) { tl.progress(1); tl.pause(); finish(); }
+  else pause.hidden = false;
+  return { fig, tl, seen };
 }
 const migration = buildMigration();
 
@@ -299,9 +313,13 @@ function motion() {
     once(job, tl => tl.from(mark.children, { opacity: 0, y: T_FINE, duration: D_MID, stagger: 0.1 }));
   });
 
-  /* --- RESEARCH: the diagram plays once when it is well in view ------ */
+  /* --- RESEARCH: the diagram loops while it is in view, and waits
+     where it is while the reader is elsewhere on the page ------------ */
   if (migration) {
-    ScrollTrigger.create({ trigger: migration.fig, start: 'top 70%', once: true, onEnter: () => migration.tl.play(0) });
+    ScrollTrigger.create({
+      trigger: migration.fig, start: 'top 70%', end: 'bottom 10%',
+      onToggle: self => migration.seen(self.isActive)
+    });
   }
 
   /* --- CONTACT: the invitation, 340ms -------------------------------- */

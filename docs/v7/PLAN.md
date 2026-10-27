@@ -30,3 +30,6 @@ A Cal.com account (Islam's demo now, Mohamed's later) to show the real calendar 
 
 ## Comparison page (2026-10-27)
 Islam asked to see both ideas and both grounds before choosing: samples/v7-compare/index.html (stills of A Zoom and B Timeline, Light/Dark switch). Waiting for his pick.
+
+## Built 2026-10-27 (commit 226815a)
+Islam chose A (Zoom) on a light ground. Built: six-level zoom with real AMX structure (8 tile registers, TMUL, TILELOADD / TDPBF16PS / TILESTORED), answer streams back up; booking first in Contact (opens-soon card until a Cal.com link exists; loading/failure states; ?cal only on preview hosts); hero and nav "Book a call"; 2px rule at every section edge; section names 600 weight, 30px on phones. Preview: https://v7.mohamed-elsaid.pages.dev. Checked 1440 and 390, release build, reduced motion, mid-zoom frames; no console errors. Phone page 10,149px (AI section and booking added). Not yet: Sol 6.1 build review, Cal.com account, deploy to main.

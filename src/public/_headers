@@ -1,0 +1,7 @@
+# Cloudflare Pages response headers.
+# The project address on pages.dev stays out of search results, so that
+# once Mohamed's own domain is attached it is the only address Google
+# indexes (no duplicate site competing with it). Preview links such as
+# v7.mohamed-elsaid.pages.dev already get noindex from Cloudflare.
+https://mohamed-elsaid.pages.dev/*
+  X-Robots-Tag: noindex

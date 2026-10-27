@@ -297,11 +297,19 @@
      the 17px body (Sol 6.1 measured 24px, too close to both). */
   --t-sect-s: 30px;
   /* The zoom's caption keeps the height of its longest text, so the
-     panel does not jump: five lines on desktop, six on a phone. */
-  --zoom-cap: calc(var(--t-body) * 1.55 * 5);
-  --zoom-cap-s: calc(var(--t-body) * 1.55 * 6);
+     panel does not jump: seven lines on desktop, eight on a phone. */
+  --zoom-cap: calc(var(--t-body) * 1.55 * 7);
+  --zoom-cap-s: calc(var(--t-body) * 1.55 * 8);
   /* Machine instructions in the zoom are code, so they are set as code. */
   --font-mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
+
+  /* The zoom's pacing (Sol 6.1: these lived in the script). One move
+     between levels, the base time spent on a level (each level holds
+     between 0.875 and 1.125 of it, by how much happens there), and the
+     quicker move back up while the answer streams. */
+  --zoom-move: 1150ms;
+  --zoom-hold: 2400ms;
+  --zoom-back: 620ms;
 
 }
 

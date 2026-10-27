@@ -347,7 +347,7 @@ const migration = buildMigration();
 function buildZoom() {
   const fig = $('[data-zoom]');
   if (!fig) return null;
-  const svg = $('svg', fig);
+  const svg = $('.zoom-svg', fig);
   const title = $('title', svg);
   const crumbs = $$('[data-zoom-go]');
   const capN = $('[data-zoom-n]');
@@ -357,9 +357,10 @@ function buildZoom() {
   const answerEl = $('[data-zoom-answer]');
   const pause = $('[data-zoom-pause]');
   const pauseLb = $('[data-zoom-pause-lb]', pause);
-  const levels = $$('[data-zoom-level]').map(li => ({ h: $('b', li).textContent, t: $('span', li).textContent }));
+  const levels = $$('[data-zoom-level]').map(li => ({ h: $('b', li).textContent, t: $('span', li).textContent, p: li.dataset.parts }));
+  const partsEl = $('[data-zoom-parts]');
   const backLi = $('[data-zoom-back]');
-  const back = { h: $('b', backLi).textContent, t: $('span', backLi).textContent };
+  const back = { h: $('b', backLi).textContent, t: $('span', backLi).textContent, p: '' };
 
   const W = 640, H = 400, CX = W / 2, CY = H / 2;
   const ANSWER = 'Moving a running virtual machine to another server without switching it off.'.split(' ');
@@ -484,7 +485,7 @@ function buildZoom() {
     for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) out.push(R(g, x0 + c * s, y0 + r * s, s - 2, s - 2, 'z-cell'));
     return out;
   };
-  T(g6, 'A: prompt', 150, 66);
+  T(g6, 'A: activations', 150, 66);
   const A = cell(g6, 150, 78, 16, 8, 12);
   T(g6, '×', 263, 182, 'z-big', { 'text-anchor': 'middle' });
   T(g6, 'B: weights', 280, 114);
@@ -531,8 +532,9 @@ function buildZoom() {
   const marks = [];    /* [time, caption index] ; 6 means the answer */
   const ops = [];      /* [time, instruction text] */
   const words = [];    /* time each answer word appears */
-  const ZOOM = 1.15;
-  const HOLD = [2.4, 2.1, 2.7, 2.4, 2.1];
+  const ZOOM = ms('--zoom-move') || 1.15;
+  const BACK = ms('--zoom-back') || .62;
+  const HOLD = [1, .875, 1.125, 1, .875].map(f => f * (ms('--zoom-hold') || 2.4));
   let at = 0;
   tl.set(cam, { p: 0, onUpdate: draw }, 0)
     .set([...racks, ...units, ...cores], { opacity: 1 }, 0)
@@ -600,13 +602,13 @@ function buildZoom() {
   tl.addLabel('L5', at);
   marks.push([at, 5]);
   const a0 = at;
-  ops.push([a0 + .2, 'TILELOADD tmm1 ← prompt tile']);
+  ops.push([a0 + .2, 'TILELOADD tmm1 ← activations, BF16']);
   tl.set(regs[1], { attr: { class: 'z-reg z-reg-on' } }, a0 + .2)
     .to(A, { attr: { class: 'z-cell z-cell-in' }, duration: .01, stagger: .004 }, a0 + .2);
-  ops.push([a0 + .9, 'TILELOADD tmm2 ← weight tile']);
+  ops.push([a0 + .9, 'TILELOADD tmm2 ← weights, BF16']);
   tl.set(regs[2], { attr: { class: 'z-reg z-reg-on' } }, a0 + .9)
     .to(B, { attr: { class: 'z-cell z-cell-in' }, duration: .01, stagger: .004 }, a0 + .9);
-  ops.push([a0 + 1.6, 'TDPBF16PS tmm0 += tmm1 × tmm2']);
+  ops.push([a0 + 1.6, 'TDPBF16PS tmm0 += tmm1 · tmm2, FP32']);
   tl.set(regs[0], { attr: { class: 'z-reg z-reg-on' } }, a0 + 1.6)
     .to(tmulFill, { opacity: .18, duration: .3 }, a0 + 1.6);
   /* The first few values one by one, so the row-times-column rule is
@@ -633,8 +635,8 @@ function buildZoom() {
   marks.push([at, 6]);
   ops.push([at, '']);
   for (let k = 5; k > 0; k--) {
-    tl.to(cam, { p: k - 1, duration: .62, ease: 'power2.inOut', onUpdate: draw }, at);
-    at += .7;
+    tl.to(cam, { p: k - 1, duration: BACK, ease: 'power2.inOut', onUpdate: draw }, at);
+    at += BACK + .08;
   }
   ANSWER.forEach((_, i) => words.push(at - 3.4 + i * .42));
   at = Math.max(at, words[words.length - 1]) + 2.6;
@@ -654,11 +656,12 @@ function buildZoom() {
       capN.textContent = i < 6 ? `${i + 1} of 6` : 'Back to the user';
       capH.textContent = d.h;
       capT.textContent = d.t;
+      partsEl.textContent = d.p;
       crumbs.forEach((b, n) => b.setAttribute('aria-current', n === i ? 'step' : 'false'));
     }
     const op = last(ops, time);
-    opEl.textContent = op ? op[1] : '';
-    opEl.hidden = !(op && op[1]);
+    opEl.textContent = op && op[1] ? op[1] : '\u00a0';
+    opEl.classList.toggle('is-empty', !(op && op[1]));
     const n = words.filter(w => w <= time).length;
     answerEl.textContent = n ? ANSWER.slice(0, n).join(' ') : '…';
   }
@@ -722,19 +725,27 @@ function booking() {
   $('[data-book-link]', box).href = `https://cal.com/${link}`;
 
   let done = false;
+  const retry = $('[data-cal-retry]', box);
+  /* A link is set, so booking is open: the opens-soon card is for an
+     unconfigured site only. States: loading, ready, failed. */
+  fallback.hidden = true;
   const ready = () => {
     if (done) return;
     done = true;
     state.remove();
-    fallback.hidden = true;
     direct.hidden = false;
   };
   const failed = () => {
     if (done) return;
     done = true;
-    cal.hidden = true;
+    state.textContent = 'The calendar did not load.';
+    retry.hidden = false;
     direct.hidden = false;
   };
+  $('[data-cal-retry-btn]', box).addEventListener('click', () => {
+    history.replaceState(null, '', '#book');
+    location.reload();
+  });
 
   const load = () => {
     /* Cal.com's own loader, unchanged: it queues calls until embed.js
@@ -756,7 +767,7 @@ function booking() {
     Cal.ns.book('on', { action: 'linkFailed', callback: failed });
     cal.hidden = false;
     /* No answer in 15 seconds: keep the email card and offer the page. */
-    setTimeout(() => { if (!done) { state.textContent = 'The calendar is slow to load.'; direct.hidden = false; } }, 15000);
+    setTimeout(() => { if (!done) { state.textContent = 'The calendar is slow to load.'; retry.hidden = false; direct.hidden = false; } }, 15000);
   };
   const io = new IntersectionObserver(entries => {
     if (entries.some(e => e.isIntersecting)) { io.disconnect(); load(); }

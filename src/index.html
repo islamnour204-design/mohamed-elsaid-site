@@ -198,10 +198,11 @@
 
       <div class="infra-intro">
         <h3 class="statement infra-statement">Where an AI answer is actually made</h3>
-        <p class="infra-lede">Every answer from a language model comes out of a server, a processor and, at the bottom, matrix arithmetic. At Intel I size and test that infrastructure on Xeon processors with AMX, the matrix engine inside their cores.</p>
+        <p class="infra-lede"><span class="lede-wide">Every answer from a language model comes out of a server, a processor and, at the bottom, matrix arithmetic. </span>At Intel I size and test that infrastructure on Xeon processors with AMX, the matrix engine inside their cores.</p>
       </div>
 
       <div class="zoom" data-zoom>
+        <div class="zoom-bar">
         <ol class="crumbs" aria-label="Levels of the drawing">
           <li><button type="button" data-zoom-go aria-current="step">Data centre</button></li>
           <li><button type="button" data-zoom-go>Rack</button></li>
@@ -210,6 +211,12 @@
           <li><button type="button" data-zoom-go>Core</button></li>
           <li><button type="button" data-zoom-go>AMX</button></li>
         </ol>
+          <button class="replay zoom-pause" type="button" data-zoom-pause hidden>
+            <svg class="icon ico-pause" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M200,32H160a16,16,0,0,0-16,16V208a16,16,0,0,0,16,16h40a16,16,0,0,0,16-16V48A16,16,0,0,0,200,32Zm0,176H160V48h40ZM96,32H56A16,16,0,0,0,40,48V208a16,16,0,0,0,16,16H96a16,16,0,0,0,16-16V48A16,16,0,0,0,96,32Zm0,176H56V48H96Z"/></svg>
+            <svg class="icon ico-play" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M232.4,114.49,88.32,26.35a16,16,0,0,0-16.2-.3A15.86,15.86,0,0,0,64,39.87V216.13A15.94,15.94,0,0,0,80,232a16.07,16.07,0,0,0,8.36-2.35L232.4,141.51a15.81,15.81,0,0,0,0-27ZM80,215.94V40l143.83,88Z"/></svg>
+            <span data-zoom-pause-lb>Pause</span><span class="sr-only"> the AI drawing</span>
+          </button>
+        </div>
 
         <div class="zoom-grid">
           <figure class="zoom-stage">
@@ -222,7 +229,8 @@
             <p class="zoom-n" data-zoom-n>1 of 6</p>
             <h4 class="zoom-h" data-zoom-h>Data centre</h4>
             <p class="zoom-t" data-zoom-t>The request arrives over the network. A load balancer picks a server that has the model loaded and room for one more request.</p>
-            <p class="zoom-op" data-zoom-op hidden></p>
+            <p class="zoom-op" data-zoom-op aria-hidden="true">&nbsp;</p>
+            <p class="zoom-parts" data-zoom-parts aria-hidden="true"></p>
 
             <dl class="qa">
               <dt>Prompt</dt>
@@ -231,28 +239,23 @@
               <dd data-zoom-answer>&hellip;</dd>
             </dl>
 
-            <button class="replay zoom-pause" type="button" data-zoom-pause hidden>
-              <svg class="icon ico-pause" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M200,32H160a16,16,0,0,0-16,16V208a16,16,0,0,0,16,16h40a16,16,0,0,0,16-16V48A16,16,0,0,0,200,32Zm0,176H160V48h40ZM96,32H56A16,16,0,0,0,40,48V208a16,16,0,0,0,16,16H96a16,16,0,0,0,16-16V48A16,16,0,0,0,96,32Zm0,176H56V48H96Z"/></svg>
-              <svg class="icon ico-play" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M232.4,114.49,88.32,26.35a16,16,0,0,0-16.2-.3A15.86,15.86,0,0,0,64,39.87V216.13A15.94,15.94,0,0,0,80,232a16.07,16.07,0,0,0,8.36-2.35L232.4,141.51a15.81,15.81,0,0,0,0-27ZM80,215.94V40l143.83,88Z"/></svg>
-              <span data-zoom-pause-lb>Pause</span>
-            </button>
           </div>
         </div>
 
         <!-- The six levels and the return, in full, for screen readers and
              as the source of the caption above. -->
         <ol class="sr-only">
-          <li data-zoom-level><b>Data centre</b> <span>The request arrives over the network. A load balancer picks a server that has the model loaded and room for one more request.</span></li>
-          <li data-zoom-level><b>Rack</b> <span>The top-of-rack switch passes the request to that server, one of dozens in the rack.</span></li>
-          <li data-zoom-level><b>Server</b> <span>The model's weights sit in the server's memory. For every word it writes, the processor reads them again over its memory channels.</span></li>
-          <li data-zoom-level><b>Processor</b> <span>An AMX-capable Xeon processor: dozens of cores on one chip, linked by a mesh. The cores share the work.</span></li>
-          <li data-zoom-level><b>Core</b> <span>Inside each core, the AMX unit does the model's matrix arithmetic. The rest of the core runs everything else.</span></li>
-          <li data-zoom-level><b>AMX</b> <span>A tile of the prompt and a tile of the weights load into tile registers. The TMUL engine multiplies them and adds the result into a third tile, in one instruction.</span></li>
-          <li data-zoom-back><b>The answer</b> <span>That first pass over the prompt gives the first word. Each next word repeats the work and reads the weights again, so memory bandwidth often sets the pace. The words stream back to the user.</span></li>
+          <li data-zoom-level data-parts="Rows of racks; the dark one takes the request, along the dashed network path."><b>Data centre</b> <span>The request arrives over the network. A load balancer picks a server that has the model loaded and room for one more request.</span></li>
+          <li data-zoom-level data-parts="Top: the switch. Dark: the chosen server."><b>Rack</b> <span>The top-of-rack switch passes the request to that server, one of dozens in the rack.</span></li>
+          <li data-zoom-level data-parts="Left: network card. Dark: processor 0. Bars above and below: memory."><b>Server</b> <span>The model's weights sit in the server's memory. For every token it writes, a piece of text, the processor reads them again over its memory channels.</span></li>
+          <li data-zoom-level data-parts="Each block is a core with its AMX unit; dark: the core in use. Side bars: memory controllers."><b>Processor</b> <span>An AMX-capable Xeon processor: dozens of cores on one chip, linked by a mesh. The cores share the work.</span></li>
+          <li data-zoom-level data-parts="Dark: AMX. Bottom: the caches it reads from."><b>Core</b> <span>Inside each core, the AMX unit does the model's matrix arithmetic. The rest of the core runs everything else.</span></li>
+          <li data-zoom-level data-parts="Left: 8 tile registers. A: activations × B: weights → C: result. Bottom: TMUL engine."><b>AMX</b> <span>A tile of activations, the numbers the model has made from the prompt, and a tile of weights load into tile registers. The TMUL engine multiplies them and adds the result into a third tile, in one instruction: one of a great many across every layer of the model.</span></li>
+          <li data-zoom-back data-parts=""><b>The answer</b> <span>That first pass over the prompt picks the first token of the answer and keeps its working context in the KV cache. Each next token reuses that cache instead of reading the prompt again, adds to it, and reads the weights again, so memory bandwidth often sets the pace. The tokens stream back to the user.</span></li>
         </ol>
       </div>
 
-      <p class="zoom-note">Illustrative: a language model answering on a server with AMX-capable Xeon processors. Nothing in the drawing is a measurement.</p>
+      <p class="zoom-note">Illustrative: a language model answering on a server with AMX-capable Xeon processors. Nothing in the drawing is a measurement; the instruction lines use simplified notation.</p>
 
     </div>
   </section>
@@ -435,7 +438,7 @@
             <button class="replay" type="button" data-pause hidden>
               <svg class="icon ico-pause" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M200,32H160a16,16,0,0,0-16,16V208a16,16,0,0,0,16,16h40a16,16,0,0,0,16-16V48A16,16,0,0,0,200,32Zm0,176H160V48h40ZM96,32H56A16,16,0,0,0,40,48V208a16,16,0,0,0,16,16H96a16,16,0,0,0,16-16V48A16,16,0,0,0,96,32Zm0,176H56V48H96Z"/></svg>
               <svg class="icon ico-play" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M232.4,114.49,88.32,26.35a16,16,0,0,0-16.2-.3A15.86,15.86,0,0,0,64,39.87V216.13A15.94,15.94,0,0,0,80,232a16.07,16.07,0,0,0,8.36-2.35L232.4,141.51a15.81,15.81,0,0,0,0-27ZM80,215.94V40l143.83,88Z"/></svg>
-              <span data-pause-lb>Pause</span>
+              <span data-pause-lb>Pause</span><span class="sr-only"> the migration drawing</span>
             </button>
           </figcaption>
         </figure>
@@ -575,7 +578,8 @@
           <p class="book-note">Choose a time that suits you. Mohamed confirms each request by email.</p>
         </div>
         <div class="book-cal" data-cal hidden>
-          <p class="book-state" data-cal-state>Loading the calendar</p>
+          <p class="book-state" data-cal-state role="status">Loading the calendar</p>
+          <p class="book-retry" data-cal-retry hidden><button type="button" class="btn-retry" data-cal-retry-btn>Try again</button> or <a href="mailto:Mohesam84@gmail.com?subject=Request%20for%20a%20call">email a request</a></p>
         </div>
         <p class="book-direct" data-book-direct hidden>Calendar not showing? <a href="#" data-book-link rel="noopener">Open the booking page</a></p>
         <div class="book-fallback" data-book-fallback>

@@ -1,0 +1,24 @@
+You are reviewing a finished build. READ-ONLY: do not edit, create or delete any file. Your deliverable is your final message.
+
+## The project
+Personal website for Dr. Mohamed Esameldin Elsaid (Intel, Munich; cloud and AI infrastructure). Vite + vanilla JS + GSAP, no three.js.
+- Repo: D:\Business\Clients\Mohamed Essam Website (rules: CLAUDE.md, DESIGN.md Part A; values only from src/styles/tokens.css)
+- Changed files: src/index.html, src/scripts/main.js (buildZoom and booking), src/styles/site.css, src/styles/tokens.css. Diff: `git diff 536ced6 HEAD -- src`
+- The spec it was built to: docs/v7/PLAN.md (decisions taken by Islam are recorded there). Your own earlier review that fed it: docs/v7/SOL-6.1-REVIEW.md.
+- Preview: https://v7.mohamed-elsaid.pages.dev . Look at it yourself at desktop width and at about 390px. If an animation seems frozen, check document.hidden first (background windows throttle timers). The AI section loop is about 30 seconds; its six level buttons jump to each level.
+- The booking calendar has no Cal.com account yet, so the "Online booking opens soon" card is expected. ?cal=rick/get-rick-rolled on the preview shows the embed with a public demo account.
+
+## What Islam said after seeing v7 (translated)
+"Everything pleases me, it's fine." He asked for your review before it goes to the client.
+
+## Questions
+1. Does the build match docs/v7/PLAN.md? List anything missing or done differently.
+2. The AI zoom: is anything scientifically wrong or misleading for an Intel infrastructure engineer (levels, AMX tile registers / TMUL, the instruction names shown, prefill and decode wording, the "answer streams back" step)? Does it read as one continuous zoom? Anything cluttered or unreadable, on desktop or phone?
+3. Phone: do sections now read as separate, and is the hierarchy clear? Measure where useful.
+4. Booking: placement, states (opens-soon card, loading, failure, direct link), and the preview-only ?cal switch. Any bug?
+5. Bugs, accessibility (focus, 44px targets, reduced motion, pause control, screen reader text), and rule breaks against CLAUDE.md / DESIGN.md Part A.
+
+Already decided, do not reopen: footer credit links Islam's LinkedIn on this site (his choice, 18 October); light ground for the AI section; the Zoom concept over the serving timeline.
+
+## Report format
+Start with "## Key points" (5 to 8 bullets). Then findings ranked by severity: must fix before the client sees it, should fix, nice to have. Each with where it is (file:line or what you saw on screen) and a concrete fix. Plain English for a business owner; be decisive and say where you are unsure.

@@ -31,7 +31,16 @@ const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const reveal = () => root.classList.remove('js-motion');
 
 const css = getComputedStyle(root);
-const ms = n => (parseFloat(css.getPropertyValue(n)) || 0) / 1000;
+/* A duration token, in seconds. tokens.css writes milliseconds, but the
+   release build's CSS minifier rewrites them as seconds (700ms becomes
+   .7s), so the unit is read rather than assumed. Assuming ms made every
+   token-timed motion a thousand times too fast in production, and the
+   AI zoom skip straight to its last level (Islam, 27 October). */
+const ms = n => {
+  const v = css.getPropertyValue(n).trim();
+  const f = parseFloat(v) || 0;
+  return v.endsWith('ms') ? f / 1000 : f;
+};
 const px = n => parseFloat(css.getPropertyValue(n)) || 0;
 
 const D_MID = ms('--d-mid') || 0.7;

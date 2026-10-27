@@ -39,3 +39,6 @@ Review: docs/v7/SOL-6.1-BUILD-REVIEW.md. All 8 findings fixed: token/activations
 
 ## Bug fixed 2026-10-27 (8853de5)
 Islam: the zoom jumped straight to level 6. Cause: the release CSS minifier rewrites 1150ms as 1.15s; ms() in main.js assumed milliseconds and divided by 1000 again, so levels 1-5 lasted about 0.001s. Exposed when the zoom pacing moved into tokens (Sol 6.1 finding 6); the same bug had silently made --d-mid/--d-reveal motion near-instant on every live version. ms() now reads the unit. Verified on the live v7 preview at 1440 and 390: levels 1 to 6 in order. Hero photo and Practice measured identical to v5 (511x424 / 289x239).
+
+## Live on main 2026-10-27
+Deployed to https://mohamed-elsaid.pages.dev (deployment 0f88811c). Verified live: zoom plays 1 to 6 at 390, no errors, X-Robots-Tag noindex on the pages.dev address. Waiting for Mohamed: feedback, Cal.com link (docs/v6/CALCOM-SETUP.md), domain.

@@ -1,0 +1,30 @@
+You are an independent reviewer. READ-ONLY: do not edit, create or delete any file. Your deliverable is your final message.
+
+## The project
+Personal website for Dr. Mohamed Esameldin Elsaid (Intel, Munich; cloud and AI infrastructure; PhD on live-migration cost). Vite + vanilla JS + GSAP, no three.js.
+- Repo (read freely): D:\Business\Clients\Mohamed Essam Website
+  - Rules and facts: CLAUDE.md, DESIGN.md (Part A is fixed: palette, truth rules, accessibility floors, client instructions). src/styles/tokens.css is the only source of values.
+  - Page: src/index.html, src/styles/site.css, src/scripts/main.js
+- Preview with the newest changes (v6): https://v6.mohamed-elsaid.pages.dev
+- Current live version (v5, before these changes): https://mohamed-elsaid.pages.dev
+- Look at the preview yourself in the browser at desktop width AND at a phone width (about 390px). If a scripted animation seems frozen, check document.hidden first: background automation windows throttle timers.
+
+## What the client (Mohamed) asked for in v6
+1. Remove WhatsApp/phone from Contact; keep LinkedIn and email; add a booking calendar where a visitor picks a slot, the request emails Mohamed, Mohamed approves, and the visitor is notified. Time zones between countries must be handled.
+2. A new, creative, very strong animation about how AI infrastructure works, possibly a whole section of its own, because AI infrastructure is his core field. "Something dazzling, really scientific, that expresses the process of AI infrastructure. Maybe the workflow."
+
+Fact about the booking block: it is built on a Cal.com inline embed, but no Cal.com account exists yet, so the preview shows a fallback "Request a time by email" mailto button. You can see the embed working by adding ?cal=rick/get-rick-rolled to the preview URL (a public Cal.com demo account).
+
+## What Islam (the site's builder, my client-facing partner) said after seeing the v6 preview, translated from Arabic
+"First point: I see a very big similarity between the AI infrastructure animation and the migration animation. Second: on the mobile version the flow and the text are all very condensed, all piled on top of each other, so the eye gets scattered. Maybe also because the heading fonts are still not different enough from the body text fonts. And one of the biggest problems in the site, which we have been trying to solve since we started, is that the sections run into each other, and this shows even more on the phone.
+Another feature, an important one: I want Book a call to be above the contact, not the last thing. I want the first thing the visitor sees to be booking a call, not finding the contact details, because if he sees the contact details he may not scroll down again to notice there is a Book a call button at all. Also the Book a call button looks bad, and I want it inside the site: a calendar in the site itself. When I pressed Book a call it opened an email to send him; it did not let me choose a time. It should open a calendar or show one, the visitor picks a suitable time, enters his own email, presses book, and an email goes automatically to Mohamed. When Mohamed approves, it appears in Mohamed's calendar and in the visitor's calendar, or the visitor gets an automatic 'your request has been approved' email. I don't want the visitor sending emails himself.
+About the infrastructure animation: it is nice, but I don't know whether it is because it is very big, or because it also has squares like the other one. Is it scientifically correct? I want it more detailed and more impressive, so you feel the animation has more details, more dazzling, not random, and not crammed so that everything runs together and confuses. In the end the client's foundation is AI infrastructure, so we build something that expresses that."
+
+## Your questions
+1. AI animation. Do you agree it is too similar to the migration diagram in the Research section? Is the current one scientifically correct, and where would an Intel infrastructure engineer object (for example about AMX, Xeon, prefill/decode, KV cache, scheduling)? Then propose YOUR OWN concept for its replacement: what it shows, how it moves, how it stays detailed and impressive but uncluttered, how it differs from the migration diagram, how it works on a phone, and what is realistic to build in SVG/Canvas + GSAP (no three.js, no scroll pinning: Islam rejected a pinned scroll scene in an earlier version). Give one recommendation, with an alternative if you have a strong one.
+2. Phone. Diagnose concretely (measure if you can: font sizes, weights, spacing, section boundaries) why the phone version feels crammed and why sections run into each other. Give specific fixes, with values where you can, respecting DESIGN.md Part A.
+3. Booking. Where should it sit (Contact order, hero call to action, navigation), how should it look, and is Cal.com the right tool for the flow Islam describes (or something better)? Anything that blocks the flow (e.g. which Cal.com features need a paid plan)?
+4. Anything else in v6 you would flag as wrong.
+
+## Report format
+Start with "## Key points" (5 to 8 bullets). Then one section per question. Plain English: Islam is a business owner, not a programmer. Be specific and decisive; say plainly where you are unsure.

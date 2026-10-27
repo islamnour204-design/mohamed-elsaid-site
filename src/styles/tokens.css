@@ -289,6 +289,20 @@
   --ai-chip: 16px;
   --ai-chip-s: 24px;
 
+  /* --- v7, added 27 October ------------------------------------------ */
+
+  /* Section boundary: a 2px rule at the top edge of each section. */
+  --edge: 2px;
+  /* Section name on a phone: a clear step above the 22px statements and
+     the 17px body (Sol 6.1 measured 24px, too close to both). */
+  --t-sect-s: 30px;
+  /* The zoom's caption keeps the height of its longest text, so the
+     panel does not jump: five lines on desktop, six on a phone. */
+  --zoom-cap: calc(var(--t-body) * 1.55 * 5);
+  --zoom-cap-s: calc(var(--t-body) * 1.55 * 6);
+  /* Machine instructions in the zoom are code, so they are set as code. */
+  --font-mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
+
 }
 
 /* Respect the operating system setting. Non-negotiable. */

@@ -26,10 +26,11 @@
 <header class="nav" data-nav>
   <div class="nav-in">
     <a class="nav-name" href="#top">Mohamed Elsaid</a>
-    <!-- Phone only: Contact stays one tap away, the rest sit behind
+    <!-- Phone only: Book a call stays one tap away (v7, both reviews; it
+         was Contact), the rest sit behind
          Sections (Islam, 18 October, Sol 6.1's proposal). -->
     <div class="nav-phone">
-      <a class="nav-contact" href="#contact">Contact</a>
+      <a class="nav-contact" href="#book">Book a call</a>
       <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" data-nav-toggle>
         Sections
         <svg class="chev" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></svg>
@@ -45,6 +46,7 @@
         <li><a href="#contact" data-link="contact">Contact</a></li>
         <li class="nav-sep"><a href="/publications.html">Publications</a></li>
         <li><a href="/cv.html">CV</a></li>
+        <li class="nav-book"><a href="#book">Book a call</a></li>
       </ul>
     </nav>
   </div>
@@ -65,8 +67,8 @@
         <p class="hero-claim" data-rise>The question is not whether to adopt AI. It is what the infrastructure underneath it <strong>costs</strong>.</p>
 
         <div class="act">
-          <a href="#research" class="btn btn-p">See the research</a>
-          <a href="#contact" class="btn btn-s">Get in touch</a>
+          <a href="#book" class="btn btn-p">Book a call</a>
+          <a href="#research" class="btn btn-s">See the research</a>
         </div>
         </div>
       </div>
@@ -181,54 +183,76 @@
 
   <!-- ========== AI INFRASTRUCTURE ==========
        Mohamed, 27 October: a section of its own on how AI infrastructure
-       works, because it is his field. One request followed through the
-       stack, from the prompt to the last token. Dark, between two light
-       sections: the machine room. The drawing is built by the script
-       (buildInfra in main.js); the steps below are the readable source. -->
-  <section class="layer g6 dark infra" id="infrastructure" data-layer="infrastructure" data-theme="dark">
+       works, because it is his field. v7: one request followed down six
+       levels of scale, from the data centre to a single AMX multiply, and
+       the answer back up (Islam chose the zoom, on a light ground). The
+       drawing is built by buildZoom in main.js; the text beside it is the
+       readable source and changes with each level. -->
+  <section class="layer g1 infra" id="infrastructure" data-layer="infrastructure" data-theme="light">
     <div class="shell">
 
       <header class="sect-head" data-head>
         <h2 class="sect-name">AI infrastructure</h2>
-        <span class="sect-desc">How one request is served</span>
+        <span class="sect-desc">One request, from the data centre to a single multiplication</span>
       </header>
 
       <div class="infra-intro">
-        <h3 class="statement infra-statement">From a question to its answer, one token at a time</h3>
-        <div class="prose">
-          <p>A language model's reply depends on infrastructure: which server takes the request, and how fast that server moves the model's weights out of memory for every token it writes. At Intel I size and test that infrastructure on Xeon processors with AMX, the matrix engine built into each core.</p>
-        </div>
+        <h3 class="statement infra-statement">Where an AI answer is actually made</h3>
+        <p class="infra-lede">Every answer from a language model comes out of a server, a processor and, at the bottom, matrix arithmetic. At Intel I size and test that infrastructure on Xeon processors with AMX, the matrix engine inside their cores.</p>
       </div>
 
-      <div class="infra-stage">
-        <figure class="ai" data-ai>
-          <!-- Phone only: the step being shown, filled in by the script. -->
-          <p class="migr-cap ai-cap" data-ai-cap aria-hidden="true"></p>
-          <svg class="ai-svg" viewBox="0 0 600 680" role="img" aria-labelledby="ai-t">
-            <title id="ai-t">An AI request: the prompt is split into tokens, a scheduler sends it to the least busy server, the server streams the model's weights from memory to its AMX tiles, and the answer comes back one token at a time.</title>
-          </svg>
-          <figcaption class="migr-foot">
-            <span class="key"><i class="key-sw key-mem"></i>Model weights</span>
-            <span class="key"><i class="key-sw key-dirty"></i>Computing</span>
-            <span class="key"><i class="key-sw key-copied"></i>KV cache</span>
-            <button class="replay" type="button" data-ai-pause hidden>
+      <div class="zoom" data-zoom>
+        <ol class="crumbs" aria-label="Levels of the drawing">
+          <li><button type="button" data-zoom-go aria-current="step">Data centre</button></li>
+          <li><button type="button" data-zoom-go>Rack</button></li>
+          <li><button type="button" data-zoom-go>Server</button></li>
+          <li><button type="button" data-zoom-go>Processor</button></li>
+          <li><button type="button" data-zoom-go>Core</button></li>
+          <li><button type="button" data-zoom-go>AMX</button></li>
+        </ol>
+
+        <div class="zoom-grid">
+          <figure class="zoom-stage">
+            <svg class="zoom-svg" viewBox="0 0 640 400" role="img" aria-labelledby="zoom-t">
+              <title id="zoom-t">A request travels from a data centre hall to one rack, one server, one processor, one core and its AMX unit, where two tiles are multiplied; then the answer streams back up.</title>
+            </svg>
+          </figure>
+
+          <div class="zoom-side">
+            <p class="zoom-n" data-zoom-n>1 of 6</p>
+            <h4 class="zoom-h" data-zoom-h>Data centre</h4>
+            <p class="zoom-t" data-zoom-t>The request arrives over the network. A load balancer picks a server that has the model loaded and room for one more request.</p>
+            <p class="zoom-op" data-zoom-op hidden></p>
+
+            <dl class="qa">
+              <dt>Prompt</dt>
+              <dd>In one sentence, what is live migration?</dd>
+              <dt>Answer</dt>
+              <dd data-zoom-answer>&hellip;</dd>
+            </dl>
+
+            <button class="replay zoom-pause" type="button" data-zoom-pause hidden>
               <svg class="icon ico-pause" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M200,32H160a16,16,0,0,0-16,16V208a16,16,0,0,0,16,16h40a16,16,0,0,0,16-16V48A16,16,0,0,0,200,32Zm0,176H160V48h40ZM96,32H56A16,16,0,0,0,40,48V208a16,16,0,0,0,16,16H96a16,16,0,0,0,16-16V48A16,16,0,0,0,96,32Zm0,176H56V48H96Z"/></svg>
               <svg class="icon ico-play" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M232.4,114.49,88.32,26.35a16,16,0,0,0-16.2-.3A15.86,15.86,0,0,0,64,39.87V216.13A15.94,15.94,0,0,0,80,232a16.07,16.07,0,0,0,8.36-2.35L232.4,141.51a15.81,15.81,0,0,0,0-27ZM80,215.94V40l143.83,88Z"/></svg>
-              <span data-ai-pause-lb>Pause</span>
+              <span data-zoom-pause-lb>Pause</span>
             </button>
-          </figcaption>
-        </figure>
+          </div>
+        </div>
 
-        <!-- Each step is a button: pressing it plays the drawing from that
-             step. Numbered, because the order is the process. -->
-        <ol class="ai-steps" data-ai-steps>
-          <li><button type="button"><b>Request.</b> A tokenizer splits the prompt into tokens, the units the model reads.</button></li>
-          <li><button type="button"><b>Placement.</b> The scheduler sends the request to the server with the most free capacity.</button></li>
-          <li><button type="button"><b>Prefill.</b> The server streams the model's weights from memory, and its AMX tiles process every prompt token at once. The results fill the KV cache, the model's working memory.</button></li>
-          <li><button type="button"><b>Decode.</b> The model writes one token at a time. Each token reads all the weights again, so memory speed sets the pace, and goes straight back to the user.</button></li>
-          <li><button type="button"><b>Done.</b> The reply is complete, and the server frees the cache for the next request.</button></li>
+        <!-- The six levels and the return, in full, for screen readers and
+             as the source of the caption above. -->
+        <ol class="sr-only">
+          <li data-zoom-level><b>Data centre</b> <span>The request arrives over the network. A load balancer picks a server that has the model loaded and room for one more request.</span></li>
+          <li data-zoom-level><b>Rack</b> <span>The top-of-rack switch passes the request to that server, one of dozens in the rack.</span></li>
+          <li data-zoom-level><b>Server</b> <span>The model's weights sit in the server's memory. For every word it writes, the processor reads them again over its memory channels.</span></li>
+          <li data-zoom-level><b>Processor</b> <span>An AMX-capable Xeon processor: dozens of cores on one chip, linked by a mesh. The cores share the work.</span></li>
+          <li data-zoom-level><b>Core</b> <span>Inside each core, the AMX unit does the model's matrix arithmetic. The rest of the core runs everything else.</span></li>
+          <li data-zoom-level><b>AMX</b> <span>A tile of the prompt and a tile of the weights load into tile registers. The TMUL engine multiplies them and adds the result into a third tile, in one instruction.</span></li>
+          <li data-zoom-back><b>The answer</b> <span>That first pass over the prompt gives the first word. Each next word repeats the work and reads the weights again, so memory bandwidth often sets the pace. The words stream back to the user.</span></li>
         </ol>
       </div>
+
+      <p class="zoom-note">Illustrative: a language model answering on a server with AMX-capable Xeon processors. Nothing in the drawing is a measurement.</p>
 
     </div>
   </section>
@@ -535,8 +559,34 @@
 
       <header class="sect-head" data-head>
         <h2 class="sect-name">Contact</h2>
-        <span class="sect-desc">Munich, Germany</span>
+        <span class="sect-desc">Book a call, or write directly</span>
       </header>
+
+      <!-- Booking first (Islam, 27 October: a visitor who sees the
+           contact details may never scroll on to find the calendar).
+           Cal.com shows times in the visitor's own time zone, sends
+           Mohamed the request in Munich time, and emails the visitor again
+           once he confirms. data-cal-link is his Cal.com "username/event";
+           while it is empty the email card stands in. Setup steps:
+           docs/v6/CALCOM-SETUP.md -->
+      <div class="book" id="book" data-book data-cal-link="">
+        <div class="book-head">
+          <h3 class="book-h">Book a call</h3>
+          <p class="book-note">Choose a time that suits you. Mohamed confirms each request by email.</p>
+        </div>
+        <div class="book-cal" data-cal hidden>
+          <p class="book-state" data-cal-state>Loading the calendar</p>
+        </div>
+        <p class="book-direct" data-book-direct hidden>Calendar not showing? <a href="#" data-book-link rel="noopener">Open the booking page</a></p>
+        <div class="book-fallback" data-book-fallback>
+          <svg class="icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M208,32H184V24a8,8,0,0,0-16,0v8H88V24a8,8,0,0,0-16,0v8H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM72,48v8a8,8,0,0,0,16,0V48h80v8a8,8,0,0,0,16,0V48h24V80H48V48ZM208,208H48V96H208V208Zm-38.34-85.66a8,8,0,0,1,0,11.32l-48,48a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L116,164.69l42.34-42.35A8,8,0,0,1,169.66,122.34Z"/></svg>
+          <div>
+            <p class="book-fb-h">Online booking opens soon</p>
+            <p class="book-fb-t">Until then, send two or three times that suit you, with your time zone, and Mohamed will confirm one.</p>
+          </div>
+          <a class="btn-book" href="mailto:Mohesam84@gmail.com?subject=Request%20for%20a%20call&amp;body=Two%20or%20three%20times%20that%20suit%20me%2C%20with%20my%20time%20zone%3A%0A%0A">Email a request</a>
+        </div>
+      </div>
 
       <div class="contact-grid" data-contact>
         <div>
@@ -561,23 +611,6 @@
         </ul>
       </div>
 
-      <!-- Booking (Mohamed, 27 October). Cal.com shows the times in the
-           visitor's own time zone, sends Mohamed the request in Munich
-           time, and emails the visitor again once he approves it.
-           data-cal-link is his Cal.com "username/event", empty until his
-           account exists; while it is empty the email button stands in.
-           Setup steps: docs/v6/CALCOM-SETUP.md -->
-      <div class="book" id="book" data-book data-cal-link="">
-        <div class="book-head">
-          <h3 class="book-h">Book a call</h3>
-          <p class="book-note" data-book-note>Send two or three times that suit you, with your time zone. Mohamed replies to confirm.</p>
-        </div>
-        <div class="book-cal" data-cal hidden></div>
-        <a class="book-fallback" data-book-fallback href="mailto:Mohesam84@gmail.com?subject=Request%20for%20a%20call&amp;body=Two%20or%20three%20times%20that%20suit%20me%2C%20with%20my%20time%20zone%3A%0A%0A">
-          <svg class="icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M208,32H184V24a8,8,0,0,0-16,0v8H88V24a8,8,0,0,0-16,0v8H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM72,48v8a8,8,0,0,0,16,0V48h80v8a8,8,0,0,0,16,0V48h24V80H48V48ZM208,208H48V96H208V208Zm-38.34-85.66a8,8,0,0,1,0,11.32l-48,48a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L116,164.69l42.34-42.35A8,8,0,0,1,169.66,122.34Z"/></svg>
-          <span>Request a time by email</span>
-        </a>
-      </div>
     </div>
 
     <footer class="foot">

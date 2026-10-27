@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mohamed Elsaid · v7 animation ideas</title>
+<link rel="stylesheet" href="../../src/styles/tokens.css">
+<style>
+@font-face { font-family: "Geist"; src: url("../../src/assets/fonts/Geist-Variable.woff2") format("woff2"); font-weight: 300 800; }
+:root { --bg: var(--ground-3); --panel: var(--ground-1); --fg: var(--ink); --fg2: var(--ink-secondary); --acc: var(--accent); --rule: var(--rule); --rule-s: var(--rule-strong); --hot: var(--ink); }
+.dark { --bg: var(--ground-6); --panel: var(--ground-5); --fg: var(--ink-inv); --fg2: var(--ink-inv-secondary); --acc: var(--accent-light); --rule: var(--rule-inv); --rule-s: var(--rule-inv-strong); --hot: var(--ink-inv); }
+* { box-sizing: border-box; margin: 0; }
+body { font-family: var(--font); background: var(--bg); color: var(--fg); padding: var(--s-5) var(--gutter) var(--s-8); transition: background-color var(--d-mid) var(--ease), color var(--d-mid) var(--ease); }
+.wrap { max-width: var(--max); margin-inline: auto; }
+.top { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-4); align-items: baseline; justify-content: space-between; padding-bottom: var(--s-3); border-bottom: 1px solid var(--rule-s); }
+h1 { font-size: var(--t-h2); font-weight: 600; letter-spacing: var(--tracking-h); }
+.sw { display: inline-flex; border: 1px solid var(--rule-s); border-radius: var(--radius); overflow: hidden; }
+.sw button { font: inherit; font-size: var(--t-small); min-height: var(--tap-min); padding: 0 var(--s-3); background: none; color: var(--fg2); border: 0; cursor: pointer; }
+.sw button[aria-pressed="true"] { background: var(--acc); color: var(--bg); font-weight: 600; }
+.idea { margin-top: var(--s-7); }
+.idea h2 { font-size: 30px; font-weight: 600; letter-spacing: var(--tracking-h); }
+.idea > p { margin-top: var(--s-2); max-width: var(--measure); color: var(--fg2); line-height: 1.55; }
+.stage { margin-top: var(--s-4); padding: var(--s-4); background: var(--panel); border: 1px solid var(--rule); border-radius: var(--radius); }
+svg { display: block; width: 100%; height: auto; font-family: var(--font); overflow: visible; }
+.lb { fill: var(--fg2); font-size: 14px; }
+.lbs { fill: var(--fg); font-size: 15px; font-weight: 600; }
+.big { fill: var(--fg); font-size: 22px; font-weight: 600; }
+.ln { stroke: var(--rule-s); fill: none; }
+.lnf { stroke: var(--rule); fill: none; }
+.acc { fill: var(--acc); }
+.accs { stroke: var(--acc); fill: none; stroke-width: 2; }
+.hot { fill: var(--hot); }
+.dim { fill: var(--acc); opacity: .22; }
+.dim2 { fill: var(--fg2); opacity: .18; }
+.strip { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--s-2); margin-top: var(--s-3); }
+.strip figure { padding: var(--s-1); border: 1px solid var(--rule); border-radius: var(--radius); }
+.strip figure.on { border-color: var(--acc); }
+.strip figcaption { margin-top: var(--s-1); font-size: 13px; color: var(--fg2); text-align: center; }
+.strip figure.on figcaption { color: var(--fg); font-weight: 600; }
+.note { margin-top: var(--s-2); font-size: var(--t-small); color: var(--fg2); }
+@media (max-width: 860px) { .strip { grid-template-columns: repeat(3, minmax(0, 1fr)); } .stage { padding: var(--s-2); } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <h1>Two ideas for the AI animation</h1>
+    <div class="sw" role="group" aria-label="Section ground">
+      <button type="button" aria-pressed="true" data-g="light">Light ground</button>
+      <button type="button" aria-pressed="false" data-g="dark">Dark ground</button>
+    </div>
+  </div>
+
+  <!-- ========== IDEA A: ZOOM ========== -->
+  <section class="idea">
+    <h2>A · Zoom: from the data centre to one multiplication</h2>
+    <p>The camera follows one request down six levels, one on screen at a time, then the answer streams back up. This still is the last level: the AMX unit inside one Xeon core, multiplying a tile of the prompt by a tile of the model's weights.</p>
+
+    <div class="stage">
+      <svg viewBox="0 0 900 430" role="img" aria-label="AMX close-up: tile registers feed the TMUL engine, which multiplies tile A by tile B and adds into tile C">
+        <!-- breadcrumb -->
+        <text x="0" y="18" class="lb">Data centre  ›  Rack 14  ›  Server 3  ›  Xeon socket 0  ›  Core 27  ›  <tspan class="lbs">AMX unit</tspan></text>
+        <line x1="0" y1="34" x2="900" y2="34" class="lnf"/>
+
+        <!-- tile registers -->
+        <text x="0" y="66" class="lbs">8 tile registers</text>
+        <text x="0" y="84" class="lb">each 16 rows × 64 bytes</text>
+        <g id="regs"></g>
+
+        <!-- A tile -->
+        <text x="210" y="66" class="lbs">tmm1 · A</text>
+        <text x="210" y="84" class="lb">prompt activations, BF16</text>
+        <g id="ta"></g>
+        <!-- B tile -->
+        <text x="420" y="66" class="lbs">tmm2 · B</text>
+        <text x="420" y="84" class="lb">model weights, BF16</text>
+        <g id="tb"></g>
+        <!-- C tile -->
+        <text x="670" y="66" class="lbs">tmm0 · C</text>
+        <text x="670" y="84" class="lb">accumulator, FP32</text>
+        <g id="tc"></g>
+
+        <text x="372" y="210" class="big" text-anchor="middle">×</text>
+        <text x="634" y="210" class="big" text-anchor="middle">→</text>
+
+        <!-- TMUL engine -->
+        <rect x="210" y="350" width="690" height="56" rx="6" class="ln"/>
+        <rect x="210" y="350" width="290" height="56" rx="6" class="dim"/>
+        <text x="228" y="376" class="lbs">TMUL engine</text>
+        <text x="228" y="395" class="lb">C += A × B, one tile instruction</text>
+        <text x="520" y="376" class="lb">This step: row 5 of A × column 9 of B</text>
+        <text x="520" y="395" class="lb">→ one value of C (real tiles are 4× wider)</text>
+      </svg>
+
+      <div class="strip" aria-label="The six levels">
+        <figure><svg viewBox="0 0 140 90" id="lv1"></svg><figcaption>Data centre</figcaption></figure>
+        <figure><svg viewBox="0 0 140 90" id="lv2"></svg><figcaption>Rack</figcaption></figure>
+        <figure><svg viewBox="0 0 140 90" id="lv3"></svg><figcaption>Server</figcaption></figure>
+        <figure><svg viewBox="0 0 140 90" id="lv4"></svg><figcaption>Xeon chip</figcaption></figure>
+        <figure><svg viewBox="0 0 140 90" id="lv5"></svg><figcaption>One core</figcaption></figure>
+        <figure class="on"><svg viewBox="0 0 140 90" id="lv6"></svg><figcaption>AMX unit</figcaption></figure>
+      </div>
+    </div>
+    <p class="note">Moving version: about 3 seconds per level, the request glows as it goes down; then the answer's words rise back up through the levels. Pause and step buttons as on the migration drawing.</p>
+  </section>
+
+  <!-- ========== IDEA B: TIMELINE ========== -->
+  <section class="idea">
+    <h2>B · Serving timeline: three users share one server</h2>
+    <p>Time runs left to right. Three requests arrive, wait, process their prompt and stream their answers, sharing one loaded model. When one finishes, the next one starts. Below, the server's shared resources fill and empty as it happens.</p>
+
+    <div class="stage">
+      <svg viewBox="0 0 900 430" role="img" aria-label="Timeline of three requests on one server, with shared weights, compute and KV cache below">
+        <text x="0" y="18" class="lbs">Requests</text>
+        <text x="900" y="18" class="lb" text-anchor="end">time →</text>
+        <line x1="0" y1="34" x2="900" y2="34" class="lnf"/>
+        <g id="lanes"></g>
+        <line x1="560" y1="44" x2="560" y2="408" class="accs" stroke-dasharray="4 4"/>
+        <text x="566" y="56" class="lb">now</text>
+
+        <line x1="0" y1="210" x2="900" y2="210" class="lnf"/>
+        <text x="0" y="240" class="lbs">Shared server</text>
+        <g id="res"></g>
+      </svg>
+    </div>
+    <p class="note">Moving version: the "now" line sweeps right, bars grow behind it, tokens tick out of each lane into short answer text on the right. An optional "Inside the computation" button opens a close-up of one matrix multiply.</p>
+  </section>
+</div>
+
+<script>
+const NS = 'http://www.w3.org/2000/svg';
+const el = (tag, a, p) => { const e = document.createElementNS(NS, tag); for (const k in a) e.setAttribute(k, a[k]); p.appendChild(e); return e; };
+const tx = (s, a, p) => { const e = el('text', a, p); e.textContent = s; return e; };
+const $ = id => document.getElementById(id);
+
+/* ---- Idea A: registers ---- */
+const regs = $('regs');
+for (let i = 0; i < 8; i++) {
+  const y = 100 + i * 28, on = i <= 2;
+  el('rect', { x: 0, y, width: 150, height: 20, rx: 3, class: on ? 'dim' : 'dim2' }, regs);
+  if (on) el('rect', { x: 0, y, width: 150, height: 20, rx: 3, class: 'accs' }, regs);
+  tx(`tmm${i}`, { x: 10, y: y + 15, class: on ? 'lbs' : 'lb' }, regs);
+}
+/* A: 16 rows x 8 shown columns; B: 8 rows x 16 cols; C: 16 x 16 */
+function grid(g, x0, y0, rows, cols, s, hl) {
+  for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+    const k = hl(r, c);
+    el('rect', { x: x0 + c * s, y: y0 + r * s, width: s - 2, height: s - 2, class: k === 2 ? 'hot' : k === 1 ? 'acc' : 'dim' }, g);
+  }
+}
+grid($('ta'), 210, 100, 16, 8, 14, (r) => r === 5 ? 1 : 0);
+grid($('tb'), 420, 166, 8, 16, 12, (r, c) => c === 9 ? 1 : 0);
+grid($('tc'), 670, 100, 16, 16, 14, (r, c) => r === 5 && c === 9 ? 2 : (r < 5 ? 1 : 0) && 0);
+/* C tile: rows already computed show as filled accent */
+[...$('tc').children].forEach((e, i) => { const r = i / 16 | 0; if (r < 5 && e.getAttribute('class') === 'dim') { e.setAttribute('class', 'acc'); e.setAttribute('opacity', '.55'); } });
+
+/* ---- Idea A: six small levels ---- */
+const lv = n => $('lv' + n);
+for (let r = 0; r < 4; r++) for (let c = 0; c < 9; c++) el('rect', { x: 8 + c * 14, y: 10 + r * 20, width: 10, height: 14, class: r === 2 && c === 5 ? 'acc' : 'dim2' }, lv(1));
+for (let i = 0; i < 10; i++) el('rect', { x: 40, y: 4 + i * 8, width: 60, height: 6, class: i === 3 ? 'acc' : 'dim2' }, lv(2));
+el('rect', { x: 6, y: 6, width: 128, height: 78, rx: 3, class: 'ln' }, lv(3));
+el('rect', { x: 20, y: 28, width: 26, height: 26, class: 'acc' }, lv(3));
+el('rect', { x: 94, y: 28, width: 26, height: 26, class: 'dim2' }, lv(3));
+for (let i = 0; i < 6; i++) el('rect', { x: 54 + i * 6, y: 14, width: 3, height: 62, class: 'dim2' }, lv(3));
+for (let r = 0; r < 5; r++) for (let c = 0; c < 8; c++) el('rect', { x: 12 + c * 15, y: 8 + r * 15, width: 12, height: 12, class: r === 2 && c === 3 ? 'acc' : 'dim2' }, lv(4));
+[[8, 8, 60, 30, 0], [72, 8, 60, 30, 0], [8, 44, 40, 38, 0], [52, 44, 80, 38, 1]].forEach(([x, y, w, h, on]) => el('rect', { x, y, width: w, height: h, rx: 3, class: on ? 'acc' : 'dim2' }, lv(5)));
+tx('AMX', { x: 80, y: 68, class: 'lbs', fill: 'var(--bg)' }, lv(5)).setAttribute('style', 'fill: var(--panel)');
+grid(lv(6), 14, 14, 6, 4, 10, r => r === 2 ? 1 : 0);
+grid(lv(6), 64, 24, 4, 6, 10, (r, c) => c === 3 ? 1 : 0);
+el('rect', { x: 64 + 3 * 10, y: 14 + 2 * 10, width: 8, height: 8, class: 'hot' }, lv(6));
+
+/* ---- Idea B: lanes ---- */
+const lanes = $('lanes'), X = t => 70 + t * 8.2;
+const req = [
+  { n: 'User A', y: 70, arrive: 2, start: 2, pre: 14, dec: 34, hl: true },
+  { n: 'User B', y: 120, arrive: 16, start: 22, pre: 10, dec: 30 },
+  { n: 'User C', y: 170, arrive: 34, start: 52, pre: 18, dec: 20 }
+];
+req.forEach(q => {
+  tx(q.n, { x: 0, y: q.y + 5, class: q.hl ? 'lbs' : 'lb' }, lanes);
+  if (q.start > q.arrive) {
+    el('rect', { x: X(q.arrive), y: q.y - 10, width: X(q.start) - X(q.arrive), height: 20, rx: 3, class: 'lnf', 'stroke-dasharray': '3 3' }, lanes);
+    if (X(q.start) - X(q.arrive) > 70) tx('waiting', { x: X(q.arrive) + 8, y: q.y + 5, class: 'lb' }, lanes);
+  }
+  const p0 = X(q.start), p1 = X(q.start + q.pre);
+  const pe = Math.min(p1, 560);
+  el('rect', { x: p0, y: q.y - 12, width: pe - p0, height: 24, rx: 3, class: q.hl ? 'acc' : 'dim' }, lanes);
+  if (p1 > 560) el('rect', { x: 560, y: q.y - 12, width: p1 - 560, height: 24, rx: 3, class: 'lnf', 'stroke-dasharray': '3 3' }, lanes);
+  tx('prompt', { x: p0 + 8, y: q.y + 5, class: 'lb', style: q.hl ? 'fill: var(--panel)' : '' }, lanes);
+  const n = Math.round(q.dec / 2.2);
+  for (let i = 0; i < n; i++) {
+    const x = p1 + 6 + i * 2.2 * 8.2;
+    if (x > 560 && !q.hl) break;
+    el('rect', { x, y: q.y - 7, width: 6, height: 14, rx: 1, class: x > 560 ? 'dim2' : (q.hl ? 'acc' : 'dim') }, lanes);
+  }
+});
+tx('“Here is the summary of…”', { x: 900, y: 75, class: 'lb', 'text-anchor': 'end' }, lanes);
+
+/* ---- Idea B: shared resources ---- */
+const res = $('res');
+tx('Model weights', { x: 0, y: 280, class: 'lb' }, res);
+el('rect', { x: 140, y: 268, width: 760, height: 16, rx: 3, class: 'dim' }, res);
+tx('loaded once, read by every step', { x: 150, y: 281, class: 'lb' }, res);
+tx('Compute', { x: 0, y: 324, class: 'lb' }, res);
+for (let i = 0; i < 52; i++) { const x = 140 + i * 8; el('rect', { x, y: 312, width: 6, height: 16, rx: 1, class: x > 560 ? 'dim2' : (i % 7 === 3 ? 'dim2' : 'acc'), opacity: x > 560 ? 1 : .85 }, res); }
+tx('KV cache', { x: 0, y: 368, class: 'lb' }, res);
+el('rect', { x: 140, y: 356, width: 760, height: 16, rx: 3, class: 'lnf' }, res);
+el('rect', { x: 140, y: 356, width: 230, height: 16, rx: 3, class: 'acc' }, res);
+el('rect', { x: 372, y: 356, width: 150, height: 16, rx: 3, class: 'dim' }, res);
+tx('A', { x: 150, y: 369, class: 'lbs', style: 'fill: var(--panel)' }, res);
+tx('B', { x: 382, y: 369, class: 'lbs' }, res);
+tx('free for C', { x: 600, y: 369, class: 'lb' }, res);
+tx('Admission: C waits until enough cache is free.', { x: 140, y: 404, class: 'lb' }, res);
+
+/* ---- ground switch ---- */
+document.querySelectorAll('[data-g]').forEach(b => b.addEventListener('click', () => {
+  document.body.classList.toggle('dark', b.dataset.g === 'dark');
+  document.querySelectorAll('[data-g]').forEach(o => o.setAttribute('aria-pressed', String(o === b)));
+}));
+</script>
+</body>
+</html>

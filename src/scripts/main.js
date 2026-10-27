@@ -325,329 +325,416 @@ function buildMigration() {
 const migration = buildMigration();
 
 /* =====================================================================
-   AI INFRASTRUCTURE: ONE REQUEST THROUGH THE STACK
-   Three bands, top to bottom: the user (prompt and answer), the cluster
-   (scheduler and four servers), and the chosen server opened up (memory
-   on the left, AMX tiles on the right). The loop follows motion-design's
-   three acts: Setup (the request is tokenised and placed), Action
-   (prefill, then decode token by token) and Resolution (the answer is
-   whole, the cache is freed), then a rest and a visible reset.
+   AI INFRASTRUCTURE: THE ZOOM (v7)
+   One request followed down six levels of scale, one level on screen
+   at a time: data centre, rack, server, processor, core, AMX unit.
+   Each level is drawn in its own 640 by 400 frame; the next level is
+   drawn into a target box inside it, and the camera zooms into that
+   box while the two levels cross-fade, so the zoom reads as continuous
+   (Islam chose this over Sol 6.1's serving timeline, 27 October).
+   At the bottom the AMX unit loads two tiles and multiplies them; then
+   the camera rises back up while the answer streams out word by word.
+
+   Science (Sol 6.1's corrections): AMX is eight tile registers plus the
+   TMUL engine, not a grid of processors; the first pass over the prompt
+   (prefill) yields the first word, and every next word repeats the work
+   and reads the weights again, so memory bandwidth often sets the pace.
    Illustrative: no figure in the drawing is a measurement.
 
-   Built after the font loads, because the token chips are sized from
-   their measured text. Rebuilt at the phone breakpoint, where the row
-   labels give way and the text is set larger.
+   Every label a reader needs is HTML beside the drawing, so it stays
+   16px on a phone; the few labels inside the drawing give way there.
    ===================================================================== */
-function buildInfra() {
-  const fig = $('[data-ai]');
+function buildZoom() {
+  const fig = $('[data-zoom]');
   if (!fig) return null;
   const svg = $('svg', fig);
-  const section = fig.closest('.infra');
-  const steps = $$('[data-ai-steps] li');
-  const cap = $('[data-ai-cap]', fig);
-  const pause = $('[data-ai-pause]', fig);
-  const pauseLb = $('[data-ai-pause-lb]', pause);
   const title = $('title', svg);
+  const crumbs = $$('[data-zoom-go]');
+  const capN = $('[data-zoom-n]');
+  const capH = $('[data-zoom-h]');
+  const capT = $('[data-zoom-t]');
+  const opEl = $('[data-zoom-op]');
+  const answerEl = $('[data-zoom-answer]');
+  const pause = $('[data-zoom-pause]');
+  const pauseLb = $('[data-zoom-pause-lb]', pause);
+  const levels = $$('[data-zoom-level]').map(li => ({ h: $('b', li).textContent, t: $('span', li).textContent }));
+  const backLi = $('[data-zoom-back]');
+  const back = { h: $('b', backLi).textContent, t: $('span', backLi).textContent };
 
-  const PROMPT = ['Summar', 'ise', ' this', ' quarter', '’s', ' report'];
-  const ANSWER = ['Revenue', ' grew', ' on', ' cloud', ' demand', '.'];
-  const LOADS = [.72, .58, .28, .64];   /* server 3 has the most room */
-  const PICK = 2;
+  const W = 640, H = 400, CX = W / 2, CY = H / 2;
+  const ANSWER = 'Moving a running virtual machine to another server without switching it off.'.split(' ');
 
-  let tl = null;
-  let held = false;
-  let inView = false;
-  const sync = () => tl && (inView && !held ? tl.play() : tl.pause());
+  /* Drawing helpers on top of node() and text() from the migration. */
+  const R = (g, x, y, w, h, cls, extra = {}) => node('rect', { x, y, width: w, height: h, class: cls, ...extra }, g);
+  const L = (g, x1, y1, x2, y2, cls = 'z-line') => node('line', { x1, y1, x2, y2, class: cls }, g);
+  const T = (g, str, x, y, cls = 'z-lb', extra = {}) => text(str, { x, y, class: cls, ...extra }, g);
+  const pulse = (g, x, y) => node('circle', { cx: x, cy: y, r: 6, class: 'z-pulse', opacity: 0 }, g);
 
-  const setStep = i => {
-    steps.forEach((li, n) => li.classList.toggle('is-on', n === i));
-    if (cap && steps[i]) cap.innerHTML = `<span class="cap-n">${i + 1} of 5</span> ${$('button', steps[i]).innerHTML}`;
+  const G = [];
+  const targets = [];
+  const level = () => { const g = node('g', { class: 'z-level', opacity: 0 }, svg); G.push(g); return g; };
+
+  /* --- 1. Data centre hall, from above ------------------------------- */
+  const g1 = level();
+  R(g1, 8, 8, W - 16, H - 16, 'z-frame', { rx: 6 });
+  T(g1, 'Data centre hall', 28, 40, 'z-lbs');
+  const racks = [], hallLeds = [];
+  for (let r = 0; r < 5; r++) for (let c = 0; c < 12; c++) {
+    racks.push(R(g1, 74 + c * 44, 64 + r * 64, 34, 22, r === 2 && c === 7 ? 'z-acc' : 'z-fill'));
+    for (let k = 0; k < 3; k++) hallLeds.push(R(g1, 78 + c * 44 + k * 6, 64 + r * 64 + 16, 3, 3, r === 2 && c === 7 ? 'z-led-on' : 'z-led'));
+  }
+  const aisleY = 64 + 2 * 64 + 22 + 21;
+  L(g1, 20, aisleY, 74 + 7 * 44 + 17, aisleY, 'z-wire');
+  L(g1, 74 + 7 * 44 + 17, aisleY, 74 + 7 * 44 + 17, 64 + 2 * 64 + 22, 'z-wire');
+  T(g1, 'Network', 28, aisleY + 24);
+  const p1 = pulse(g1, 20, aisleY);
+  targets.push({ x: 74 + 7 * 44 + 17 - 20, y: 64 + 2 * 64 + 11 - 12.5, w: 40, h: 25 });
+
+  /* --- 2. One rack, from the front ----------------------------------- */
+  const g2 = level();
+  R(g2, 8, 8, W - 16, H - 16, 'z-frame', { rx: 6 });
+  T(g2, 'Rack', 28, 40, 'z-lbs');
+  R(g2, 236, 24, 168, 360, 'z-box', { rx: 4 });
+  R(g2, 246, 34, 148, 18, 'z-fill2');
+  T(g2, 'Top-of-rack switch', 420, 48);
+  const units = [], leds = [];
+  for (let i = 0; i < 14; i++) {
+    const y = 62 + i * 22;
+    units.push(R(g2, 246, y, 148, 18, i === 5 ? 'z-acc' : 'z-fill'));
+    leds.push(R(g2, 252, y + 7, 4, 4, 'z-led'));
+  }
+  T(g2, 'Server', 420, 62 + 5 * 22 + 14);
+  L(g2, 394, 43, 410, 43, 'z-wire'); L(g2, 410, 43, 410, 62 + 5 * 22 + 9, 'z-wire'); L(g2, 410, 62 + 5 * 22 + 9, 394, 62 + 5 * 22 + 9, 'z-wire');
+  const p2 = pulse(g2, 394, 43);
+  targets.push({ x: 320 - 48, y: 62 + 5 * 22 + 9 - 30, w: 96, h: 60 });
+
+  /* --- 3. The server board, from above ------------------------------- */
+  const g3 = level();
+  R(g3, 8, 8, W - 16, H - 16, 'z-frame', { rx: 6 });
+  T(g3, 'Server board', 28, 40, 'z-lbs');
+  R(g3, 24, 172, 40, 56, 'z-fill2', { rx: 3 });
+  T(g3, 'Network card', 28, 252);
+  const sock = [[170, 'Processor 0'], [430, 'Processor 1']].map(([x, name], i) => {
+    R(g3, x, 140, 120, 120, i === 0 ? 'z-acc' : 'z-fill2', { rx: 4 });
+    for (let k = 0; k < 9; k++) L(g3, x + 12 + k * 12, 150, x + 12 + k * 12, 250, i === 0 ? 'z-fin-on' : 'z-fin');
+    T(g3, name, x, 132);
+    const dimms = [];
+    for (let k = 0; k < 4; k++) {
+      dimms.push(R(g3, x - 10, 64 + k * 14, 140, 8, 'z-fill', { rx: 2 }));
+      dimms.push(R(g3, x - 10, 286 + k * 14, 140, 8, 'z-fill', { rx: 2 }));
+    }
+    return dimms;
+  });
+  T(g3, 'Memory: the model’s weights', 160, 356);
+  L(g3, 64, 200, 170, 200, 'z-wire');
+  const p3 = pulse(g3, 64, 200);
+  const chan = [0, 1, 2].map(k => node('rect', { x: 184 + k * 36, y: 120, width: 8, height: 8, class: 'z-pkt', opacity: 0 }, g3));
+  targets.push({ x: 230 - 64, y: 200 - 40, w: 128, h: 80 });
+
+  /* --- 4. The processor die ------------------------------------------ */
+  const g4 = level();
+  R(g4, 8, 8, W - 16, H - 16, 'z-frame', { rx: 6 });
+  T(g4, 'Processor: cores on a mesh', 28, 40, 'z-lbs');
+  R(g4, 40, 100, 14, 180, 'z-fill2'); R(g4, 586, 100, 14, 180, 'z-fill2');
+  T(g4, 'Memory controllers, left and right', 28, 368);
+  T(g4, 'AMX in each core', 412, 40);
+  R(g4, 392, 30, 14, 10, 'z-amx');
+  const cores = [];
+  const cw = 56, ch = 44, gx = 64, gy = 54, ox = 68, oy = 66;
+  for (let r = 0; r < 5; r++) {
+    L(g4, ox, oy + r * gy + ch / 2, ox + 7 * gx + cw, oy + r * gy + ch / 2, 'z-mesh');
+  }
+  for (let c = 0; c < 8; c++) L(g4, ox + c * gx + cw / 2, oy, ox + c * gx + cw / 2, oy + 4 * gy + ch, 'z-mesh');
+  for (let r = 0; r < 5; r++) for (let c = 0; c < 8; c++) {
+    const on = r === 2 && c === 5;
+    cores.push(R(g4, ox + c * gx, oy + r * gy, cw, ch, on ? 'z-acc' : 'z-fill2', { rx: 2 }));
+    R(g4, ox + c * gx + cw - 20, oy + r * gy + ch - 16, 14, 10, on ? 'z-amx-on' : 'z-amx');
+  }
+  const tcx = ox + 5 * gx + cw / 2, tcy = oy + 2 * gy + ch / 2;
+  const meshPk = [0, 1, 2].map(() => node('rect', { x: 50, y: tcy - 4, width: 8, height: 8, class: 'z-pkt', opacity: 0 }, g4));
+  targets.push({ x: tcx - 32, y: tcy - 20, w: 64, h: 40 });
+
+  /* --- 5. One core ---------------------------------------------------- */
+  const g5 = level();
+  R(g5, 8, 8, W - 16, H - 16, 'z-frame', { rx: 6 });
+  T(g5, 'One core', 28, 40, 'z-lbs');
+  [[40, 60, 270, 64, 'Front end: fetch and decode'], [326, 60, 274, 64, 'Out-of-order engine'],
+   [40, 144, 130, 96, 'Integer units'], [186, 144, 214, 96, 'AVX-512 vector units'],
+   [40, 256, 360, 40, 'L1 cache'], [40, 312, 560, 44, 'L2 cache']].forEach(([x, y, w, h, n]) => {
+    R(g5, x, y, w, h, 'z-fill2', { rx: 4 });
+    T(g5, n, x + 12, y + 24);
+  });
+  R(g5, 416, 144, 184, 152, 'z-acc', { rx: 4 });
+  T(g5, 'AMX', 432, 172, 'z-lbs z-on-acc');
+  const corePk = [0, 1, 2].map(k => node('rect', { x: 448 + k * 48, y: 312, width: 8, height: 8, class: 'z-pkt', opacity: 0 }, g5));
+  targets.push({ x: 508 - 88, y: 220 - 55, w: 176, h: 110 });
+
+  /* --- 6. The AMX unit ------------------------------------------------ */
+  const g6 = level();
+  R(g6, 8, 8, W - 16, H - 16, 'z-frame', { rx: 6 });
+  T(g6, 'AMX unit', 28, 40, 'z-lbs');
+  T(g6, 'Tile registers', 28, 66);
+  const regs = [];
+  for (let i = 0; i < 8; i++) {
+    regs.push(R(g6, 28, 78 + i * 24, 96, 18, 'z-reg', { rx: 3 }));
+    T(g6, `tmm${i}`, 36, 92 + i * 24);
+  }
+  const cell = (g, x0, y0, rows, cols, s) => {
+    const out = [];
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) out.push(R(g, x0 + c * s, y0 + r * s, s - 2, s - 2, 'z-cell'));
+    return out;
   };
+  T(g6, 'A: prompt', 150, 66);
+  const A = cell(g6, 150, 78, 16, 8, 12);
+  T(g6, '×', 263, 182, 'z-big', { 'text-anchor': 'middle' });
+  T(g6, 'B: weights', 280, 114);
+  const B = cell(g6, 280, 126, 8, 16, 10);
+  T(g6, '→', 457, 182, 'z-big', { 'text-anchor': 'middle' });
+  T(g6, 'C: result', 474, 66);
+  const C = cell(g6, 474, 78, 16, 16, 9);
+  R(g6, 150, 300, 474, 64, 'z-box', { rx: 4 });
+  const tmulFill = R(g6, 150, 300, 474, 64, 'z-acc', { rx: 4, opacity: 0 });
+  T(g6, 'TMUL engine: C += A × B', 166, 338, 'z-lbs');
+  const hiA = R(g6, 150, 78, 96, 10, 'z-hot', { opacity: 0 });
+  const hiB = R(g6, 280, 126, 8, 80, 'z-hot', { opacity: 0 });
 
-  function build() {
-    tl?.kill();
-    [...svg.childNodes].forEach(n => n !== title && n.remove());
-    const compact = phone.matches;
-    const X0 = compact ? 0 : 84;          /* left edge of the drawing, after the row labels */
-    const W = 600;
-    const CW = W - X0;
-    const lbSize = parseFloat(getComputedStyle(svg).getPropertyValue(compact ? '--ai-lb-s' : '--ai-lb')) || 15;
-    const off = compact ? lbSize * .35 : 5;   /* baseline lift inside a row */
-
-    /* Row labels, desktop only. */
-    const rowLb = (str, y) => text(str, { x: 0, y, class: 'lb lb-row' }, svg);
-    rowLb('Prompt', 47);
-    rowLb('Answer', 107);
-    rowLb('Scheduler', 163);
-    rowLb('Servers', 212);
-    node('line', { x1: 0, y1: 134, x2: W, y2: 134, class: 'rule' }, svg);
-
-    /* --- Band 1: chips -------------------------------------------------- */
-    const PAD = compact ? 9 : 7;
-    const GAP = compact ? 6 : 6;
-    function chips(words, y, extra) {
-      const g = node('g', { class: extra || '' }, svg);
-      const items = words.map(w => {
-        const c = node('g', {}, g);
-        const r = node('rect', { y: y - 15 - (compact ? 4 : 0), height: compact ? 38 : 30, rx: 4, class: 'chip-r' }, c);
-        const t = text(w.trim(), { x: 0, y: y + off, class: 'chip-t' }, c);
-        return { c, r, t, w: t.getComputedTextLength(), space: w.startsWith(' ') };
-      });
-      const sp = (compact ? 24 : 16) * .26;
-      let jx = X0 + PAD, sx = X0 + PAD;
-      items.forEach(it => {
-        if (it.space) jx += sp;
-        it.jx = jx; jx += it.w;
-        it.sx = sx; sx += it.w + PAD * 2 + GAP;
-        it.r.setAttribute('x', -PAD);
-        it.r.setAttribute('width', it.w + PAD * 2);
-      });
-      return { g, items };
-    }
-    const prompt = chips(PROMPT, 42);
-    const answer = chips(ANSWER, 102, 'out');
-    prompt.items.forEach(it => gsap.set(it.c, { x: it.sx }));
-    answer.items.forEach(it => gsap.set(it.c, { x: it.sx }));
-
-    /* --- Band 2: scheduler and servers --------------------------------- */
-    const SG = 16;
-    const SW = (CW - SG * 3) / 4;
-    const SY = 182, SH = compact ? 64 : 58;
-    const busY = 158;
-    node('line', { x1: X0, y1: busY, x2: W, y2: busY, class: 'wire' }, svg);
-    const servers = LOADS.map((load, i) => {
-      const x = X0 + i * (SW + SG);
-      const g = node('g', {}, svg);
-      node('line', { x1: x + SW / 2, y1: busY, x2: x + SW / 2, y2: SY, class: 'wire' }, g);
-      const box = node('rect', { x, y: SY, width: SW, height: SH, rx: 4, class: 'srv' }, g);
-      text(`Server ${i + 1}`, { x: x + 10, y: SY + (compact ? 26 : 22), class: 'lb' }, g);
-      const tw = SW - 20;
-      node('rect', { x: x + 10, y: SY + SH - 16, width: tw, height: 6, class: 'track' }, g);
-      const bar = node('rect', { x: x + 10, y: SY + SH - 16, width: tw * load, height: 6, class: 'load' }, g);
-      return { x, g, box, bar, tw, load, cx: x + SW / 2 };
+  /* --- Camera ---------------------------------------------------------
+     cam.p runs from 0 (the hall) to 5 (the AMX unit). Between two
+     whole numbers the camera zooms into the current level's target box
+     on an exponential scale, which is how a continuous zoom looks
+     right, while the next level grows out of that box. */
+  const cam = { p: 0 };
+  function draw() {
+    const p = Math.max(0, Math.min(5, cam.p));
+    const k = Math.min(4, Math.floor(p));
+    const t = p - k;
+    const tg = targets[k];
+    const s = W / tg.w;
+    const z = Math.pow(s, t);
+    const f = s === 1 ? t : (1 - 1 / z) / (1 - 1 / s);
+    const cx = CX + (tg.x + tg.w / 2 - CX) * f;
+    const cy = CY + (tg.y + tg.h / 2 - CY) * f;
+    const camT = `translate(${CX} ${CY}) scale(${z}) translate(${-cx} ${-cy})`;
+    const clamp = v => Math.max(0, Math.min(1, v));
+    G.forEach((g, i) => {
+      let o = 0, tr = 'translate(0 0)';
+      if (i === k) { o = 1 - clamp((t - .45) / .4); tr = camT; }
+      else if (i === k + 1) { o = clamp((t - .25) / .5); tr = `${camT} translate(${tg.x} ${tg.y}) scale(${tg.w / W})`; }
+      g.setAttribute('transform', tr);
+      g.setAttribute('opacity', o);
+      g.style.visibility = o > 0 ? 'visible' : 'hidden';
     });
-    const pick = servers[PICK];
-    node('line', { x1: 0, y1: 260, x2: W, y2: 260, class: 'rule' }, svg);
-
-    /* --- Band 3: the chosen server, opened up -------------------------- */
-    const FY = 286, FH = compact ? 424 : 384;
-    svg.setAttribute('viewBox', `0 0 ${W} ${FY + FH + 2}`);
-    const LB = compact ? 8 : 0;   /* extra room under the larger phone labels */
-    const zl = node('line', { x1: pick.x, y1: SY + SH, x2: pick.x, y2: SY + SH, class: 'zoom' }, svg);
-    const zr = node('line', { x1: pick.x + SW, y1: SY + SH, x2: pick.x + SW, y2: SY + SH, class: 'zoom' }, svg);
-    const inside = node('g', {}, svg);
-    node('rect', { x: X0, y: FY, width: CW, height: FH, rx: 4, class: 'frame' }, inside);
-    text(`Server ${PICK + 1}, inside`, { x: X0 + 16, y: FY + 28, class: 'lb-strong' }, inside);
-
-    const BUS = 64;
-    const BW = (CW - 32 - BUS) / 2;
-    const MX = X0 + 16, CX = MX + BW + BUS;
-    const BY = FY + 46, BH = FH - 54;
-    node('rect', { x: MX, y: BY, width: BW, height: BH, rx: 4, class: 'box' }, inside);
-    node('rect', { x: CX, y: BY, width: BW, height: BH, rx: 4, class: 'box' }, inside);
-    text('Memory', { x: MX + 12, y: BY + 26 + LB / 2, class: 'lb-strong' }, inside);
-    text('AMX tiles', { x: CX + 12, y: BY + 26 + LB / 2, class: 'lb-strong' }, inside);
-
-    /* Weights: 6 by 5 blocks. */
-    text('Model weights', { x: MX + 12, y: BY + 56 + LB * 1.5, class: 'lb' }, inside);
-    const WS = 24, WG = 8, WC = 6, WR = 5;
-    const wx0 = MX + (BW - (WC * WS + (WC - 1) * WG)) / 2;
-    const wy0 = BY + 70 + LB * 2;
-    const weights = [];
-    for (let r = 0; r < WR; r++) for (let c = 0; c < WC; c++) {
-      weights.push(node('rect', { x: wx0 + c * (WS + WG), y: wy0 + r * (WS + WG), width: WS, height: WS, class: 'w' }, inside));
-    }
-
-    /* KV cache: two rows of six, one slot per token, prompt then answer. */
-    const ky = wy0 + WR * (WS + WG) + 20;
-    text('KV cache', { x: MX + 12, y: ky + 4 + LB, class: 'lb' }, inside);
-    const kv = [];
-    for (let r = 0; r < 2; r++) for (let c = 0; c < 6; c++) {
-      const x = wx0 + c * (WS + WG), y = ky + 16 + LB * 2 + r * (WS + WG);
-      node('rect', { x: x + .5, y: y + .5, width: WS - 1, height: WS - 1, class: 'slot' }, inside);
-      kv.push(node('rect', { x, y, width: WS, height: WS, class: 'kv', opacity: 0 }, inside));
-    }
-
-    /* AMX tiles: an 8 by 8 grid of multiply units. */
-    const TS = 20, TG = 4, TN = 8;
-    const tx0 = CX + (BW - (TN * TS + (TN - 1) * TG)) / 2;
-    const ty0 = wy0;
-    const hot = [];
-    for (let r = 0; r < TN; r++) for (let c = 0; c < TN; c++) {
-      const x = tx0 + c * (TS + TG), y = ty0 + r * (TS + TG);
-      node('rect', { x: x + .5, y: y + .5, width: TS - 1, height: TS - 1, class: 'tile' }, inside);
-      hot.push(node('rect', { x, y, width: TS, height: TS, class: 'hot', opacity: 0 }, inside));
-    }
-    const gridCx = tx0 + (TN * TS + (TN - 1) * TG) / 2;
-    const gridBottom = ty0 + TN * (TS + TG);
-    text('Prompt tokens', { x: CX + 12, y: gridBottom + 30 + LB, class: 'lb' }, inside);
-    const tokRow = PROMPT.map((_, i) => node('rect', { x: tx0 + i * (TS + TG), y: gridBottom + 44 + LB * 2, width: TS, height: 8, class: 'req', opacity: 0 }, inside));
-
-    /* Memory to compute: three lanes, a packet each. */
-    const lanes = [wy0 + 30, wy0 + 76, wy0 + 122];
-    lanes.forEach(y => node('line', { x1: MX + BW, y1: y, x2: CX, y2: y, class: 'wire' }, inside));
-    const pkts = lanes.map(y => node('rect', { x: MX + BW, y: y - 4, width: 8, height: 8, class: 'pkt', opacity: 0 }, inside));
-
-    /* The request in flight: six small squares, one per token. */
-    const req = node('g', { opacity: 0 }, svg);
-    PROMPT.forEach((_, i) => node('rect', { x: i * 8, y: -3, width: 6, height: 6, class: 'req' }, req));
-    const reqStart = { x: X0 + PAD, y: 66 };
-
-    /* --- The loop ------------------------------------------------------ */
-    const t = gsap.timeline({ paused: true, repeat: -1, defaults: { ease: 'none' } });
-    const S = [0, 1.4, 3.3, 5.1, 9.0];   /* when each step begins */
-    S.forEach((at, i) => t.addLabel(`s${i}`, at).call(() => setStep(i), null, at));
-
-    /* Start state, every round. */
-    t.call(() => section.classList.add('ai-live'), null, 0)
-      .set(prompt.items.map(it => it.c), { opacity: 0 }, 0)
-      .set(prompt.items.map(it => it.r), { opacity: 0 }, 0)
-      .set(answer.items.map(it => it.c), { opacity: 0 }, 0)
-      .set(inside, { opacity: .35 }, 0)
-      .set([zl, zr], { opacity: 0 }, 0)
-      .set(kv, { opacity: 0 }, 0)
-      .set(tokRow, { opacity: 0 }, 0)
-      .set(req, { opacity: 0, x: reqStart.x, y: reqStart.y }, 0);
-    prompt.items.forEach(it => t.set(it.c, { x: it.jx }, 0));
-    servers.forEach(s => t.set(s.bar, { attr: { width: s.tw * s.load } }, 0));
-    t.set(pick.box, { attr: { class: 'srv' } }, 0);
-
-    /* 1. Request: the sentence arrives whole, then breaks into tokens. */
-    t.to(prompt.items.map(it => it.c), { opacity: 1, duration: .4, ease: EASE }, .1);
-    prompt.items.forEach((it, i) => {
-      t.to(it.c, { x: it.sx, duration: .6, ease: EASE }, .7 + i * .04);
-      t.to(it.r, { opacity: 1, duration: .3 }, .8 + i * .04);
-    });
-
-    /* 2. Placement: the request drops to the scheduler, runs along the
-       bus to the server with the most room, and that server opens. */
-    t.to(req, { opacity: 1, duration: .2 }, 1.5)
-      .to(req, { y: busY, duration: .4, ease: 'power2.in' }, 1.5)
-      .to(req, { x: pick.cx - 22, duration: .6, ease: 'power1.inOut' }, 1.9)
-      .to(req, { y: SY + SH / 2, duration: .3, ease: 'power2.out' }, 2.5)
-      .set(pick.box, { attr: { class: 'srv is-pick' } }, 2.8)
-      .to(pick.bar, { attr: { width: pick.tw * .7 }, duration: .5, ease: EASE }, 2.8)
-      .to([zl, zr], { opacity: 1, duration: .1 }, 2.8)
-      .to(zl, { attr: { x2: X0, y2: FY }, duration: .5, ease: EASE }, 2.8)
-      .to(zr, { attr: { x2: W, y2: FY }, duration: .5, ease: EASE }, 2.8)
-      .to(inside, { opacity: 1, duration: .5, ease: EASE }, 2.95)
-      .to(req, { x: gridCx - 22, y: gridBottom + 48 + LB * 2, duration: .5, ease: 'power2.inOut' }, 3.0)
-      .to(req, { opacity: 0, duration: .15 }, 3.45)
-      .to(tokRow, { opacity: 1, duration: .15, stagger: .03 }, 3.45);
-    /* Ambient: the other servers keep working. */
-    [0, 1, 3].forEach((n, k) => {
-      const s = servers[n];
-      t.to(s.bar, { attr: { width: s.tw * (s.load - .12 + k * .06) }, duration: 1.6, ease: 'sine.inOut' }, 1 + k * .5)
-        .to(s.bar, { attr: { width: s.tw * s.load }, duration: 1.6, ease: 'sine.inOut' }, 5 + k * .7);
-    });
-
-    /* Packets crossing from memory to the tiles, n trips from `at`. */
-    const flow = (at, n, gap) => {
-      for (let k = 0; k < n; k++) {
-        pkts.forEach((p, j) => {
-          const s = at + k * gap + j * .06;
-          t.fromTo(p, { x: 0, opacity: 1 }, { x: BUS - 8, duration: .3, immediateRender: false }, s)
-            .set(p, { opacity: 0 }, s + .3);
-        });
-      }
-    };
-
-    /* 3. Prefill: every weight block is read, the tiles work on all the
-       prompt tokens at once in two waves, and the cache fills. */
-    t.to(weights, { opacity: 1, duration: .15, stagger: { each: .03, yoyo: true, repeat: 1 } }, 3.4);
-    flow(3.4, 4, .35);
-    /* A diagonal wavefront, top left to bottom right, as data moves
-       through a systolic array of multiply units. */
-    [3.6, 4.2].forEach(at => hot.forEach((h, k) => {
-      t.to(h, { opacity: .9, duration: .16, yoyo: true, repeat: 1 }, at + ((k / TN | 0) + k % TN) * .035);
-    }));
-    t.to(kv.slice(0, 6), { opacity: 1, duration: .2, stagger: .12 }, 4.1)
-      .to(tokRow, { opacity: .25, duration: .3 }, 4.8);
-
-    /* 4. Decode: one token per pass. Each pass reads every weight again
-       (a fast sweep), lights one row of tiles, adds one cache entry,
-       and sends the token up to the answer. */
-    const P = .62;
-    ANSWER.forEach((_, i) => {
-      const at = S[3] + .1 + i * P;
-      t.to(weights, { opacity: 1, duration: .08, stagger: { each: .008, yoyo: true, repeat: 1 } }, at);
-      flow(at, 1, 0);
-      t.to(hot.slice((i % TN) * TN, (i % TN + 1) * TN), { opacity: .9, duration: .12, stagger: { each: .02, yoyo: true, repeat: 1 } }, at + .1);
-      t.to(kv[6 + i], { opacity: 1, duration: .15 }, at + .3);
-      const it = answer.items[i];
-      t.fromTo(it.c, { x: gridCx, y: ty0 - 102, opacity: 0 }, { x: it.sx, y: 0, opacity: 1, duration: .45, ease: EASE, immediateRender: false }, at + .3);
-    });
-
-    /* 5. Done: the cache is freed, the server's load falls back. */
-    t.set(pick.box, { attr: { class: 'srv' } }, S[4] + .3)
-      .to(kv, { opacity: 0, duration: .4, stagger: { each: .03, from: 'end' } }, S[4] + .3)
-      .to(pick.bar, { attr: { width: pick.tw * pick.load }, duration: .6, ease: EASE }, S[4] + .3)
-      .to(tokRow, { opacity: 0, duration: .3 }, S[4] + .3)
-
-    /* Rest on the finished answer, then the reset, in view. */
-      .to([...prompt.items.map(it => it.c), ...answer.items.map(it => it.c)], { opacity: 0, duration: .45, ease: EASE }, 10.9)
-      .to(inside, { opacity: .35, duration: .45, ease: EASE }, 10.9)
-      .to([zl, zr], { opacity: 0, duration: .3 }, 10.9)
-      .set(zl, { attr: { x2: pick.x, y2: SY + SH } }, 11.3)
-      .set(zr, { attr: { x2: pick.x + SW, y2: SY + SH } }, 11.3)
-      .to({}, { duration: .1 }, 11.35);
-
-    tl = t;
-    if (reduced) {
-      /* Drawn finished and still: the answer whole, all steps at full ink. */
-      t.pause(S[4] + .1);
-      section.classList.remove('ai-live');
-      steps.forEach(li => li.classList.remove('is-on'));
-      if (cap) cap.hidden = true;
-    } else {
-      pause.hidden = false;
-      setStep(0);
-      sync();
-    }
   }
 
-  /* Pressing a step plays the drawing from there. */
-  steps.forEach((li, i) => $('button', li).addEventListener('click', () => {
-    if (!tl) return;
-    tl.seek(`s${i}`, false);
-    setStep(i);
-    if (reduced) return;
-    section.classList.add('ai-live');
-    if (held) { held = false; pause.classList.remove('is-paused'); pauseLb.textContent = 'Pause'; }
-    tl.play();
-  }));
+  /* --- Timeline ------------------------------------------------------- */
+  const tl = gsap.timeline({ paused: true, repeat: -1, defaults: { ease: 'none' } });
+  const marks = [];    /* [time, caption index] ; 6 means the answer */
+  const ops = [];      /* [time, instruction text] */
+  const words = [];    /* time each answer word appears */
+  const ZOOM = 1.15;
+  const HOLD = [2.4, 2.1, 2.7, 2.4, 2.1];
+  let at = 0;
+  tl.set(cam, { p: 0, onUpdate: draw }, 0)
+    .set([...racks, ...units, ...cores], { opacity: 1 }, 0)
+    .set([p1, p2, p3], { opacity: 0 }, 0)
+    .set([...A, ...B, ...C], { attr: { class: 'z-cell' } }, 0)
+    .set(regs, { attr: { class: 'z-reg' } }, 0)
+    .set(tmulFill, { opacity: 0 }, 0);
 
-  /* WCAG 2.2.2: it moves for more than five seconds, so it can stop. */
+  /* Level by level: the activity, then the zoom into the next. */
+  const acts = [
+    t0 => {  /* the request crosses the hall to its rack */
+      tl.to(p1, { opacity: 1, duration: .15 }, t0 + .2)
+        .to(p1, { attr: { cx: 74 + 7 * 44 + 17 }, duration: .9, ease: 'power1.inOut' }, t0 + .2)
+        .to(p1, { attr: { cy: 64 + 2 * 64 + 22 }, duration: .35, ease: 'power2.out' }, t0 + 1.1)
+        .to(p1, { opacity: 0, duration: .2 }, t0 + 1.5)
+        .set(p1, { attr: { cx: 20, cy: aisleY } }, t0 + 1.8);
+      tl.to(hallLeds.filter((_, i) => i % 7 === 2), { opacity: .15, duration: .1, stagger: { each: .04, from: 'random', yoyo: true, repeat: 3 } }, t0 + .1);
+    },
+    t0 => {  /* the switch hands it to one server */
+      tl.to(p2, { opacity: 1, duration: .15 }, t0 + .2)
+        .to(p2, { attr: { cx: 410 }, duration: .25 }, t0 + .2)
+        .to(p2, { attr: { cy: 62 + 5 * 22 + 9 }, duration: .6, ease: 'power1.inOut' }, t0 + .45)
+        .to(p2, { attr: { cx: 394 }, duration: .25 }, t0 + 1.05)
+        .to(p2, { opacity: 0, duration: .2 }, t0 + 1.4)
+        .set(p2, { attr: { cx: 394, cy: 43 } }, t0 + 1.7);
+      tl.to(leds, { opacity: .2, duration: .12, stagger: { each: .05, from: 'random', yoyo: true, repeat: 1 } }, t0 + .1);
+    },
+    t0 => {  /* in through the network card; weights stream from memory */
+      tl.to(p3, { opacity: 1, duration: .15 }, t0 + .2)
+        .to(p3, { attr: { cx: 170 }, duration: .6, ease: 'power1.inOut' }, t0 + .2)
+        .to(p3, { opacity: 0, duration: .2 }, t0 + .8)
+        .set(p3, { attr: { cx: 64 } }, t0 + 1.2);
+      tl.to(sock[0], { attr: { class: 'z-acc' }, duration: .01, stagger: .1 }, t0 + .9)
+        .to(sock[0], { attr: { class: 'z-fill' }, duration: .01, stagger: .1 }, t0 + 1.5);
+      for (let n = 0; n < 3; n++) chan.forEach((c, j) => {
+        const s0 = t0 + .9 + n * .5 + j * .08;
+        tl.fromTo(c, { attr: { y: 112 }, opacity: 1 }, { attr: { y: 136 }, duration: .3, immediateRender: false }, s0).set(c, { opacity: 0 }, s0 + .3);
+      });
+    },
+    t0 => {  /* packets cross the mesh; the cores share the work */
+      for (let n = 0; n < 3; n++) meshPk.forEach((pk, j) => {
+        const s0 = t0 + .2 + n * .45 + j * .12;
+        tl.fromTo(pk, { attr: { x: 56 }, opacity: 1 }, { attr: { x: tcx - 4 }, duration: .55, immediateRender: false }, s0).set(pk, { opacity: 0 }, s0 + .55);
+      });
+      tl.to(cores.filter((_, i) => i % 5 === 1 || i % 7 === 3), { opacity: .45, duration: .2, stagger: { each: .04, yoyo: true, repeat: 1 } }, t0 + .3);
+    },
+    t0 => {  /* data rises from the L2 cache into AMX */
+      for (let n = 0; n < 3; n++) corePk.forEach((pk, j) => {
+        const s0 = t0 + .2 + n * .45 + j * .1;
+        tl.fromTo(pk, { attr: { y: 312 }, opacity: 1 }, { attr: { y: 296 }, duration: .3, immediateRender: false }, s0).set(pk, { opacity: 0 }, s0 + .3);
+      });
+    }
+  ];
+
+  for (let k = 0; k < 5; k++) {
+    tl.addLabel(`L${k}`, at);
+    marks.push([at, k]);
+    acts[k](at);
+    at += HOLD[k];
+    tl.to(cam, { p: k + 1, duration: ZOOM, ease: 'power2.inOut', onUpdate: draw }, at);
+    at += ZOOM;
+  }
+
+  /* The AMX unit: load A, load B, multiply, store. */
+  tl.addLabel('L5', at);
+  marks.push([at, 5]);
+  const a0 = at;
+  ops.push([a0 + .2, 'TILELOADD tmm1 ← prompt tile']);
+  tl.set(regs[1], { attr: { class: 'z-reg z-reg-on' } }, a0 + .2)
+    .to(A, { attr: { class: 'z-cell z-cell-in' }, duration: .01, stagger: .004 }, a0 + .2);
+  ops.push([a0 + .9, 'TILELOADD tmm2 ← weight tile']);
+  tl.set(regs[2], { attr: { class: 'z-reg z-reg-on' } }, a0 + .9)
+    .to(B, { attr: { class: 'z-cell z-cell-in' }, duration: .01, stagger: .004 }, a0 + .9);
+  ops.push([a0 + 1.6, 'TDPBF16PS tmm0 += tmm1 × tmm2']);
+  tl.set(regs[0], { attr: { class: 'z-reg z-reg-on' } }, a0 + 1.6)
+    .to(tmulFill, { opacity: .18, duration: .3 }, a0 + 1.6);
+  /* The first few values one by one, so the row-times-column rule is
+     visible; then the rest of the tile in a wave. */
+  [[0, 0], [0, 1], [0, 2], [1, 0], [1, 1]].forEach(([r, c], i) => {
+    const s0 = a0 + 1.7 + i * .32;
+    tl.set(hiA, { attr: { y: 78 + r * 12 }, opacity: .5 }, s0)
+      .set(hiB, { attr: { x: 280 + c * 10 }, opacity: .5 }, s0)
+      .set(C[r * 16 + c], { attr: { class: 'z-cell z-cell-hot' } }, s0)
+      .set(C[r * 16 + c], { attr: { class: 'z-cell z-cell-on' } }, s0 + .3);
+  });
+  tl.set([hiA, hiB], { opacity: 0 }, a0 + 3.3);
+  const rest = C.filter((_, i) => ![0, 1, 2, 16, 17].includes(i));
+  rest.forEach((el, i) => {
+    const r = Math.floor(C.indexOf(el) / 16), c = C.indexOf(el) % 16;
+    tl.set(el, { attr: { class: 'z-cell z-cell-on' } }, a0 + 3.3 + (r + c) * .03);
+  });
+  ops.push([a0 + 4.4, 'TILESTORED tmm0 → cache']);
+  tl.to(tmulFill, { opacity: 0, duration: .3 }, a0 + 4.4);
+  at = a0 + 5.4;
+
+  /* Back up, the answer streaming out. */
+  tl.addLabel('back', at);
+  marks.push([at, 6]);
+  ops.push([at, '']);
+  for (let k = 5; k > 0; k--) {
+    tl.to(cam, { p: k - 1, duration: .62, ease: 'power2.inOut', onUpdate: draw }, at);
+    at += .7;
+  }
+  ANSWER.forEach((_, i) => words.push(at - 3.4 + i * .42));
+  at = Math.max(at, words[words.length - 1]) + 2.6;
+  tl.to({}, { duration: .01 }, at);
+
+  /* Caption, instruction line and answer follow the playhead, so they
+     are right after a jump as well as during play. */
+  const last = (list, time) => list.filter(m => m[0] <= time + 1e-6).pop();
+  let shown = -1;
+  function sync() {
+    const time = tl.time();
+    const m = last(marks, time);
+    const i = m ? m[1] : 0;
+    if (i !== shown) {
+      shown = i;
+      const d = i < 6 ? levels[i] : back;
+      capN.textContent = i < 6 ? `${i + 1} of 6` : 'Back to the user';
+      capH.textContent = d.h;
+      capT.textContent = d.t;
+      crumbs.forEach((b, n) => b.setAttribute('aria-current', n === i ? 'step' : 'false'));
+    }
+    const op = last(ops, time);
+    opEl.textContent = op ? op[1] : '';
+    opEl.hidden = !(op && op[1]);
+    const n = words.filter(w => w <= time).length;
+    answerEl.textContent = n ? ANSWER.slice(0, n).join(' ') : '…';
+  }
+  tl.eventCallback('onUpdate', sync);
+
+  /* Press a level to play from it. */
+  let held = false, inView = false;
+  const run = () => (inView && !held ? tl.play() : tl.pause());
+  crumbs.forEach((b, i) => b.addEventListener('click', () => {
+    tl.seek(`L${i}`, false);
+    cam.p = i;
+    draw();
+    sync();
+    if (!reduced) { if (held) { held = false; pause.classList.remove('is-paused'); pauseLb.textContent = 'Pause'; } tl.play(); }
+  }));
   pause.addEventListener('click', () => {
     held = !held;
     pause.classList.toggle('is-paused', held);
     pauseLb.textContent = held ? 'Play' : 'Pause';
-    sync();
+    run();
   });
 
-  const ready = document.fonts?.ready ?? Promise.resolve();
-  ready.then(build);
-  phone.addEventListener('change', () => ready.then(build));
-  return { fig, seen: on => { inView = on; sync(); } };
+  if (reduced) {
+    /* Still: the AMX unit with its finished tile, and the answer. */
+    tl.pause(a0 + 4.6);
+    cam.p = 5; draw();
+    answerEl.textContent = ANSWER.join(' ');
+  } else {
+    pause.hidden = false;
+    tl.pause(0);
+    draw();
+    sync();
+  }
+  return { fig, seen: on => { inView = on; run(); } };
 }
-const infra = buildInfra();
-
+const zoom = buildZoom();
 
 /* =====================================================================
    CONTACT: BOOKING
    Cal.com's inline calendar, loaded only when Contact comes near, so
    the rest of the page never waits for it. The visitor picks a time in
-   their own time zone; Mohamed approves each request (set on his Cal.com
-   event, "Requires confirmation"). Until his link is set in the markup,
-   the email button stands in. ?cal=user/event previews any public link.
+   their own time zone; Mohamed approves each request (his Cal.com event,
+   "Requires confirmation"). Until his link is set in the markup, the
+   email card stands in. The card is only replaced once the calendar has
+   really loaded; if it fails, the card stays and a direct link appears.
+   ?cal=user/event previews a link, on preview addresses only, never on
+   the live site (Sol 6.1: a shared link could show someone else's
+   calendar under Mohamed's name).
    ===================================================================== */
 function booking() {
   const box = $('[data-book]');
   if (!box) return;
-  const link = new URLSearchParams(location.search).get('cal') || box.dataset.calLink;
+  const host = location.hostname;
+  const preview = host === 'localhost' || host === '127.0.0.1' || host.endsWith('.mohamed-elsaid.pages.dev');
+  const link = (preview && new URLSearchParams(location.search).get('cal')) || box.dataset.calLink;
   if (!link) return;
   const cal = $('[data-cal]', box);
+  const state = $('[data-cal-state]', box);
   const fallback = $('[data-book-fallback]', box);
+  const direct = $('[data-book-direct]', box);
+  $('[data-book-link]', box).href = `https://cal.com/${link}`;
+
+  let done = false;
+  const ready = () => {
+    if (done) return;
+    done = true;
+    state.remove();
+    fallback.hidden = true;
+    direct.hidden = false;
+  };
+  const failed = () => {
+    if (done) return;
+    done = true;
+    cal.hidden = true;
+    direct.hidden = false;
+  };
 
   const load = () => {
     /* Cal.com's own loader, unchanged: it queues calls until embed.js
@@ -656,9 +743,8 @@ function booking() {
 
     /* The calendar wears the site's own colours, read from tokens.css. */
     const v = n => css.getPropertyValue(n).trim();
-    const brand = v('--accent-light');
     const dark = {
-      'cal-brand': brand, 'cal-brand-emphasis': v('--ink-inv'), 'cal-brand-text': v('--ground-6'),
+      'cal-brand': v('--accent-light'), 'cal-brand-emphasis': v('--ink-inv'), 'cal-brand-text': v('--ground-6'),
       'cal-bg': v('--ground-6'), 'cal-bg-muted': v('--ground-6'), 'cal-bg-subtle': v('--ground-5'), 'cal-bg-emphasis': v('--ground-5'),
       'cal-border': v('--rule-inv-strong'), 'cal-border-subtle': v('--rule-inv'), 'cal-border-booker': v('--rule-inv'),
       'cal-text': v('--ink-inv'), 'cal-text-emphasis': v('--ink-inv'), 'cal-text-subtle': v('--ink-inv-secondary'), 'cal-text-muted': v('--ink-inv-secondary')
@@ -666,9 +752,11 @@ function booking() {
     Cal('init', 'book', { origin: 'https://app.cal.com' });
     Cal.ns.book('inline', { elementOrSelector: cal, calLink: link, config: { layout: 'month_view', theme: 'dark' } });
     Cal.ns.book('ui', { theme: 'dark', layout: 'month_view', hideEventTypeDetails: false, cssVarsPerTheme: { dark } });
+    Cal.ns.book('on', { action: 'linkReady', callback: ready });
+    Cal.ns.book('on', { action: 'linkFailed', callback: failed });
     cal.hidden = false;
-    fallback.hidden = true;
-    $('[data-book-note]', box).textContent = 'Pick a time in your own time zone. Mohamed confirms each request by email.';
+    /* No answer in 15 seconds: keep the email card and offer the page. */
+    setTimeout(() => { if (!done) { state.textContent = 'The calendar is slow to load.'; direct.hidden = false; } }, 15000);
   };
   const io = new IntersectionObserver(entries => {
     if (entries.some(e => e.isIntersecting)) { io.disconnect(); load(); }
@@ -741,11 +829,11 @@ function motion() {
     });
   }
 
-  /* --- AI INFRASTRUCTURE: plays while in view, like the migration ---- */
-  if (infra) {
+  /* --- AI INFRASTRUCTURE: the zoom plays while in view -------------- */
+  if (zoom) {
     ScrollTrigger.create({
-      trigger: infra.fig, start: 'top 75%', end: 'bottom 10%',
-      onToggle: self => infra.seen(self.isActive)
+      trigger: zoom.fig, start: 'top 75%', end: 'bottom 10%',
+      onToggle: self => zoom.seen(self.isActive)
     });
   }
 

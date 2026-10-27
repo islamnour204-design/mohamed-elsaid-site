@@ -36,3 +36,6 @@ Islam chose A (Zoom) on a light ground. Built: six-level zoom with real AMX stru
 
 ## Sol 6.1 build review, fixed 2026-10-27
 Review: docs/v7/SOL-6.1-BUILD-REVIEW.md. All 8 findings fixed: token/activations/KV-cache wording and "one of a great many"; nav links 44px wide; phone legend under the drawing, stronger outlines, short phone intro; stable heights for caption, instruction line and answer (measured: prompt box does not move); calendar states with Try again and a live status; zoom pacing in tokens (--zoom-move/-hold/-back); "simplified notation" note; Pause beside the level buttons, distinct screen-reader names for both pauses.
+
+## Bug fixed 2026-10-27 (8853de5)
+Islam: the zoom jumped straight to level 6. Cause: the release CSS minifier rewrites 1150ms as 1.15s; ms() in main.js assumed milliseconds and divided by 1000 again, so levels 1-5 lasted about 0.001s. Exposed when the zoom pacing moved into tokens (Sol 6.1 finding 6); the same bug had silently made --d-mid/--d-reveal motion near-instant on every live version. ms() now reads the unit. Verified on the live v7 preview at 1440 and 390: levels 1 to 6 in order. Hero photo and Practice measured identical to v5 (511x424 / 289x239).

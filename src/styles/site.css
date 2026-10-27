@@ -520,6 +520,84 @@ main:focus { outline: none; }
 .edu .yr { display: block; font-size: var(--t-small); }
 .where { display: block; font-size: var(--t-small); color: var(--ink-inv-secondary); }
 
+/* --- AI INFRASTRUCTURE (v6) ------------------------------------------ */
+/* The statement and its paragraph side by side, then the drawing with
+   the five steps beside it: the mirror of Research below, which puts
+   its text first and its drawing second. */
+.infra-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  gap: var(--s-6);
+  align-items: start;
+}
+.infra-statement { font-size: var(--t-h2); max-width: 22ch; }
+.infra .prose p { color: var(--ink-inv-secondary); }
+.infra-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+  gap: var(--s-6);
+  align-items: center;
+  margin-top: var(--s-6);
+}
+.ai { padding: var(--s-4); background: var(--ground-5); border: 1px solid var(--rule-inv); border-radius: var(--radius); }
+.ai-svg { display: block; width: 100%; height: auto; overflow: visible; font-family: var(--font); }
+.ai-svg .lb { fill: var(--ink-inv-secondary); font-size: var(--ai-lb); }
+.ai-svg .lb-strong { fill: var(--ink-inv); font-size: var(--ai-lb); font-weight: 600; }
+.ai-svg .rule { stroke: var(--rule-inv); }
+.ai-svg .wire { stroke: var(--rule-inv-strong); fill: none; }
+.ai-svg .zoom { stroke: var(--rule-inv-strong); stroke-dasharray: 4 4; }
+.ai-svg .box { fill: none; stroke: var(--rule-inv-strong); }
+.ai-svg .frame { fill: var(--ground-6); stroke: var(--rule-inv-strong); }
+.ai-svg .srv { fill: var(--ground-6); stroke: var(--rule-inv-strong); }
+.ai-svg .srv.is-pick { stroke: var(--accent-light); stroke-width: 2; }
+.ai-svg .track { fill: var(--rule-inv); }
+.ai-svg .load { fill: var(--ink-inv-secondary); }
+.ai-svg .srv-pick .load { fill: var(--accent-light); }
+.ai-svg .chip-r { fill: none; stroke: var(--rule-inv-strong); }
+.ai-svg .chip-t { fill: var(--ink-inv); font-size: var(--ai-chip); }
+.ai-svg .out .chip-r { stroke: var(--accent-light); }
+.ai-svg .w { fill: var(--accent-light); opacity: .3; }
+.ai-svg .tile { fill: none; stroke: var(--rule-inv); }
+.ai-svg .hot { fill: var(--ink-inv); }
+.ai-svg .slot { fill: none; stroke: var(--rule-inv); }
+.ai-svg .kv { fill: var(--accent-light); }
+.ai-svg .pkt { fill: var(--accent-light); }
+.ai-svg .req { fill: var(--ink-inv); }
+
+/* The steps are buttons: each plays the drawing from that step. The
+   current one is lit while it plays; between loops all read at full ink. */
+.ai-steps { counter-reset: step; display: grid; gap: var(--s-1); }
+.ai-steps li { counter-increment: step; }
+.ai-steps button {
+  position: relative;
+  display: block;
+  width: 100%;
+  min-height: var(--tap-min);
+  padding: var(--s-2) var(--s-2) var(--s-2) var(--s-6);
+  font: inherit;
+  font-size: var(--t-small);
+  line-height: 1.5;
+  text-align: left;
+  color: var(--ink-inv);
+  background: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: color var(--d-base) var(--ease), border-color var(--d-base) var(--ease), background-color var(--d-base) var(--ease);
+}
+.ai-steps button::before {
+  content: counter(step);
+  position: absolute;
+  left: var(--s-2);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: var(--accent-light);
+}
+.ai-steps b { font-weight: 600; }
+.ai-steps button:hover { border-color: var(--rule-inv); }
+.ai-live .ai-steps button { color: var(--ink-inv-secondary); }
+.ai-live .ai-steps li.is-on button { color: var(--ink-inv); background: var(--ground-5); border-color: var(--rule-inv-strong); }
+
 /* --- CONTACT --------------------------------------------------------- */
 .contact { padding-bottom: 0; }
 .contact-grid {
@@ -564,6 +642,35 @@ main:focus { outline: none; }
 .icon { width: var(--icon); height: var(--icon); color: var(--accent-light); flex: none; }
 .link-main .icon, .replay .icon { color: currentColor; }
 .link-k { min-width: 6em; font-size: var(--t-small); color: var(--ink-inv-secondary); }
+
+/* Booking, v6. Its own band under the links: a calendar needs the full
+   content width to show a month and its times side by side. */
+.book { margin-top: var(--s-7); padding-top: var(--s-5); border-top: 1px solid var(--rule-inv-strong); }
+.book-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--s-1) var(--s-4); }
+.book-h { font-size: var(--t-statement); font-weight: 600; color: var(--ink-inv); }
+.book-note { font-size: var(--t-small); color: var(--ink-inv-secondary); }
+.book-cal {
+  min-height: var(--cal-h);
+  margin-top: var(--s-4);
+}
+.book-cal[hidden] { display: none; }
+.book-fallback {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-height: var(--tap-min);
+  margin-top: var(--s-4);
+  padding: var(--s-2) var(--s-4);
+  color: var(--accent-light);
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid var(--accent-light);
+  border-radius: var(--radius);
+  transition: background-color var(--d-fast) var(--ease), color var(--d-fast) var(--ease);
+}
+.book-fallback .icon { color: currentColor; }
+.book-fallback:hover { background: var(--accent-light); color: var(--ground-6); }
+.book-fallback[hidden] { display: none; }
 
 .foot { margin-top: var(--s-8); border-top: 1px solid var(--rule-inv); }
 .foot-in {
@@ -729,6 +836,19 @@ main:focus { outline: none; }
   .migr-svg .lb-strong { font-size: 32px; }
   .migr-svg .state { font-size: 30px; }
   .migr-svg .lb, .migr-svg .vm-lb { display: none; }
+
+  /* AI infrastructure on a phone: the drawing with its live caption,
+     then the steps. Row labels give way, the caption carries them, as
+     in the migration drawing. */
+  .infra-intro, .infra-stage { grid-template-columns: minmax(0, 1fr); gap: var(--s-3); }
+  .infra-stage { margin-top: var(--s-4); }
+  .infra-statement { font-size: var(--t-statement); }
+  .ai { padding: var(--s-2) var(--s-1) var(--s-1); }
+  .ai-svg .lb, .ai-svg .lb-strong { font-size: var(--ai-lb-s); }
+  .ai-svg .chip-t { font-size: var(--ai-chip-s); }
+  .ai-svg .lb-row { display: none; }
+  .ai .migr-foot { margin: var(--s-2) var(--s-1) 0; }
+  .ai-steps button { padding-block: var(--s-1); }
 
   .group { margin-top: var(--s-6); }
   .pubs, .patents, .base { grid-template-columns: minmax(0, 1fr); }

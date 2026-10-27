@@ -275,6 +275,20 @@
   --portrait-phone: min(74vw, 300px, calc((100svh - 480px) * 1.21));
   --tl-when: 9rem;       /* date column on the CV and Publications pages */
 
+  /* --- v6, added 27 October ------------------------------------------ */
+
+  /* Room held for the Cal.com calendar while it loads, about its own
+     month view, so Contact does not jump when it arrives. */
+  --cal-h: 560px;
+
+  /* AI infrastructure drawing. Labels are set in drawing units; the
+     drawing is about 1.07x on a laptop and 0.58x on a phone, so the
+     phone sizes are larger in units to land near 14px on screen. */
+  --ai-lb: 15px;
+  --ai-lb-s: 24px;
+  --ai-chip: 16px;
+  --ai-chip-s: 24px;
+
 }
 
 /* Respect the operating system setting. Non-negotiable. */

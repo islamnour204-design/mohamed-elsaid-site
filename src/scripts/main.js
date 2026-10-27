@@ -324,6 +324,359 @@ function buildMigration() {
 }
 const migration = buildMigration();
 
+/* =====================================================================
+   AI INFRASTRUCTURE: ONE REQUEST THROUGH THE STACK
+   Three bands, top to bottom: the user (prompt and answer), the cluster
+   (scheduler and four servers), and the chosen server opened up (memory
+   on the left, AMX tiles on the right). The loop follows motion-design's
+   three acts: Setup (the request is tokenised and placed), Action
+   (prefill, then decode token by token) and Resolution (the answer is
+   whole, the cache is freed), then a rest and a visible reset.
+   Illustrative: no figure in the drawing is a measurement.
+
+   Built after the font loads, because the token chips are sized from
+   their measured text. Rebuilt at the phone breakpoint, where the row
+   labels give way and the text is set larger.
+   ===================================================================== */
+function buildInfra() {
+  const fig = $('[data-ai]');
+  if (!fig) return null;
+  const svg = $('svg', fig);
+  const section = fig.closest('.infra');
+  const steps = $$('[data-ai-steps] li');
+  const cap = $('[data-ai-cap]', fig);
+  const pause = $('[data-ai-pause]', fig);
+  const pauseLb = $('[data-ai-pause-lb]', pause);
+  const title = $('title', svg);
+
+  const PROMPT = ['Summar', 'ise', ' this', ' quarter', '’s', ' report'];
+  const ANSWER = ['Revenue', ' grew', ' on', ' cloud', ' demand', '.'];
+  const LOADS = [.72, .58, .28, .64];   /* server 3 has the most room */
+  const PICK = 2;
+
+  let tl = null;
+  let held = false;
+  let inView = false;
+  const sync = () => tl && (inView && !held ? tl.play() : tl.pause());
+
+  const setStep = i => {
+    steps.forEach((li, n) => li.classList.toggle('is-on', n === i));
+    if (cap && steps[i]) cap.innerHTML = `<span class="cap-n">${i + 1} of 5</span> ${$('button', steps[i]).innerHTML}`;
+  };
+
+  function build() {
+    tl?.kill();
+    [...svg.childNodes].forEach(n => n !== title && n.remove());
+    const compact = phone.matches;
+    const X0 = compact ? 0 : 84;          /* left edge of the drawing, after the row labels */
+    const W = 600;
+    const CW = W - X0;
+    const lbSize = parseFloat(getComputedStyle(svg).getPropertyValue(compact ? '--ai-lb-s' : '--ai-lb')) || 15;
+    const off = compact ? lbSize * .35 : 5;   /* baseline lift inside a row */
+
+    /* Row labels, desktop only. */
+    const rowLb = (str, y) => text(str, { x: 0, y, class: 'lb lb-row' }, svg);
+    rowLb('Prompt', 47);
+    rowLb('Answer', 107);
+    rowLb('Scheduler', 163);
+    rowLb('Servers', 212);
+    node('line', { x1: 0, y1: 134, x2: W, y2: 134, class: 'rule' }, svg);
+
+    /* --- Band 1: chips -------------------------------------------------- */
+    const PAD = compact ? 9 : 7;
+    const GAP = compact ? 6 : 6;
+    function chips(words, y, extra) {
+      const g = node('g', { class: extra || '' }, svg);
+      const items = words.map(w => {
+        const c = node('g', {}, g);
+        const r = node('rect', { y: y - 15 - (compact ? 4 : 0), height: compact ? 38 : 30, rx: 4, class: 'chip-r' }, c);
+        const t = text(w.trim(), { x: 0, y: y + off, class: 'chip-t' }, c);
+        return { c, r, t, w: t.getComputedTextLength(), space: w.startsWith(' ') };
+      });
+      const sp = (compact ? 24 : 16) * .26;
+      let jx = X0 + PAD, sx = X0 + PAD;
+      items.forEach(it => {
+        if (it.space) jx += sp;
+        it.jx = jx; jx += it.w;
+        it.sx = sx; sx += it.w + PAD * 2 + GAP;
+        it.r.setAttribute('x', -PAD);
+        it.r.setAttribute('width', it.w + PAD * 2);
+      });
+      return { g, items };
+    }
+    const prompt = chips(PROMPT, 42);
+    const answer = chips(ANSWER, 102, 'out');
+    prompt.items.forEach(it => gsap.set(it.c, { x: it.sx }));
+    answer.items.forEach(it => gsap.set(it.c, { x: it.sx }));
+
+    /* --- Band 2: scheduler and servers --------------------------------- */
+    const SG = 16;
+    const SW = (CW - SG * 3) / 4;
+    const SY = 182, SH = compact ? 64 : 58;
+    const busY = 158;
+    node('line', { x1: X0, y1: busY, x2: W, y2: busY, class: 'wire' }, svg);
+    const servers = LOADS.map((load, i) => {
+      const x = X0 + i * (SW + SG);
+      const g = node('g', {}, svg);
+      node('line', { x1: x + SW / 2, y1: busY, x2: x + SW / 2, y2: SY, class: 'wire' }, g);
+      const box = node('rect', { x, y: SY, width: SW, height: SH, rx: 4, class: 'srv' }, g);
+      text(`Server ${i + 1}`, { x: x + 10, y: SY + (compact ? 26 : 22), class: 'lb' }, g);
+      const tw = SW - 20;
+      node('rect', { x: x + 10, y: SY + SH - 16, width: tw, height: 6, class: 'track' }, g);
+      const bar = node('rect', { x: x + 10, y: SY + SH - 16, width: tw * load, height: 6, class: 'load' }, g);
+      return { x, g, box, bar, tw, load, cx: x + SW / 2 };
+    });
+    const pick = servers[PICK];
+    node('line', { x1: 0, y1: 260, x2: W, y2: 260, class: 'rule' }, svg);
+
+    /* --- Band 3: the chosen server, opened up -------------------------- */
+    const FY = 286, FH = compact ? 424 : 384;
+    svg.setAttribute('viewBox', `0 0 ${W} ${FY + FH + 2}`);
+    const LB = compact ? 8 : 0;   /* extra room under the larger phone labels */
+    const zl = node('line', { x1: pick.x, y1: SY + SH, x2: pick.x, y2: SY + SH, class: 'zoom' }, svg);
+    const zr = node('line', { x1: pick.x + SW, y1: SY + SH, x2: pick.x + SW, y2: SY + SH, class: 'zoom' }, svg);
+    const inside = node('g', {}, svg);
+    node('rect', { x: X0, y: FY, width: CW, height: FH, rx: 4, class: 'frame' }, inside);
+    text(`Server ${PICK + 1}, inside`, { x: X0 + 16, y: FY + 28, class: 'lb-strong' }, inside);
+
+    const BUS = 64;
+    const BW = (CW - 32 - BUS) / 2;
+    const MX = X0 + 16, CX = MX + BW + BUS;
+    const BY = FY + 46, BH = FH - 54;
+    node('rect', { x: MX, y: BY, width: BW, height: BH, rx: 4, class: 'box' }, inside);
+    node('rect', { x: CX, y: BY, width: BW, height: BH, rx: 4, class: 'box' }, inside);
+    text('Memory', { x: MX + 12, y: BY + 26 + LB / 2, class: 'lb-strong' }, inside);
+    text('AMX tiles', { x: CX + 12, y: BY + 26 + LB / 2, class: 'lb-strong' }, inside);
+
+    /* Weights: 6 by 5 blocks. */
+    text('Model weights', { x: MX + 12, y: BY + 56 + LB * 1.5, class: 'lb' }, inside);
+    const WS = 24, WG = 8, WC = 6, WR = 5;
+    const wx0 = MX + (BW - (WC * WS + (WC - 1) * WG)) / 2;
+    const wy0 = BY + 70 + LB * 2;
+    const weights = [];
+    for (let r = 0; r < WR; r++) for (let c = 0; c < WC; c++) {
+      weights.push(node('rect', { x: wx0 + c * (WS + WG), y: wy0 + r * (WS + WG), width: WS, height: WS, class: 'w' }, inside));
+    }
+
+    /* KV cache: two rows of six, one slot per token, prompt then answer. */
+    const ky = wy0 + WR * (WS + WG) + 20;
+    text('KV cache', { x: MX + 12, y: ky + 4 + LB, class: 'lb' }, inside);
+    const kv = [];
+    for (let r = 0; r < 2; r++) for (let c = 0; c < 6; c++) {
+      const x = wx0 + c * (WS + WG), y = ky + 16 + LB * 2 + r * (WS + WG);
+      node('rect', { x: x + .5, y: y + .5, width: WS - 1, height: WS - 1, class: 'slot' }, inside);
+      kv.push(node('rect', { x, y, width: WS, height: WS, class: 'kv', opacity: 0 }, inside));
+    }
+
+    /* AMX tiles: an 8 by 8 grid of multiply units. */
+    const TS = 20, TG = 4, TN = 8;
+    const tx0 = CX + (BW - (TN * TS + (TN - 1) * TG)) / 2;
+    const ty0 = wy0;
+    const hot = [];
+    for (let r = 0; r < TN; r++) for (let c = 0; c < TN; c++) {
+      const x = tx0 + c * (TS + TG), y = ty0 + r * (TS + TG);
+      node('rect', { x: x + .5, y: y + .5, width: TS - 1, height: TS - 1, class: 'tile' }, inside);
+      hot.push(node('rect', { x, y, width: TS, height: TS, class: 'hot', opacity: 0 }, inside));
+    }
+    const gridCx = tx0 + (TN * TS + (TN - 1) * TG) / 2;
+    const gridBottom = ty0 + TN * (TS + TG);
+    text('Prompt tokens', { x: CX + 12, y: gridBottom + 30 + LB, class: 'lb' }, inside);
+    const tokRow = PROMPT.map((_, i) => node('rect', { x: tx0 + i * (TS + TG), y: gridBottom + 44 + LB * 2, width: TS, height: 8, class: 'req', opacity: 0 }, inside));
+
+    /* Memory to compute: three lanes, a packet each. */
+    const lanes = [wy0 + 30, wy0 + 76, wy0 + 122];
+    lanes.forEach(y => node('line', { x1: MX + BW, y1: y, x2: CX, y2: y, class: 'wire' }, inside));
+    const pkts = lanes.map(y => node('rect', { x: MX + BW, y: y - 4, width: 8, height: 8, class: 'pkt', opacity: 0 }, inside));
+
+    /* The request in flight: six small squares, one per token. */
+    const req = node('g', { opacity: 0 }, svg);
+    PROMPT.forEach((_, i) => node('rect', { x: i * 8, y: -3, width: 6, height: 6, class: 'req' }, req));
+    const reqStart = { x: X0 + PAD, y: 66 };
+
+    /* --- The loop ------------------------------------------------------ */
+    const t = gsap.timeline({ paused: true, repeat: -1, defaults: { ease: 'none' } });
+    const S = [0, 1.4, 3.3, 5.1, 9.0];   /* when each step begins */
+    S.forEach((at, i) => t.addLabel(`s${i}`, at).call(() => setStep(i), null, at));
+
+    /* Start state, every round. */
+    t.call(() => section.classList.add('ai-live'), null, 0)
+      .set(prompt.items.map(it => it.c), { opacity: 0 }, 0)
+      .set(prompt.items.map(it => it.r), { opacity: 0 }, 0)
+      .set(answer.items.map(it => it.c), { opacity: 0 }, 0)
+      .set(inside, { opacity: .35 }, 0)
+      .set([zl, zr], { opacity: 0 }, 0)
+      .set(kv, { opacity: 0 }, 0)
+      .set(tokRow, { opacity: 0 }, 0)
+      .set(req, { opacity: 0, x: reqStart.x, y: reqStart.y }, 0);
+    prompt.items.forEach(it => t.set(it.c, { x: it.jx }, 0));
+    servers.forEach(s => t.set(s.bar, { attr: { width: s.tw * s.load } }, 0));
+    t.set(pick.box, { attr: { class: 'srv' } }, 0);
+
+    /* 1. Request: the sentence arrives whole, then breaks into tokens. */
+    t.to(prompt.items.map(it => it.c), { opacity: 1, duration: .4, ease: EASE }, .1);
+    prompt.items.forEach((it, i) => {
+      t.to(it.c, { x: it.sx, duration: .6, ease: EASE }, .7 + i * .04);
+      t.to(it.r, { opacity: 1, duration: .3 }, .8 + i * .04);
+    });
+
+    /* 2. Placement: the request drops to the scheduler, runs along the
+       bus to the server with the most room, and that server opens. */
+    t.to(req, { opacity: 1, duration: .2 }, 1.5)
+      .to(req, { y: busY, duration: .4, ease: 'power2.in' }, 1.5)
+      .to(req, { x: pick.cx - 22, duration: .6, ease: 'power1.inOut' }, 1.9)
+      .to(req, { y: SY + SH / 2, duration: .3, ease: 'power2.out' }, 2.5)
+      .set(pick.box, { attr: { class: 'srv is-pick' } }, 2.8)
+      .to(pick.bar, { attr: { width: pick.tw * .7 }, duration: .5, ease: EASE }, 2.8)
+      .to([zl, zr], { opacity: 1, duration: .1 }, 2.8)
+      .to(zl, { attr: { x2: X0, y2: FY }, duration: .5, ease: EASE }, 2.8)
+      .to(zr, { attr: { x2: W, y2: FY }, duration: .5, ease: EASE }, 2.8)
+      .to(inside, { opacity: 1, duration: .5, ease: EASE }, 2.95)
+      .to(req, { x: gridCx - 22, y: gridBottom + 48 + LB * 2, duration: .5, ease: 'power2.inOut' }, 3.0)
+      .to(req, { opacity: 0, duration: .15 }, 3.45)
+      .to(tokRow, { opacity: 1, duration: .15, stagger: .03 }, 3.45);
+    /* Ambient: the other servers keep working. */
+    [0, 1, 3].forEach((n, k) => {
+      const s = servers[n];
+      t.to(s.bar, { attr: { width: s.tw * (s.load - .12 + k * .06) }, duration: 1.6, ease: 'sine.inOut' }, 1 + k * .5)
+        .to(s.bar, { attr: { width: s.tw * s.load }, duration: 1.6, ease: 'sine.inOut' }, 5 + k * .7);
+    });
+
+    /* Packets crossing from memory to the tiles, n trips from `at`. */
+    const flow = (at, n, gap) => {
+      for (let k = 0; k < n; k++) {
+        pkts.forEach((p, j) => {
+          const s = at + k * gap + j * .06;
+          t.fromTo(p, { x: 0, opacity: 1 }, { x: BUS - 8, duration: .3, immediateRender: false }, s)
+            .set(p, { opacity: 0 }, s + .3);
+        });
+      }
+    };
+
+    /* 3. Prefill: every weight block is read, the tiles work on all the
+       prompt tokens at once in two waves, and the cache fills. */
+    t.to(weights, { opacity: 1, duration: .15, stagger: { each: .03, yoyo: true, repeat: 1 } }, 3.4);
+    flow(3.4, 4, .35);
+    /* A diagonal wavefront, top left to bottom right, as data moves
+       through a systolic array of multiply units. */
+    [3.6, 4.2].forEach(at => hot.forEach((h, k) => {
+      t.to(h, { opacity: .9, duration: .16, yoyo: true, repeat: 1 }, at + ((k / TN | 0) + k % TN) * .035);
+    }));
+    t.to(kv.slice(0, 6), { opacity: 1, duration: .2, stagger: .12 }, 4.1)
+      .to(tokRow, { opacity: .25, duration: .3 }, 4.8);
+
+    /* 4. Decode: one token per pass. Each pass reads every weight again
+       (a fast sweep), lights one row of tiles, adds one cache entry,
+       and sends the token up to the answer. */
+    const P = .62;
+    ANSWER.forEach((_, i) => {
+      const at = S[3] + .1 + i * P;
+      t.to(weights, { opacity: 1, duration: .08, stagger: { each: .008, yoyo: true, repeat: 1 } }, at);
+      flow(at, 1, 0);
+      t.to(hot.slice((i % TN) * TN, (i % TN + 1) * TN), { opacity: .9, duration: .12, stagger: { each: .02, yoyo: true, repeat: 1 } }, at + .1);
+      t.to(kv[6 + i], { opacity: 1, duration: .15 }, at + .3);
+      const it = answer.items[i];
+      t.fromTo(it.c, { x: gridCx, y: ty0 - 102, opacity: 0 }, { x: it.sx, y: 0, opacity: 1, duration: .45, ease: EASE, immediateRender: false }, at + .3);
+    });
+
+    /* 5. Done: the cache is freed, the server's load falls back. */
+    t.set(pick.box, { attr: { class: 'srv' } }, S[4] + .3)
+      .to(kv, { opacity: 0, duration: .4, stagger: { each: .03, from: 'end' } }, S[4] + .3)
+      .to(pick.bar, { attr: { width: pick.tw * pick.load }, duration: .6, ease: EASE }, S[4] + .3)
+      .to(tokRow, { opacity: 0, duration: .3 }, S[4] + .3)
+
+    /* Rest on the finished answer, then the reset, in view. */
+      .to([...prompt.items.map(it => it.c), ...answer.items.map(it => it.c)], { opacity: 0, duration: .45, ease: EASE }, 10.9)
+      .to(inside, { opacity: .35, duration: .45, ease: EASE }, 10.9)
+      .to([zl, zr], { opacity: 0, duration: .3 }, 10.9)
+      .set(zl, { attr: { x2: pick.x, y2: SY + SH } }, 11.3)
+      .set(zr, { attr: { x2: pick.x + SW, y2: SY + SH } }, 11.3)
+      .to({}, { duration: .1 }, 11.35);
+
+    tl = t;
+    if (reduced) {
+      /* Drawn finished and still: the answer whole, all steps at full ink. */
+      t.pause(S[4] + .1);
+      section.classList.remove('ai-live');
+      steps.forEach(li => li.classList.remove('is-on'));
+      if (cap) cap.hidden = true;
+    } else {
+      pause.hidden = false;
+      setStep(0);
+      sync();
+    }
+  }
+
+  /* Pressing a step plays the drawing from there. */
+  steps.forEach((li, i) => $('button', li).addEventListener('click', () => {
+    if (!tl) return;
+    tl.seek(`s${i}`, false);
+    setStep(i);
+    if (reduced) return;
+    section.classList.add('ai-live');
+    if (held) { held = false; pause.classList.remove('is-paused'); pauseLb.textContent = 'Pause'; }
+    tl.play();
+  }));
+
+  /* WCAG 2.2.2: it moves for more than five seconds, so it can stop. */
+  pause.addEventListener('click', () => {
+    held = !held;
+    pause.classList.toggle('is-paused', held);
+    pauseLb.textContent = held ? 'Play' : 'Pause';
+    sync();
+  });
+
+  const ready = document.fonts?.ready ?? Promise.resolve();
+  ready.then(build);
+  phone.addEventListener('change', () => ready.then(build));
+  return { fig, seen: on => { inView = on; sync(); } };
+}
+const infra = buildInfra();
+
+
+/* =====================================================================
+   CONTACT: BOOKING
+   Cal.com's inline calendar, loaded only when Contact comes near, so
+   the rest of the page never waits for it. The visitor picks a time in
+   their own time zone; Mohamed approves each request (set on his Cal.com
+   event, "Requires confirmation"). Until his link is set in the markup,
+   the email button stands in. ?cal=user/event previews any public link.
+   ===================================================================== */
+function booking() {
+  const box = $('[data-book]');
+  if (!box) return;
+  const link = new URLSearchParams(location.search).get('cal') || box.dataset.calLink;
+  if (!link) return;
+  const cal = $('[data-cal]', box);
+  const fallback = $('[data-book-fallback]', box);
+
+  const load = () => {
+    /* Cal.com's own loader, unchanged: it queues calls until embed.js
+       arrives. */
+    (function (C, A, L) { const p = (a, ar) => { a.q.push(ar); }; const d = C.document; C.Cal = C.Cal || function () { const c = C.Cal; const ar = arguments; if (!c.loaded) { c.ns = {}; c.q = c.q || []; d.head.appendChild(d.createElement('script')).src = A; c.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const ns = ar[1]; api.q = api.q || []; if (typeof ns === 'string') { c.ns[ns] = c.ns[ns] || api; p(c.ns[ns], ar); p(c, ['initNamespace', ns]); } else p(c, ar); return; } p(c, ar); }; })(window, 'https://app.cal.com/embed/embed.js', 'init');
+
+    /* The calendar wears the site's own colours, read from tokens.css. */
+    const v = n => css.getPropertyValue(n).trim();
+    const brand = v('--accent-light');
+    const dark = {
+      'cal-brand': brand, 'cal-brand-emphasis': v('--ink-inv'), 'cal-brand-text': v('--ground-6'),
+      'cal-bg': v('--ground-6'), 'cal-bg-muted': v('--ground-6'), 'cal-bg-subtle': v('--ground-5'), 'cal-bg-emphasis': v('--ground-5'),
+      'cal-border': v('--rule-inv-strong'), 'cal-border-subtle': v('--rule-inv'), 'cal-border-booker': v('--rule-inv'),
+      'cal-text': v('--ink-inv'), 'cal-text-emphasis': v('--ink-inv'), 'cal-text-subtle': v('--ink-inv-secondary'), 'cal-text-muted': v('--ink-inv-secondary')
+    };
+    Cal('init', 'book', { origin: 'https://app.cal.com' });
+    Cal.ns.book('inline', { elementOrSelector: cal, calLink: link, config: { layout: 'month_view', theme: 'dark' } });
+    Cal.ns.book('ui', { theme: 'dark', layout: 'month_view', hideEventTypeDetails: false, cssVarsPerTheme: { dark } });
+    cal.hidden = false;
+    fallback.hidden = true;
+    $('[data-book-note]', box).textContent = 'Pick a time in your own time zone. Mohamed confirms each request by email.';
+  };
+  const io = new IntersectionObserver(entries => {
+    if (entries.some(e => e.isIntersecting)) { io.disconnect(); load(); }
+  }, { rootMargin: '600px 0px' });
+  io.observe(box);
+}
+booking();
+
 
 /* =====================================================================
    MOTION
@@ -385,6 +738,14 @@ function motion() {
     ScrollTrigger.create({
       trigger: migration.fig, start: 'top 70%', end: 'bottom 10%',
       onToggle: self => migration.seen(self.isActive)
+    });
+  }
+
+  /* --- AI INFRASTRUCTURE: plays while in view, like the migration ---- */
+  if (infra) {
+    ScrollTrigger.create({
+      trigger: infra.fig, start: 'top 75%', end: 'bottom 10%',
+      onToggle: self => infra.seen(self.isActive)
     });
   }
 

@@ -28,3 +28,6 @@ Deviation from the chat proposal: "Memory" and "Compute" became "Prefill" and "D
 - Motion: self-playing loop, Setup, Action, Resolution (motion-design), pauses out of view, pause button (WCAG 2.2.2), steps clickable to jump. Reduced motion: finished still frame.
 - No invented performance numbers.
 - Nav gains "AI" link.
+
+## Built 2026-10-27 (commit 536ced6)
+All of the above. Preview: https://v6.mohamed-elsaid.pages.dev (the main link is still v5). Checked at 1440 and 390, dev and release builds, no console errors. Cal.com embed tested with a public demo account: visitor time zone detected (Africa/Cairo), site colours applied. Not yet: Sol 6.1 review, Mohamed's Cal.com account, deploy to main.
